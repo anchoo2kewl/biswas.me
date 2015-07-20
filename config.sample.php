@@ -6,6 +6,7 @@
 	# First, instantiate the SDK with your API credentials and define your domain. 
 	$mg = new Mailgun("key-55a183786ca6703fffccfe9ffe1ab261");
 	$domain = "biswas.me";
+        $sender = 'postmaster@biswas.me';
 
 	$mysqli = @new mysqli('127.0.0.1', 'biswas', 'qweasd', 'biswas');
 
