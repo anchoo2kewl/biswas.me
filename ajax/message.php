@@ -35,6 +35,13 @@ if($insert_row){
                                 'subject' => 'Thank you for reaching out', 
                                 'text'    => 'Thank you for taking the time to contact me. I will respond to you as soon as I can.',
                                 'html'    => $html));
+
+  $mg->sendMessage($domain, array('from'=> $sender, 
+                                'to'      => $receiver, 
+                                'subject' => 'A message from Biswas.me', 
+                                'text'    => 'From: '.$_POST['name'].", ".$_POST['message'],
+                                'html'    => 'From: '.$_POST['name'].", <br />".$_POST['message']));
+
 }else{
     $result_json = array('status' => 'error', 'error_code' => $mysqli->errno, 'error_message' => $mysqli->error);
 }
