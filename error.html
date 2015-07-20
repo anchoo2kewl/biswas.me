@@ -1,0 +1,9 @@
+<br />
+<b>Fatal error</b>:  Uncaught exception 'Mailgun\Connection\Exceptions\MissingRequiredParameters' with message 'The parameters passed to the API were invalid. Check your inputs! 'to' parameter is not a valid address. please check documentation' in /home/anshuman/Documents/projects/biswas.me/vendor/mailgun/mailgun-php/src/Mailgun/Connection/RestClient.php:127
+Stack trace:
+#0 /home/anshuman/Documents/projects/biswas.me/vendor/mailgun/mailgun-php/src/Mailgun/Connection/RestClient.php(90): Mailgun\Connection\RestClient-&gt;responseHandler(Object(Guzzle\Http\Message\Response))
+#1 /home/anshuman/Documents/projects/biswas.me/vendor/mailgun/mailgun-php/src/Mailgun/Mailgun.php(80): Mailgun\Connection\RestClient-&gt;post('biswas.me/messa...', Array, Array)
+#2 /home/anshuman/Documents/projects/biswas.me/vendor/mailgun/mailgun-php/src/Mailgun/Mailgun.php(36): Mailgun\Mailgun-&gt;post('biswas.me/messa...', Array, Array)
+#3 /home/anshuman/Documents/projects/biswas.me/ajax/message.php(37): Mailgun\Mailgun-&gt;sendMessage('biswas.me', Array)
+#4 {main}
+  thr in <b>/home/anshuman/Documents/projects/biswas.me/vendor/mailgun/mailgun-php/src/Mailgun/Connection/RestClient.php</b> on line <b>127</b><br />

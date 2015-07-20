@@ -70,6 +70,32 @@
 
 			}
 
+		// Send Ajax message
+
+		$('#message-form').submit(function(event) {
+  		  	event.preventDefault();		
+			console.log("Sending Message");
+			$.post( "ajax/message.php", { name: $('#name').val(), email: $('#email').val(), message: $('#message').val() })
+			  .done(function( data ) {
+			  	data = $.parseJSON(data);
+			  	if (data.status == "success") {
+			  		console.log(data.domain);
+			  		$('#messsageForm').addClass('animated fadeOutUp');
+			  		$('#messsageForm').hide();
+			  		$('#message-success').show();
+			  		$('#message-success').addClass('animated fadeInUp');
+			  	}
+			  	else
+			  	{
+			  		console.log("Error Code: " + data.error_code + "--" + data.error_message );	
+			  		$('#message-error').show();
+			  		$('#message-error').addClass('animated fadeInUp');
+			  		setInterval(function () {$('#message-error').hide();}, 3000);
+
+			  	}
+			 });
+		});
+
 		// Header.
 
 			// Parallax background.
