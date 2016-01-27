@@ -39,8 +39,8 @@ if($insert_row){
   $mg->sendMessage($domain, array('from'=> $sender, 
                                 'to'      => $receiver, 
                                 'subject' => 'A message from Biswas.me', 
-                                'text'    => 'From: '.$_POST['name'].", ".$_POST['message'],
-                                'html'    => 'From: '.$_POST['name'].", <br />".$_POST['message']));
+                                'text'    => 'From: '.$_POST['name'].", ".$_POST['email']." ,".$_POST['message'],
+                                'html'    => 'From: '.$_POST['name']."<br />Message: ".$_POST['message']."<br />Email: ".$_POST['email']));
 
 }else{
     $result_json = array('status' => 'error', 'error_code' => $mysqli->errno, 'error_message' => $mysqli->error);
