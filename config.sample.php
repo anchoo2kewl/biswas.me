@@ -9,7 +9,7 @@
     $sender = 'postmaster@biswas.me';
     $receiver = 'anshuman@biswas.me';
 
-	$mysqli = @new mysqli('127.0.0.1', 'biswas', 'qweasd', 'biswas');
+	$mysqli = @new mysqli('127.0.0.1', 'ss', 'sample', 'sample');
 
 	// Works as of PHP 5.2.9 and 5.3.0.
 	if ($mysqli->connect_error) {

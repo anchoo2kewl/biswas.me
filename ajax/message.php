@@ -30,13 +30,13 @@ $insert_row = $mysqli->query("INSERT INTO messages (name, email, message, date, 
 if($insert_row){
 	$result_json = array('status' => 'success', 'domain' => $domain);
 	# Now, compose and send your message.
-	$mg->sendMessage($domain, array('from'=> $sender, 
+	$mailgun->sendMessage($domain, array('from'=> $sender, 
                                 'to'      => $_POST['email'], 
                                 'subject' => 'Thank you for reaching out', 
                                 'text'    => 'Thank you for taking the time to contact me. I will respond to you as soon as I can.',
                                 'html'    => $html));
 
-  $mg->sendMessage($domain, array('from'=> $sender, 
+  $mailgun->sendMessage($domain, array('from'=> $sender, 
                                 'to'      => $receiver, 
                                 'subject' => 'A message from Biswas.me', 
                                 'text'    => 'From: '.$_POST['name'].", ".$_POST['email']." ,".$_POST['message'],
@@ -47,4 +47,3 @@ if($insert_row){
 }
 echo json_encode($result_json);
 
-?>
