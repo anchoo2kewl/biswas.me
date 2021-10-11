@@ -4,12 +4,13 @@
 	use Mailgun\Mailgun;
 
 	# First, instantiate the SDK with your API credentials and define your domain. 
-	$mg = new Mailgun("key-55a183786ca6703fffccfe9ffe1ab261");
-	$domain = "biswas.me";
-    $sender = 'postmaster@biswas.me';
-    $receiver = 'anshuman@biswas.me';
 
-	$mysqli = @new mysqli('127.0.0.1', 'ss', 'sample', 'sample');
+	$mg = Mailgun::create('key-c0638fcbc332e62691b4e0ace75e81a8');
+	$domain = "biswas.me";    	
+	$sender = 'postmaster@biswas.me';
+    	$receiver = 'anshuman@biswas.me';
+
+	$mysqli = @new mysqli('127.0.0.1', 'root', 'wallaroot', 'biswas');
 
 	// Works as of PHP 5.2.9 and 5.3.0.
 	if ($mysqli->connect_error) {

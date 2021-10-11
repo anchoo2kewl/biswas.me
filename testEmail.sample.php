@@ -5,13 +5,13 @@ require 'vendor/autoload.php';
 use Mailgun\Mailgun;
 
 # Instantiate the client.
-$mg = Mailgun::create('key-c0638fcbc332e62691b4e0ace75e81a8');
+$mg = Mailgun::create('key-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx');
 $domain = "biswas.me";
 
 # Make the call to the client.
 $result = $mg->messages()->send($domain, array(
-    'from'    => 'postmaster@biswas.me',
-    'to'      => 'Baz <anchoo2kewl@gmail.com>',
+    'from'    => 'abc@biswas.me',
+    'to'      => 'Baz <abc@gmail.com>',
     'subject' => 'Hello',
     'text'    => 'Testing some Mailgun awesomness!'
 ));

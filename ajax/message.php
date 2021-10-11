@@ -25,18 +25,18 @@ if (!empty($_SERVER['HTTP_CLIENT_IP'])){
 $ip = ip2long($ip);
 
 //MySqli Insert Query
-$insert_row = $mysqli->query("INSERT INTO messages (name, email, message, date, ip) VALUES($name, $email, $message, $date, $ip)");
+$insert_row = $mysqli->query("INSERT INTO email (name, email, message, date, ip) VALUES($name, $email, $message, $date, $ip)");
 
 if($insert_row){
 	$result_json = array('status' => 'success', 'domain' => $domain);
 	# Now, compose and send your message.
-	$mailgun->sendMessage($domain, array('from'=> $sender, 
+	$mg->messages()->send($domain, array('from'=> $sender, 
                                 'to'      => $_POST['email'], 
                                 'subject' => 'Thank you for reaching out', 
                                 'text'    => 'Thank you for taking the time to contact me. I will respond to you as soon as I can.',
                                 'html'    => $html));
 
-  $mailgun->sendMessage($domain, array('from'=> $sender, 
+  $mg->messages()->send($domain, array('from'=> $sender, 
                                 'to'      => $receiver, 
                                 'subject' => 'A message from Biswas.me', 
                                 'text'    => 'From: '.$_POST['name'].", ".$_POST['email']." ,".$_POST['message'],
