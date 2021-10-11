@@ -5,7 +5,7 @@
 
 	# First, instantiate the SDK with your API credentials and define your domain. 
 
-	$mg = Mailgun::create('key-c0638fcbc332e62691b4e0ace75e81a8');
+	$mg = Mailgun::create('key-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX');
 	$domain = "biswas.me";    	
 	$sender = 'postmaster@biswas.me';
     	$receiver = 'anshuman@biswas.me';
