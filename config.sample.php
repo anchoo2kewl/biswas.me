@@ -10,6 +10,8 @@
 	$sender = 'postmaster@biswas.me';
     	$receiver = 'anshuman@biswas.me';
 
+	$google_recaptcha_v3_secret = 'reCAPTCHA_secret_key'
+
 	$mysqli = @new mysqli('127.0.0.1', 'root', 'wallaroot', 'biswas');
 
 	// Works as of PHP 5.2.9 and 5.3.0.
