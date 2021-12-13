@@ -38,7 +38,7 @@ if ($result_json['success'] == 1 AND $result_json['score'] >= 0.5 AND $result_js
 	if($insert_row){
 		$result_json = array('status' => 'success', 'domain' => $domain);
 		# Now, compose and send your message.
-	/*	$mg->messages()->send($domain, array('from'=> $sender, 
+		$mg->messages()->send($domain, array('from'=> $sender, 
                                 'to'      => $_POST['email'], 
                                 'subject' => 'Thank you for reaching out', 
                                 'text'    => 'Thank you for taking the time to contact me. I will respond to you as soon as I can.',
@@ -49,7 +49,7 @@ if ($result_json['success'] == 1 AND $result_json['score'] >= 0.5 AND $result_js
                                 'subject' => 'A message from Biswas.me', 
                                 'text'    => 'From: '.$_POST['name'].", ".$_POST['email']." ,".$_POST['message'],
                                 'html'    => 'From: '.$_POST['name']."<br />Message: ".$_POST['message']."<br />Email: ".$_POST['email']));
-	*/
+
 	header("Location: /thankyou.html");
 	die();
 	} else {

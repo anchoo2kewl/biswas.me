@@ -12,7 +12,7 @@
 
 	$google_recaptcha_v3_secret = 'reCAPTCHA_secret_key'
 
-	$mysqli = @new mysqli('127.0.0.1', 'root', 'wallaroot', 'biswas');
+	$mysqli = @new mysqli('127.0.0.1', 'root_user', 'password', 'db');
 
 	// Works as of PHP 5.2.9 and 5.3.0.
 	if ($mysqli->connect_error) {
