@@ -1,0 +1,40 @@
+name: docker-website
+services:
+  website:
+      image: biswas/website:v0.1-SNAPSHOT
+      restart: always
+      ports:
+        - 8080:80
+      networks:
+        - server-side
+      volumes:
+        - ./src:/usr/share/nginx/html
+      depends_on:
+        db:
+          condition: service_healthy      
+
+  db:
+      image: arm64v8/mysql:oracle
+      restart: always
+      networks:
+        - server-side
+      ports:
+        - 3306:3306
+      environment:
+        - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+        - MYSQL_USER=${MYSQL_USER}
+        - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+        - MYSQL_DATABASE=${MYSQL_DATABASE}
+      volumes:
+        - db-data:/var/lib/mysql
+      healthcheck:
+        test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost", "-uroot", "-p${MYSQL_ROOT_PASSWORD}"]
+        interval: 5s
+        timeout: 5s
+        retries: 20
+
+networks:
+  server-side: {}
+
+volumes:
+  db-data: {}

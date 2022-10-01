@@ -1,3 +1,5 @@
 config.php
-vendor/**
-composer.*
+src/vendor/**
+src/composer.*
+.env
+.DS_Store
