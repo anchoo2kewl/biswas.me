@@ -23,5 +23,7 @@ $ docker-compose up -d
 ## Install Composer
 
 ```
-docker exec -it `docker container ls  | grep 'website' | awk '{print $1}'` composer require mailgun/mailgun-php symfony/http-client nyholm/psr7
+docker exec -it `docker container ls  | grep 'website' | awk '{print $1}'` /bin/sh
+ln -s /usr/bin/php82 /usr/bin/php
+composer require mailgun/mailgun-php symfony/http-client nyholm/psr7
 ```

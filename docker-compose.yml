@@ -5,6 +5,11 @@ services:
       restart: always
       ports:
         - 8080:80
+        - 3001:3001
+      logging:
+        driver: "json-file"
+        options:
+          max-size: "10m"
       networks:
         - server-side
       volumes:
