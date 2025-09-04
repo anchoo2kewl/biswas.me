@@ -105,7 +105,7 @@ func main() {
 		http.NotFound(w, r)
 	})
 
-	port := os.Getenv("PORT")
+	port := os.Getenv("BACKEND_PORT")
 	if port == "" {
 		port = "8080"
 	}
