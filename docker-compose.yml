@@ -9,7 +9,7 @@ services:
     restart: unless-stopped
     ports:
       - "3000:3000"  # Next.js frontend
-      - "8080:8080"  # Go backend API
+      - "8081:8080"  # Go backend API
     environment:
       - NODE_ENV=production
       - PORT=3000

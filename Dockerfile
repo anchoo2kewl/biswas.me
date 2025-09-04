@@ -32,7 +32,7 @@ COPY backend/ ./
 RUN CGO_ENABLED=1 GOOS=linux go build -a -ldflags '-linkmode external -extldflags "-static"' -o main .
 
 # Stage 3: Production runtime
-FROM alpine:latest
+FROM node:20-alpine
 
 # Install runtime dependencies
 RUN apk --no-cache add ca-certificates sqlite

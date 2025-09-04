@@ -63,7 +63,7 @@ print_status "Stopping existing containers..."
 docker-compose down || true
 
 print_status "Building production Docker image..."
-docker-compose build --no-cache
+docker-compose build
 
 print_status "Starting new containers..."
 docker-compose up -d
