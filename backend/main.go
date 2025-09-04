@@ -625,7 +625,7 @@ Content-Type: text/html; charset=UTF-8
                         </linearGradient>
                     </defs>
                 </svg>
-                <span>(A)nshuman Biswas</span>
+                <span>nshuman Biswas</span>
             </div>
             <div class="signature-links">
                 <a href="https://biswas.me">Portfolio</a>

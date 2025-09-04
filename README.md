@@ -30,6 +30,7 @@ Personal portfolio website of Anshuman Biswas, VP of Engineering at Elastio. Bui
 - yarn package manager
 - make (for development commands)
 - Homebrew (for mailpit installation)
+- SQLite3 CLI (for database queries)
 
 ## Quick Start
 
@@ -80,6 +81,16 @@ make test
 
 # Show all available commands
 make help
+
+# Query database (local or remote)
+./scripts/query-db.sh local   # Query local database
+./scripts/query-db.sh remote  # Query production database
+
+# Unified server management (recommended)
+./scripts/server start        # Start all services
+./scripts/server stop         # Stop all services
+./scripts/server status       # Check service status
+./scripts/server db-recent 5  # Show recent messages
 ```
 
 ## Configuration
@@ -159,6 +170,115 @@ POST /ajax/message.php       # Contact form submission
 }
 ```
 
+## Database Access
+
+**SQLite Database Location:**
+- Local: `./backend/messages.db`
+- Remote: `/app/backend/messages.db` (inside Docker container)
+
+**Database Schema:**
+```sql
+CREATE TABLE email (
+    id INTEGER PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    message TEXT,
+    date DATETIME,
+    ip VARCHAR(20) NOT NULL
+);
+```
+
+**Query Database:**
+```bash
+# Install SQLite CLI (if not already installed)
+brew install sqlite3
+
+# Query local database
+./scripts/query-db.sh local
+
+# Query remote production database
+./scripts/query-db.sh remote
+
+# Custom queries
+./scripts/query-db.sh local "SELECT COUNT(*) FROM email;"
+./scripts/query-db.sh remote "SELECT * FROM email WHERE email LIKE '%@gmail.com%';"
+```
+
+**Common Queries:**
+```sql
+-- Get all messages (recent first)
+SELECT * FROM email ORDER BY date DESC LIMIT 10;
+
+-- Count total messages
+SELECT COUNT(*) FROM email;
+
+-- Get messages by email domain
+SELECT * FROM email WHERE email LIKE '%@gmail.com%';
+
+-- Get messages from last 7 days
+SELECT * FROM email WHERE date >= date('now', '-7 days');
+
+-- Summary by email domain
+SELECT substr(email, instr(email, '@') + 1) as domain, COUNT(*) as count 
+FROM email GROUP BY domain ORDER BY count DESC;
+```
+
+**Direct SQLite Access:**
+```bash
+# Local database
+sqlite3 ./backend/messages.db
+
+# Remote database (via SSH + Docker)
+ssh ubuntu@biswas.me "docker-compose exec -T portfolio sqlite3 /app/backend/messages.db"
+```
+
+## Server Management Script
+
+**Unified Control with `./scripts/server`:**
+
+The server script provides a single command interface for all development operations:
+
+```bash
+# Server Control
+./scripts/server start           # Start all services (frontend, backend, mailpit)
+./scripts/server stop            # Stop all services
+./scripts/server restart         # Restart all services
+./scripts/server status          # Show status of all services
+
+# Individual Service Control
+./scripts/server start-frontend  # Start Next.js only
+./scripts/server start-backend   # Start Go backend only
+./scripts/server start-mailpit   # Start Mailpit only
+./scripts/server stop-frontend   # Stop frontend
+./scripts/server stop-backend    # Stop backend
+./scripts/server stop-mailpit    # Stop mailpit
+
+# Log Management
+./scripts/server logs             # Show logs for all services
+./scripts/server logs backend     # Show backend logs only
+./scripts/server tail frontend 100 # Tail frontend logs (100 lines)
+
+# Database Operations
+./scripts/server db               # Show recent messages (default: 10)
+./scripts/server db-count         # Show message count
+./scripts/server db-recent 5      # Show 5 recent messages
+./scripts/server db-schema        # Show database schema
+./scripts/server db "SELECT * FROM email WHERE name LIKE '%John%';"
+
+# Utilities
+./scripts/server health           # Check health of all services
+./scripts/server ports            # Show port usage
+./scripts/server clean            # Clean logs and temp files
+```
+
+**Features:**
+- ✅ **Color-coded output** for easy reading
+- ✅ **Automatic port detection** and conflict resolution
+- ✅ **Integrated database queries** with formatted output
+- ✅ **Health checks** with HTTP endpoint testing
+- ✅ **Log management** with tailing support
+- ✅ **Process management** with graceful shutdown
+
 ## Project Structure
 
 ```
@@ -172,9 +292,15 @@ POST /ajax/message.php       # Contact form submission
 ├── backend/            # Go backend server
 │   ├── main.go         # Main server file
 │   ├── go.mod          # Go dependencies
+│   ├── .env            # Environment variables
 │   └── messages.db     # SQLite database (created automatically)
+├── scripts/            # Utility scripts
+│   ├── server          # Unified server management script
+│   └── query-db.sh     # Database query script
 ├── migrations/         # Database migration files
 ├── Makefile           # Development commands
+├── docker-compose.yml  # Production deployment
+├── Dockerfile         # Container build configuration
 └── backup/             # Backup of original project files
 ```
 

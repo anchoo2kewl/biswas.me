@@ -1,0 +1,694 @@
+#!/bin/bash
+
+# biswas.me Local Server Management Script
+# Manages frontend, backend, and database operations
+
+set -e
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+PURPLE='\033[0;35m'
+CYAN='\033[0;36m'
+NC='\033[0m' # No Color
+
+# Configuration
+FRONTEND_PORT=3000
+BACKEND_PORT=8080
+MAILPIT_PORT=1025
+MAILPIT_WEB_PORT=8025
+LOG_DIR="./logs"
+BACKEND_DIR="./backend"
+DB_PATH="$BACKEND_DIR/messages.db"
+
+# Create logs directory if it doesn't exist
+mkdir -p "$LOG_DIR"
+
+# Function to print colored output
+print_status() {
+    echo -e "${GREEN}[INFO]${NC} $1"
+}
+
+print_warning() {
+    echo -e "${YELLOW}[WARNING]${NC} $1"
+}
+
+print_error() {
+    echo -e "${RED}[ERROR]${NC} $1"
+}
+
+print_success() {
+    echo -e "${GREEN}[SUCCESS]${NC} $1"
+}
+
+print_header() {
+    echo -e "${BLUE}=== $1 ===${NC}"
+}
+
+# Function to show help
+show_help() {
+    echo -e "${CYAN}biswas.me Server Management Script${NC}"
+    echo ""
+    echo "Usage: $0 <command> [options]"
+    echo ""
+    echo -e "${YELLOW}Server Commands:${NC}"
+    echo "  start [--force]   Start all services (frontend, backend, mailpit)"
+    echo "  stop              Stop all services"
+    echo "  restart [--force] Restart all services"
+    echo "  status            Show status of all services"
+    echo ""
+    echo -e "${YELLOW}Individual Service Commands:${NC}"
+    echo "  start-frontend [--force]   Start Next.js frontend only"
+    echo "  start-backend [--force]    Start Go backend only"
+    echo "  start-mailpit [--force]    Start Mailpit email server only"
+    echo "  stop-frontend              Stop frontend"
+    echo "  stop-backend               Stop backend"
+    echo "  stop-mailpit               Stop mailpit"
+    echo ""
+    echo -e "${YELLOW}Log Commands:${NC}"
+    echo "  logs [service]    Show logs for all services or specific service"
+    echo "                    Services: frontend, backend, mailpit, all (default)"
+    echo "  tail [service] [n] Tail logs (default: 50 lines)"
+    echo ""
+    echo -e "${YELLOW}Mail Commands:${NC}"
+    echo "  mail              Show recent emails from Mailpit"
+    echo "  mail-toggle       Toggle between Mailpit and Brevo"
+    echo "  mail-status       Show current mail provider"
+    echo "  mail-web          Open Mailpit web interface"
+    echo ""
+    echo -e "${YELLOW}Database Commands:${NC}"
+    echo "  db [query]        Execute SQL query on local database"
+    echo "  db-schema         Show database schema"
+    echo "  db-count          Show message count"
+    echo "  db-recent [n]     Show recent messages (default: 10)"
+    echo "  db-clear          Clear all messages (with confirmation)"
+    echo ""
+    echo -e "${YELLOW}Utility Commands:${NC}"
+    echo "  health            Check health of all services"
+    echo "  clean             Clean logs and temporary files"
+    echo "  ports             Show which ports are in use"
+    echo ""
+    echo -e "${YELLOW}Examples:${NC}"
+    echo "  $0 start --force                   # Force start all services"
+    echo "  $0 start-backend --force           # Force start backend"
+    echo "  $0 mail                            # Show recent emails"
+    echo "  $0 mail-toggle                     # Switch email provider"
+    echo "  $0 logs backend                    # Show backend logs"
+    echo "  $0 tail frontend 100               # Tail frontend logs (100 lines)"
+    echo "  $0 db \"SELECT COUNT(*) FROM email;\" # Execute SQL query"
+    echo "  $0 db-recent 5                     # Show 5 recent messages"
+}
+
+# Function to check if a port is in use
+port_in_use() {
+    lsof -i :$1 >/dev/null 2>&1
+}
+
+# Function to get PID using a port
+get_pid_by_port() {
+    lsof -ti :$1 2>/dev/null || echo ""
+}
+
+# Function to kill process by port
+kill_by_port() {
+    local port=$1
+    local service=$2
+    local pid=$(get_pid_by_port $port)
+    
+    if [ -n "$pid" ]; then
+        print_status "Stopping $service (PID: $pid) on port $port..."
+        kill $pid 2>/dev/null || true
+        sleep 2
+        
+        # Force kill if still running
+        if kill -0 $pid 2>/dev/null; then
+            print_warning "Force killing $service..."
+            kill -9 $pid 2>/dev/null || true
+        fi
+        print_success "$service stopped"
+    else
+        print_warning "$service not running on port $port"
+    fi
+}
+
+# Function to start frontend
+start_frontend() {
+    local force=false
+    if [ "$1" = "--force" ]; then
+        force=true
+    fi
+    
+    print_header "Starting Frontend (Next.js)"
+    
+    if port_in_use $FRONTEND_PORT; then
+        if [ "$force" = true ]; then
+            print_warning "Force stopping existing frontend..."
+            kill_by_port $FRONTEND_PORT "Frontend"
+            sleep 2
+        else
+            print_warning "Frontend already running on port $FRONTEND_PORT (use --force to restart)"
+            return
+        fi
+    fi
+    
+    print_status "Starting Next.js on port $FRONTEND_PORT..."
+    nohup yarn dev > "$LOG_DIR/frontend.log" 2>&1 &
+    echo $! > "$LOG_DIR/frontend.pid"
+    
+    # Wait for startup
+    sleep 3
+    if port_in_use $FRONTEND_PORT; then
+        print_success "Frontend started at http://localhost:$FRONTEND_PORT"
+    else
+        print_error "Frontend failed to start"
+        print_status "Check logs with: $0 logs frontend"
+    fi
+}
+
+# Function to start backend
+start_backend() {
+    local force=false
+    if [ "$1" = "--force" ]; then
+        force=true
+    fi
+    
+    print_header "Starting Backend (Go)"
+    
+    if port_in_use $BACKEND_PORT; then
+        if [ "$force" = true ]; then
+            print_warning "Force stopping existing backend..."
+            kill_by_port $BACKEND_PORT "Backend"
+            sleep 2
+        else
+            print_warning "Backend already running on port $BACKEND_PORT (use --force to restart)"
+            return
+        fi
+    fi
+    
+    print_status "Starting Go backend on port $BACKEND_PORT..."
+    cd "$BACKEND_DIR"
+    nohup air > "../$LOG_DIR/backend.log" 2>&1 &
+    echo $! > "../$LOG_DIR/backend.pid"
+    cd ..
+    
+    # Wait for startup
+    sleep 5
+    if port_in_use $BACKEND_PORT; then
+        print_success "Backend started at http://localhost:$BACKEND_PORT"
+    else
+        print_error "Backend failed to start"
+        print_status "Check logs with: $0 logs backend"
+    fi
+}
+
+# Function to start mailpit
+start_mailpit() {
+    local force=false
+    if [ "$1" = "--force" ]; then
+        force=true
+    fi
+    
+    print_header "Starting Mailpit"
+    
+    if port_in_use $MAILPIT_PORT; then
+        if [ "$force" = true ]; then
+            print_warning "Force stopping existing mailpit..."
+            kill_by_port $MAILPIT_PORT "Mailpit (SMTP)"
+            kill_by_port $MAILPIT_WEB_PORT "Mailpit (Web)"
+            sleep 2
+        else
+            print_warning "Mailpit already running on port $MAILPIT_PORT (use --force to restart)"
+            return
+        fi
+    fi
+    
+    print_status "Starting Mailpit on ports $MAILPIT_PORT (SMTP) and $MAILPIT_WEB_PORT (Web)..."
+    nohup mailpit --smtp=localhost:$MAILPIT_PORT --listen=localhost:$MAILPIT_WEB_PORT > "$LOG_DIR/mailpit.log" 2>&1 &
+    echo $! > "$LOG_DIR/mailpit.pid"
+    
+    # Wait for startup
+    sleep 2
+    if port_in_use $MAILPIT_PORT; then
+        print_success "Mailpit started at http://localhost:$MAILPIT_WEB_PORT"
+    else
+        print_error "Mailpit failed to start"
+        print_status "Check logs with: $0 logs mailpit"
+    fi
+}
+
+# Function to stop services
+stop_frontend() {
+    print_header "Stopping Frontend"
+    kill_by_port $FRONTEND_PORT "Frontend"
+    rm -f "$LOG_DIR/frontend.pid"
+}
+
+stop_backend() {
+    print_header "Stopping Backend"
+    kill_by_port $BACKEND_PORT "Backend"
+    rm -f "$LOG_DIR/backend.pid"
+}
+
+stop_mailpit() {
+    print_header "Stopping Mailpit"
+    kill_by_port $MAILPIT_PORT "Mailpit (SMTP)"
+    kill_by_port $MAILPIT_WEB_PORT "Mailpit (Web)"
+    rm -f "$LOG_DIR/mailpit.pid"
+}
+
+# Function to show service status
+show_status() {
+    print_header "Service Status"
+    
+    echo -e "${CYAN}Frontend (Next.js):${NC}"
+    if port_in_use $FRONTEND_PORT; then
+        echo -e "  ${GREEN}✓ Running${NC} on port $FRONTEND_PORT (http://localhost:$FRONTEND_PORT)"
+    else
+        echo -e "  ${RED}✗ Not running${NC}"
+    fi
+    
+    echo -e "${CYAN}Backend (Go):${NC}"
+    if port_in_use $BACKEND_PORT; then
+        echo -e "  ${GREEN}✓ Running${NC} on port $BACKEND_PORT (http://localhost:$BACKEND_PORT)"
+    else
+        echo -e "  ${RED}✗ Not running${NC}"
+    fi
+    
+    echo -e "${CYAN}Mailpit:${NC}"
+    if port_in_use $MAILPIT_PORT; then
+        echo -e "  ${GREEN}✓ Running${NC} on ports $MAILPIT_PORT (SMTP) and $MAILPIT_WEB_PORT (Web: http://localhost:$MAILPIT_WEB_PORT)"
+    else
+        echo -e "  ${RED}✗ Not running${NC}"
+    fi
+}
+
+# Function to show logs
+show_logs() {
+    local service=${1:-all}
+    local lines=${2:-50}
+    
+    case $service in
+        frontend)
+            if [ -f "$LOG_DIR/frontend.log" ]; then
+                print_header "Frontend Logs (last $lines lines)"
+                tail -n $lines "$LOG_DIR/frontend.log"
+            else
+                print_warning "Frontend log not found"
+            fi
+            ;;
+        backend)
+            if [ -f "$LOG_DIR/backend.log" ]; then
+                print_header "Backend Logs (last $lines lines)"
+                tail -n $lines "$LOG_DIR/backend.log"
+            else
+                print_warning "Backend log not found"
+            fi
+            ;;
+        mailpit)
+            if [ -f "$LOG_DIR/mailpit.log" ]; then
+                print_header "Mailpit Logs (last $lines lines)"
+                tail -n $lines "$LOG_DIR/mailpit.log"
+            else
+                print_warning "Mailpit log not found"
+            fi
+            ;;
+        all|*)
+            print_header "All Service Logs (last $lines lines each)"
+            for service in frontend backend mailpit; do
+                echo ""
+                show_logs $service $lines
+            done
+            ;;
+    esac
+}
+
+# Function to tail logs
+tail_logs() {
+    local service=${1:-all}
+    local lines=${2:-50}
+    
+    case $service in
+        frontend)
+            if [ -f "$LOG_DIR/frontend.log" ]; then
+                print_header "Tailing Frontend Logs"
+                tail -f -n $lines "$LOG_DIR/frontend.log"
+            else
+                print_warning "Frontend log not found"
+            fi
+            ;;
+        backend)
+            if [ -f "$LOG_DIR/backend.log" ]; then
+                print_header "Tailing Backend Logs"
+                tail -f -n $lines "$LOG_DIR/backend.log"
+            else
+                print_warning "Backend log not found"
+            fi
+            ;;
+        mailpit)
+            if [ -f "$LOG_DIR/mailpit.log" ]; then
+                print_header "Tailing Mailpit Logs"
+                tail -f -n $lines "$LOG_DIR/mailpit.log"
+            else
+                print_warning "Mailpit log not found"
+            fi
+            ;;
+        all|*)
+            print_error "Cannot tail all logs simultaneously. Choose: frontend, backend, or mailpit"
+            ;;
+    esac
+}
+
+# Database functions
+execute_db_query() {
+    local query="$1"
+    
+    if [ ! -f "$DB_PATH" ]; then
+        print_warning "Database not found at $DB_PATH"
+        print_status "Start the backend server first to create the database"
+        return 1
+    fi
+    
+    print_header "Database Query"
+    echo -e "${CYAN}Query:${NC} $query"
+    echo ""
+    sqlite3 -header -column "$DB_PATH" "$query"
+}
+
+show_db_schema() {
+    execute_db_query "SELECT sql FROM sqlite_master WHERE type='table';"
+}
+
+show_db_count() {
+    execute_db_query "SELECT COUNT(*) as total_messages FROM email;"
+}
+
+show_recent_messages() {
+    local count=${1:-10}
+    execute_db_query "SELECT id, name, email, substr(message, 1, 50) as message_preview, date FROM email ORDER BY date DESC LIMIT $count;"
+}
+
+# Mail management functions
+show_mail_status() {
+    print_header "Mail Provider Status"
+    
+    if [ -f "$BACKEND_DIR/.env" ]; then
+        local provider=$(grep "^MAIL_PROVIDER=" "$BACKEND_DIR/.env" | cut -d'=' -f2 | tr -d '"')
+        local from_email=$(grep "^FROM_EMAIL=" "$BACKEND_DIR/.env" | cut -d'=' -f2 | tr -d '"')
+        local to_email=$(grep "^TO_EMAIL=" "$BACKEND_DIR/.env" | cut -d'=' -f2 | tr -d '"')
+        
+        echo -e "${CYAN}Current Provider:${NC} $provider"
+        echo -e "${CYAN}From Email:${NC} $from_email"
+        echo -e "${CYAN}To Email:${NC} $to_email"
+        
+        if [ "$provider" = "mailpit" ]; then
+            echo -e "${CYAN}Mailpit Web UI:${NC} http://localhost:$MAILPIT_WEB_PORT"
+            if port_in_use $MAILPIT_WEB_PORT; then
+                echo -e "${GREEN}Status:${NC} ✓ Mailpit running"
+            else
+                echo -e "${RED}Status:${NC} ✗ Mailpit not running"
+            fi
+        else
+            echo -e "${YELLOW}Status:${NC} Using external provider ($provider)"
+        fi
+    else
+        print_warning "Backend .env file not found"
+    fi
+}
+
+show_recent_emails() {
+    print_header "Recent Emails (Mailpit)"
+    
+    if ! port_in_use $MAILPIT_WEB_PORT; then
+        print_warning "Mailpit not running. Start with: $0 start-mailpit"
+        return
+    fi
+    
+    print_status "Fetching recent emails from Mailpit..."
+    
+    # Get email list from Mailpit API
+    local emails=$(curl -s "http://localhost:$MAILPIT_WEB_PORT/api/v1/messages?limit=10")
+    
+    if [ $? -eq 0 ] && [ -n "$emails" ]; then
+        echo "$emails" | jq -r '.messages[] | "\(.Created | .[0:19]) | \(.From[0].Name // .From[0].Address) | \(.Subject)"' 2>/dev/null || {
+            print_warning "jq not installed. Raw API response:"
+            echo "$emails"
+        }
+    else
+        print_warning "Could not fetch emails from Mailpit"
+    fi
+}
+
+toggle_mail_provider() {
+    print_header "Toggle Mail Provider"
+    
+    if [ ! -f "$BACKEND_DIR/.env" ]; then
+        print_error "Backend .env file not found"
+        return
+    fi
+    
+    local current_provider=$(grep "^MAIL_PROVIDER=" "$BACKEND_DIR/.env" | cut -d'=' -f2 | tr -d '"')
+    local new_provider
+    
+    if [ "$current_provider" = "mailpit" ]; then
+        new_provider="brevo"
+    else
+        new_provider="mailpit"
+    fi
+    
+    print_status "Switching from $current_provider to $new_provider..."
+    
+    # Update the .env file
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        # macOS
+        sed -i '' "s/^MAIL_PROVIDER=.*/MAIL_PROVIDER=$new_provider/" "$BACKEND_DIR/.env"
+    else
+        # Linux
+        sed -i "s/^MAIL_PROVIDER=.*/MAIL_PROVIDER=$new_provider/" "$BACKEND_DIR/.env"
+    fi
+    
+    print_success "Switched to $new_provider"
+    
+    if port_in_use $BACKEND_PORT; then
+        print_warning "Backend is running. Restart to apply changes:"
+        print_status "$0 restart-backend --force"
+    fi
+    
+    if [ "$new_provider" = "mailpit" ] && ! port_in_use $MAILPIT_PORT; then
+        print_status "Starting Mailpit..."
+        start_mailpit
+    fi
+}
+
+open_mail_web() {
+    if ! port_in_use $MAILPIT_WEB_PORT; then
+        print_warning "Mailpit not running. Starting..."
+        start_mailpit
+        sleep 2
+    fi
+    
+    print_status "Opening Mailpit web interface..."
+    if command -v open >/dev/null; then
+        open "http://localhost:$MAILPIT_WEB_PORT"
+    elif command -v xdg-open >/dev/null; then
+        xdg-open "http://localhost:$MAILPIT_WEB_PORT"
+    else
+        print_status "Visit: http://localhost:$MAILPIT_WEB_PORT"
+    fi
+}
+
+clear_database() {
+    if [ ! -f "$DB_PATH" ]; then
+        print_warning "Database not found at $DB_PATH"
+        return 1
+    fi
+    
+    echo -e "${RED}WARNING: This will delete all messages from the database!${NC}"
+    read -p "Are you sure? Type 'yes' to confirm: " confirm
+    
+    if [ "$confirm" = "yes" ]; then
+        execute_db_query "DELETE FROM email;"
+        print_success "Database cleared"
+    else
+        print_status "Operation cancelled"
+    fi
+}
+
+# Function to check service health
+check_health() {
+    print_header "Health Check"
+    
+    # Check frontend
+    if port_in_use $FRONTEND_PORT; then
+        if curl -f http://localhost:$FRONTEND_PORT >/dev/null 2>&1; then
+            echo -e "${GREEN}✓ Frontend${NC} - Healthy"
+        else
+            echo -e "${YELLOW}⚠ Frontend${NC} - Port open but not responding"
+        fi
+    else
+        echo -e "${RED}✗ Frontend${NC} - Not running"
+    fi
+    
+    # Check backend
+    if port_in_use $BACKEND_PORT; then
+        if curl -f http://localhost:$BACKEND_PORT/health >/dev/null 2>&1; then
+            echo -e "${GREEN}✓ Backend${NC} - Healthy"
+        else
+            echo -e "${YELLOW}⚠ Backend${NC} - Port open but not responding"
+        fi
+    else
+        echo -e "${RED}✗ Backend${NC} - Not running"
+    fi
+    
+    # Check mailpit
+    if port_in_use $MAILPIT_WEB_PORT; then
+        if curl -f http://localhost:$MAILPIT_WEB_PORT >/dev/null 2>&1; then
+            echo -e "${GREEN}✓ Mailpit${NC} - Healthy"
+        else
+            echo -e "${YELLOW}⚠ Mailpit${NC} - Port open but not responding"
+        fi
+    else
+        echo -e "${RED}✗ Mailpit${NC} - Not running"
+    fi
+}
+
+# Function to clean logs and temp files
+clean_files() {
+    print_header "Cleaning Files"
+    
+    rm -rf "$LOG_DIR"/*.log
+    rm -rf "$LOG_DIR"/*.pid
+    rm -rf .next
+    rm -rf node_modules/.cache
+    
+    print_success "Cleaned logs and temporary files"
+}
+
+# Function to show port usage
+show_ports() {
+    print_header "Port Usage"
+    
+    echo -e "${CYAN}Application Ports:${NC}"
+    echo "  Frontend (Next.js): $FRONTEND_PORT"
+    echo "  Backend (Go): $BACKEND_PORT"
+    echo "  Mailpit SMTP: $MAILPIT_PORT"
+    echo "  Mailpit Web: $MAILPIT_WEB_PORT"
+    echo ""
+    
+    echo -e "${CYAN}Currently in use:${NC}"
+    for port in $FRONTEND_PORT $BACKEND_PORT $MAILPIT_PORT $MAILPIT_WEB_PORT; do
+        if port_in_use $port; then
+            pid=$(get_pid_by_port $port)
+            echo -e "  Port $port: ${GREEN}✓ In use${NC} (PID: $pid)"
+        else
+            echo -e "  Port $port: ${RED}✗ Available${NC}"
+        fi
+    done
+}
+
+# Main command handler
+case ${1:-help} in
+    start)
+        print_header "Starting All Services"
+        start_mailpit "$2"
+        start_backend "$2"
+        start_frontend "$2"
+        echo ""
+        show_status
+        ;;
+    stop)
+        print_header "Stopping All Services"
+        stop_frontend
+        stop_backend
+        stop_mailpit
+        ;;
+    restart)
+        print_header "Restarting All Services"
+        stop_frontend
+        stop_backend
+        stop_mailpit
+        sleep 2
+        start_mailpit "$2"
+        start_backend "$2"
+        start_frontend "$2"
+        echo ""
+        show_status
+        ;;
+    status)
+        show_status
+        ;;
+    start-frontend)
+        start_frontend "$2"
+        ;;
+    start-backend)
+        start_backend "$2"
+        ;;
+    start-mailpit)
+        start_mailpit "$2"
+        ;;
+    stop-frontend)
+        stop_frontend
+        ;;
+    stop-backend)
+        stop_backend
+        ;;
+    stop-mailpit)
+        stop_mailpit
+        ;;
+    logs)
+        show_logs "$2" "$3"
+        ;;
+    tail)
+        tail_logs "$2" "$3"
+        ;;
+    mail)
+        show_recent_emails
+        ;;
+    mail-status)
+        show_mail_status
+        ;;
+    mail-toggle)
+        toggle_mail_provider
+        ;;
+    mail-web)
+        open_mail_web
+        ;;
+    db)
+        if [ -n "$2" ]; then
+            execute_db_query "$2"
+        else
+            show_recent_messages
+        fi
+        ;;
+    db-schema)
+        show_db_schema
+        ;;
+    db-count)
+        show_db_count
+        ;;
+    db-recent)
+        show_recent_messages "$2"
+        ;;
+    db-clear)
+        clear_database
+        ;;
+    health)
+        check_health
+        ;;
+    clean)
+        clean_files
+        ;;
+    ports)
+        show_ports
+        ;;
+    help|--help|-h)
+        show_help
+        ;;
+    *)
+        print_error "Unknown command: $1"
+        echo ""
+        show_help
+        exit 1
+        ;;
+esac
