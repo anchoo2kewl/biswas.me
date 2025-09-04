@@ -59,15 +59,16 @@ RUN echo '#!/bin/sh' > /app/start.sh && \
     echo '  cp ./backend/.env.example ./backend/.env' >> /app/start.sh && \
     echo 'fi' >> /app/start.sh && \
     echo '' >> /app/start.sh && \
-    echo '# Start Next.js server in background' >> /app/start.sh && \
+    echo '# Start Next.js server in background with explicit port' >> /app/start.sh && \
     echo 'echo "Starting Next.js frontend on port 3000..."' >> /app/start.sh && \
-    echo 'node server.js &' >> /app/start.sh && \
+    echo 'PORT=3000 node server.js &' >> /app/start.sh && \
     echo 'FRONTEND_PID=$!' >> /app/start.sh && \
+    echo 'sleep 2' >> /app/start.sh && \
     echo '' >> /app/start.sh && \
-    echo '# Start Go backend' >> /app/start.sh && \
+    echo '# Start Go backend on port 8080' >> /app/start.sh && \
     echo 'echo "Starting Go backend on port 8080..."' >> /app/start.sh && \
     echo 'cd backend' >> /app/start.sh && \
-    echo './main &' >> /app/start.sh && \
+    echo 'BACKEND_PORT=8080 ./main &' >> /app/start.sh && \
     echo 'BACKEND_PID=$!' >> /app/start.sh && \
     echo 'cd ..' >> /app/start.sh && \
     echo '' >> /app/start.sh && \
