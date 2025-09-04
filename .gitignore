@@ -3,3 +3,28 @@ src/vendor/**
 src/composer.*
 .env
 .DS_Store
+
+# Next.js
+.next/
+out/
+build/
+dist/
+
+# Node
+node_modules/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment and config
+config/env.config.ts
+backend/.env
+.env
+.env.local
+.env.production
+.env.staging
+
+# IDE
+.vscode/
+.idea/

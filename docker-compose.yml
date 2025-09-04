@@ -1,45 +1,42 @@
-name: docker-website
-services:
-  website:
-      image: biswas/website:v0.1-SNAPSHOT
-      restart: always
-      ports:
-        - 8080:80
-        - 3001:3001
-      logging:
-        driver: "json-file"
-        options:
-          max-size: "10m"
-      networks:
-        - server-side
-      volumes:
-        - ./src:/usr/share/nginx/html
-      depends_on:
-        db:
-          condition: service_healthy      
+version: '3.8'
 
-  db:
-      image: arm64v8/mysql:oracle
-      restart: always
-      networks:
-        - server-side
-      ports:
-        - 3306:3306
-      environment:
-        - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-        - MYSQL_USER=${MYSQL_USER}
-        - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-        - MYSQL_DATABASE=${MYSQL_DATABASE}
-      volumes:
-        - db-data:/var/lib/mysql
-      healthcheck:
-        test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost", "-uroot", "-p${MYSQL_ROOT_PASSWORD}"]
-        interval: 5s
-        timeout: 5s
-        retries: 20
+services:
+  portfolio:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: biswas-me
+    restart: unless-stopped
+    ports:
+      - "3000:3000"  # Next.js frontend
+      - "8080:8080"  # Go backend API
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - MAIL_PROVIDER=brevo
+      - FROM_EMAIL=anshuman@biswas.me
+      - TO_EMAIL=anshuman@biswas.me
+      - DB_PATH=./messages.db
+    env_file:
+      - backend/.env
+    volumes:
+      - portfolio-data:/app/backend
+      - ./logs:/app/logs
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    labels:
+      - "com.docker.compose.project=biswas-me"
+      - "service=portfolio-website"
+    networks:
+      - portfolio-network
 
 networks:
-  server-side: {}
+  portfolio-network:
+    driver: bridge
 
 volumes:
-  db-data: {}
+  portfolio-data:

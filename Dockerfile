@@ -1,73 +1,86 @@
-FROM alpine:latest AS website
+# Multi-stage build for production-ready Next.js + Go application
 
-# Install base packages
-RUN apk update && apk upgrade
-RUN apk add --no-cache bash nginx curl
+# Stage 1: Build Frontend (Next.js)
+FROM node:18-alpine AS frontend-builder
 
-# Add community and edge repositories
-RUN echo "@community https://dl-cdn.alpinelinux.org/alpine/v3.21/community" >> /etc/apk/repositories && \
-    echo "@edge https://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
-
-# Install PHP and extensions
-RUN apk add --no-cache \
-    php82 \
-    php82-cli \
-    php82-fpm \
-    php82-opcache \
-    php82-gd \
-    php82-curl \
-    php82-mbstring \
-    php82-xml \
-    php82-phar \
-    php82-openssl \
-    php82-ctype \
-    php82-session \
-    php82-mysqli \
-    php82-tokenizer \
-    php82-dom
-
-# Set up PHP-FPM configuration
-RUN mkdir -p /run/php && \
-    sed -i 's|listen = 127.0.0.1:9000|listen = /run/php/php-fpm82.sock|' /etc/php82/php-fpm.d/www.conf && \
-    sed -i 's|;listen.owner = nobody|listen.owner = nginx|' /etc/php82/php-fpm.d/www.conf && \
-    sed -i 's|;listen.group = nobody|listen.group = nginx|' /etc/php82/php-fpm.d/www.conf && \
-    sed -i 's|user = nobody|user = nginx|' /etc/php82/php-fpm.d/www.conf && \
-    sed -i 's|group = nobody|group = nginx|' /etc/php82/php-fpm.d/www.conf
-
-# Update PHP configuration path
-COPY server/etc/nginx /etc/nginx
-COPY server/etc/php /etc/php82
-RUN sed -i 's|include=/etc/php8/|include=/etc/php82/|' /etc/php82/php-fpm.conf
-COPY src /usr/share/nginx/html
-
-# Set PHP error logs to stderr for Docker logging
-RUN sed -i 's|;error_log = log/php82-fpm.log|error_log = /proc/self/fd/2|' /etc/php82/php-fpm.conf && \
-    sed -i 's|;catch_workers_output = yes|catch_workers_output = yes|' /etc/php82/php-fpm.d/www.conf
-
-# Set Nginx error logs to stdout for Docker logging
-COPY server/etc/nginx /etc/nginx
-RUN sed -i 's|error_log .*|error_log /dev/stderr warn;|' /etc/nginx/nginx.conf && \
-    sed -i 's|access_log .*|access_log /dev/stdout;|' /etc/nginx/nginx.conf
-
-# Install Node.js and yarn
-RUN apk add --no-cache nodejs npm yarn
-
-# Install composer
-RUN curl -sS https://getcomposer.org/installer | php82 -- --install-dir=/usr/local/bin --filename=composer
-
-# Set up Next.js application
 WORKDIR /app
-COPY modern-profile/package.json modern-profile/yarn.lock ./
-RUN yarn install
 
-COPY modern-profile/ ./
+# Copy package files and install dependencies
+COPY package*.json yarn.lock ./
+RUN yarn install --frozen-lockfile
+
+# Copy source code and build
+COPY . .
 RUN yarn build
 
+# Stage 2: Build Backend (Go)
+FROM golang:1.21-alpine AS backend-builder
+
+# Install necessary packages for CGO and SQLite
+RUN apk add --no-cache gcc musl-dev sqlite-dev
+
+WORKDIR /app
+
+# Copy go modules and download dependencies
+COPY backend/go.mod backend/go.sum ./
+RUN go mod download
+
+# Copy backend source code
+COPY backend/ ./
+
+# Build the Go binary with CGO enabled for SQLite
+RUN CGO_ENABLED=1 GOOS=linux go build -a -ldflags '-linkmode external -extldflags "-static"' -o main .
+
+# Stage 3: Production runtime
+FROM alpine:latest
+
+# Install runtime dependencies
+RUN apk --no-cache add ca-certificates sqlite
+
+# Create app directory
+WORKDIR /app
+
+# Copy built files from previous stages
+COPY --from=frontend-builder /app/.next/standalone ./
+COPY --from=frontend-builder /app/.next/static ./.next/static
+COPY --from=frontend-builder /app/public ./public
+COPY --from=backend-builder /app/main ./backend/
+
+# Copy environment example
+COPY backend/.env.example ./backend/.env.example
+
+# Create startup script
+RUN echo '#!/bin/sh' > /app/start.sh && \
+    echo 'set -e' >> /app/start.sh && \
+    echo '' >> /app/start.sh && \
+    echo '# Check if .env exists, create from example if not' >> /app/start.sh && \
+    echo 'if [ ! -f ./backend/.env ]; then' >> /app/start.sh && \
+    echo '  echo "Creating .env from .env.example..."' >> /app/start.sh && \
+    echo '  cp ./backend/.env.example ./backend/.env' >> /app/start.sh && \
+    echo 'fi' >> /app/start.sh && \
+    echo '' >> /app/start.sh && \
+    echo '# Start Next.js server in background' >> /app/start.sh && \
+    echo 'echo "Starting Next.js frontend on port 3000..."' >> /app/start.sh && \
+    echo 'node server.js &' >> /app/start.sh && \
+    echo 'FRONTEND_PID=$!' >> /app/start.sh && \
+    echo '' >> /app/start.sh && \
+    echo '# Start Go backend' >> /app/start.sh && \
+    echo 'echo "Starting Go backend on port 8080..."' >> /app/start.sh && \
+    echo 'cd backend' >> /app/start.sh && \
+    echo './main &' >> /app/start.sh && \
+    echo 'BACKEND_PID=$!' >> /app/start.sh && \
+    echo 'cd ..' >> /app/start.sh && \
+    echo '' >> /app/start.sh && \
+    echo '# Wait for either process to exit' >> /app/start.sh && \
+    echo 'wait' >> /app/start.sh && \
+    chmod +x /app/start.sh
+
 # Expose ports
-EXPOSE 80
-EXPOSE 3001
+EXPOSE 3000 8080
 
-STOPSIGNAL SIGTERM
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:3000 || exit 1
 
-# Start both servers
-CMD ["/bin/sh", "-c", "mkdir -p /run/php && php-fpm82 && sleep 2 && chmod -R 777 /run/php && chmod 755 /usr/share/nginx/html/* && (nginx -g 'daemon off;' &) && yarn start -p 3001"]
+# Start the application
+CMD ["/app/start.sh"]

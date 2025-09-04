@@ -1,16 +1,22 @@
 import type React from "react"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
-import "./globals.css"
+import "../styles/globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Anshuman Biswas | Engineering Manager & Software Architect",
+  title: "Anshuman Biswas | VP of Engineering & Cloud Architect",
   description:
-    "Personal website of Anshuman Biswas, Engineering Manager at IBM and Software Architect specializing in cloud computing and distributed systems.",
-    generator: 'v0.dev'
+    "Personal website of Anshuman Biswas, VP of Engineering at Elastio specializing in cloud computing and distributed systems.",
+  generator: 'v0.dev',
+  icons: {
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/logo.svg', sizes: '64x64', type: 'image/svg+xml' }
+    ]
+  }
 }
 
 export default function RootLayout({
@@ -28,7 +34,3 @@ export default function RootLayout({
     </html>
   )
 }
-
-
-
-import './globals.css'
