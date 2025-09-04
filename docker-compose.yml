@@ -12,7 +12,6 @@ services:
       - "8081:8080"  # Go backend API
     environment:
       - NODE_ENV=production
-      - PORT=3000
       - MAIL_PROVIDER=brevo
       - FROM_EMAIL=anshuman@biswas.me
       - TO_EMAIL=anshuman@biswas.me
