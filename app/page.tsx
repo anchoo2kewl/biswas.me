@@ -160,7 +160,7 @@ export default function Home() {
         <div className="flex justify-between items-center">
           <Link href="/" className="flex items-center gap-1 text-xl font-semibold text-gray-900 hover:text-gray-600 transition-colors">
             <div className="w-8 h-8 inline-flex items-center justify-center">
-              <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" className="transition-transform hover:scale-105">
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" className="transition-transform hover:scale-125 animate-pulse-custom hover:animate-pulse-fast">
                 {/* Background Circle with Tech Gradient */}
                 <circle cx="16" cy="16" r="16" fill="url(#gradient)" />
                 
@@ -250,7 +250,15 @@ export default function Home() {
                   className="bg-gray-900 hover:bg-gray-800 text-white flex items-center gap-2"
                 >
                   <FileText className="h-4 w-4" />
-                  View Resume
+                  View PDF Resume
+                </Button>
+                <Button 
+                  variant="outline" 
+                  asChild
+                >
+                  <Link href="/resume">
+                    📄 HTML Resume
+                  </Link>
                 </Button>
                 <Button 
                   variant="outline" 
