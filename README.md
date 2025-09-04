@@ -56,6 +56,13 @@ Personal portfolio website of Anshuman Biswas, VP of Engineering at Elastio. Bui
    - Check received emails at http://localhost:8025
    - Backend logs will show API requests
 
+4. **Generate PDF resume**
+   ```bash
+   make pdf
+   ```
+   
+   This generates a PDF from the HTML resume and updates `public/AnshumanBiswas.pdf`
+
 ## Development Commands
 
 ```bash
@@ -78,6 +85,9 @@ make clean
 
 # Run tests
 make test
+
+# Generate PDF resume from HTML
+make pdf
 
 # Show all available commands
 make help
