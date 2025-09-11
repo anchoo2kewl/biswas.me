@@ -45,10 +45,24 @@ type EmailConfig struct {
 	MailpitSMTPPort string
 }
 
+type BlogConfig struct {
+	APIURL   string
+	APIToken string
+}
+
+type BlogPost struct {
+	Date       string   `json:"date"`
+	Title      string   `json:"title"`
+	Categories []string `json:"categories"`
+	ReadTime   string   `json:"read_time"`
+	Link       string   `json:"link"`
+}
+
 var (
 	db          *sql.DB
 	logger      *zap.Logger
 	emailConfig EmailConfig
+	blogConfig  BlogConfig
 )
 
 func main() {
@@ -73,6 +87,12 @@ func main() {
 		MailpitSMTPPort: getEnvWithDefault("MAILPIT_SMTP_PORT", "1025"),
 	}
 
+	// Initialize blog configuration
+	blogConfig = BlogConfig{
+		APIURL:   getEnvWithDefault("BLOG_API_URL", "http://localhost:22222"),
+		APIToken: os.Getenv("BLOG_API_TOKEN"),
+	}
+
 	logger.Info("Email configuration loaded", 
 		zap.String("provider", emailConfig.Provider),
 		zap.String("from_email", emailConfig.FromEmail),
@@ -94,6 +114,7 @@ func main() {
 	// Setup routes
 	http.HandleFunc("/api/messages", handleContactForm)
 	http.HandleFunc("/api/health", handleHealth)
+	http.HandleFunc("/api/posts", handleBlogPosts)
 
 	// Enable CORS for all routes
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -132,7 +153,7 @@ func initLogger() *zap.Logger {
 }
 
 func enableCORS(w http.ResponseWriter) {
-	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+	w.Header().Set("Access-Control-Allow-Origin", "*") // Allow all origins for development
 	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 	w.Header().Set("Access-Control-Allow-Credentials", "true")
@@ -748,4 +769,89 @@ func getFirstName(fullName string) string {
 		return parts[0]
 	}
 	return fullName
+}
+
+func handleBlogPosts(w http.ResponseWriter, r *http.Request) {
+	enableCORS(w)
+	w.Header().Set("Content-Type", "application/json")
+
+	if r.Method == "OPTIONS" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
+	if r.Method != "GET" {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		json.NewEncoder(w).Encode(Response{Status: "error", ErrorMessage: "Only GET method allowed"})
+		return
+	}
+
+	// Check if blog API token is configured
+	if blogConfig.APIToken == "" {
+		logger.Error("Blog API token not configured")
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(Response{Status: "error", ErrorMessage: "Blog API not configured"})
+		return
+	}
+
+	// Fetch posts from external blog API
+	posts, err := fetchBlogPosts()
+	if err != nil {
+		logger.Error("Failed to fetch blog posts", zap.Error(err))
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(Response{Status: "error", ErrorMessage: "Failed to fetch blog posts"})
+		return
+	}
+
+	logger.Info("Blog posts fetched successfully", 
+		zap.String("ip", getClientIP(r)),
+		zap.Int("post_count", len(posts)),
+	)
+
+	// Return the posts
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(posts)
+}
+
+func fetchBlogPosts() ([]BlogPost, error) {
+	// Create HTTP client with timeout
+	client := &http.Client{
+		Timeout: 10 * time.Second,
+	}
+
+	// Create request to blog API
+	apiURL := fmt.Sprintf("%s/api/posts/formatted", blogConfig.APIURL)
+	req, err := http.NewRequest("GET", apiURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create request: %v", err)
+	}
+
+	// Add authorization header
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", blogConfig.APIToken))
+	req.Header.Set("Accept", "application/json")
+
+	// Make the request
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to make request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check response status
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("blog API returned status %d", resp.StatusCode)
+	}
+
+	// Parse response
+	var posts []BlogPost
+	if err := json.NewDecoder(resp.Body).Decode(&posts); err != nil {
+		return nil, fmt.Errorf("failed to decode response: %v", err)
+	}
+
+	logger.Info("Successfully fetched blog posts",
+		zap.String("api_url", apiURL),
+		zap.Int("post_count", len(posts)),
+	)
+
+	return posts, nil
 }

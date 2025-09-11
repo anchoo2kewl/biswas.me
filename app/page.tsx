@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { InteractiveTimeline } from "@/components/interactive-timeline"
+import { fetchBlogPosts, type BlogPost } from "@/lib/blog-api"
 import config from "@/config"
 
 // Dynamically import PDF viewer to avoid SSR issues
@@ -21,45 +22,40 @@ const SimplePDFViewer = dynamic(() => import("@/components/simple-pdf-viewer").t
   )
 });
 
-// Sample blog posts data
-const blogPosts = [
-  {
-    id: 1,
-    title: "Optimizing Cloud Resource Allocation with Machine Learning",
-    date: "March 15, 2024",
-    category: "Cloud Computing",
-    readTime: "8 min read"
-  },
-  {
-    id: 2,
-    title: "Building Resilient Distributed Systems", 
-    date: "February 22, 2024",
-    category: "Architecture",
-    readTime: "12 min read"
-  },
-  {
-    id: 3,
-    title: "The Future of Cloud Middleware Performance",
-    date: "January 10, 2024",
-    category: "Performance",
-    readTime: "6 min read"
-  }
-];
 
 
 export default function Home() {
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
   const [status, setStatus] = useState("");
   const [showPDF, setShowPDF] = useState(false);
+  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
+  const [blogLoading, setBlogLoading] = useState(true);
   
   // Load values from our git-ignored config
-  const { RECAPTCHA_SITE_KEY, API_URL } = config;
+  const { RECAPTCHA_SITE_KEY, API_URL, BLOG_VIEW_ALL_URL } = config;
 
   // Check for resume hash on load
   useEffect(() => {
     if (typeof window !== 'undefined' && window.location.hash === '#resume') {
       setShowPDF(true);
     }
+  }, []);
+
+  // Fetch blog posts on component mount
+  useEffect(() => {
+    const loadBlogPosts = async () => {
+      setBlogLoading(true);
+      try {
+        const posts = await fetchBlogPosts();
+        setBlogPosts(posts.slice(0, 3)); // Show only first 3 posts on homepage
+      } catch (error) {
+        console.error('Failed to load blog posts:', error);
+      } finally {
+        setBlogLoading(false);
+      }
+    };
+
+    loadBlogPosts();
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -340,34 +336,52 @@ export default function Home() {
         <div className="space-y-12">
           <h2 className="text-2xl font-semibold text-gray-900">Recent Writing</h2>
           
-          <div className="space-y-6">
-            {blogPosts.map((post) => (
-              <article key={post.id} className="group">
-                <Link href={`#`} className="block">
-                  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 py-4 border-b border-gray-100 hover:border-gray-200 transition-colors">
-                    <div className="space-y-1">
-                      <h3 className="text-lg font-medium text-gray-900 group-hover:text-gray-600 transition-colors">
-                        {post.title}
-                      </h3>
-                      <div className="flex items-center gap-4 text-sm text-gray-500">
-                        <span className="flex items-center gap-1">
-                          <Calendar className="h-3 w-3" />
-                          {post.date}
-                        </span>
-                        <span>{post.category}</span>
-                        <span>{post.readTime}</span>
-                      </div>
-                    </div>
-                    <ArrowUpRight className="h-4 w-4 text-gray-400 group-hover:text-gray-600 transition-colors self-start md:self-center" />
+          {blogLoading ? (
+            <div className="space-y-6">
+              {/* Loading skeleton */}
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="py-4 border-b border-gray-100">
+                  <div className="space-y-2">
+                    <div className="h-6 bg-gray-200 rounded animate-pulse w-3/4"></div>
+                    <div className="h-4 bg-gray-100 rounded animate-pulse w-1/2"></div>
                   </div>
-                </Link>
-              </article>
-            ))}
-          </div>
+                </div>
+              ))}
+            </div>
+          ) : blogPosts.length > 0 ? (
+            <div className="space-y-6">
+              {blogPosts.map((post, index) => (
+                <article key={index} className="group">
+                  <Link href={post.link} target="_blank" rel="noopener noreferrer" className="block">
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 py-4 border-b border-gray-100 hover:border-gray-200 transition-colors">
+                      <div className="space-y-1">
+                        <h3 className="text-lg font-medium text-gray-900 group-hover:text-gray-600 transition-colors">
+                          {post.title}
+                        </h3>
+                        <div className="flex items-center gap-4 text-sm text-gray-500">
+                          <span className="flex items-center gap-1">
+                            <Calendar className="h-3 w-3" />
+                            {post.date}
+                          </span>
+                          {post.categories.length > 0 && <span>{post.categories[0]}</span>}
+                          <span>{post.read_time}</span>
+                        </div>
+                      </div>
+                      <ArrowUpRight className="h-4 w-4 text-gray-400 group-hover:text-gray-600 transition-colors self-start md:self-center" />
+                    </div>
+                  </Link>
+                </article>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-8">
+              <p className="text-gray-500">No blog posts available at the moment.</p>
+            </div>
+          )}
           
           <div className="pt-4">
             <Link 
-              href="#" 
+              href="/blog"
               className="text-gray-600 hover:text-gray-900 transition-colors text-sm flex items-center gap-2"
             >
               View all posts
