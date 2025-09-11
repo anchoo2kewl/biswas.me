@@ -111,10 +111,12 @@ func main() {
 		logger.Fatal("Failed to run migrations", zap.Error(err))
 	}
 
-	// Setup routes
-	http.HandleFunc("/api/messages", handleContactForm)
-	http.HandleFunc("/api/health", handleHealth)
-	http.HandleFunc("/api/posts", handleBlogPosts)
+    // Setup routes
+    http.HandleFunc("/api/messages", handleContactForm)
+    http.HandleFunc("/api/health", handleHealth)
+    // Accept both `/api/posts` and `/api/posts/`
+    http.HandleFunc("/api/posts", handleBlogPosts)
+    http.HandleFunc("/api/posts/", handleBlogPosts)
 
 	// Enable CORS for all routes
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -814,13 +816,15 @@ func handleBlogPosts(w http.ResponseWriter, r *http.Request) {
 }
 
 func fetchBlogPosts() ([]BlogPost, error) {
-	// Create HTTP client with timeout
-	client := &http.Client{
-		Timeout: 10 * time.Second,
-	}
+    // Create HTTP client with timeout
+    client := &http.Client{
+        Timeout: 10 * time.Second,
+    }
 
-	// Create request to blog API
-	apiURL := fmt.Sprintf("%s/api/posts/formatted", blogConfig.APIURL)
+    // Create request to blog API
+    // Normalize BLOG_API_URL to avoid double slashes
+    base := strings.TrimRight(blogConfig.APIURL, "/")
+    apiURL := fmt.Sprintf("%s/api/posts/formatted", base)
 	req, err := http.NewRequest("GET", apiURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %v", err)

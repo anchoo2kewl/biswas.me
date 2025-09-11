@@ -89,6 +89,7 @@ show_help() {
     echo "  health            Check health of all services"
     echo "  clean             Clean logs and temporary files"
     echo "  ports             Show which ports are in use"
+    echo "  deploy [message]  Commit+push, then deploy to prod via SSH"
     echo ""
     echo -e "${YELLOW}Examples:${NC}"
     echo "  $0 start --force                   # Force start all services"
@@ -587,6 +588,52 @@ show_ports() {
     done
 }
 
+# Deploy to production: commit local changes, push, SSH to prod, pull, rebuild
+deploy() {
+    local commit_msg=${1:-"deploy: update $(date -u +'%Y-%m-%dT%H:%M:%SZ')"}
+    local prod_ssh=${PROD_SSH:-"ubuntu@biswas.me"}
+    local prod_dir=${PROD_DIR:-"/home/ubuntu/projects/biswas.me"}
+
+    print_header "Deploying to Production"
+
+    # Determine current branch
+    local branch
+    branch=$(git rev-parse --abbrev-ref HEAD)
+    print_status "Current branch: $branch"
+
+    # Stage and commit if there are changes
+    if ! git diff --quiet || ! git diff --cached --quiet; then
+        print_status "Committing local changes..."
+        git add -A
+        git commit -m "$commit_msg"
+    else
+        print_warning "No local changes to commit"
+    fi
+
+    # Push to origin
+    print_status "Pushing to origin/$branch..."
+    git push origin "$branch"
+
+    # Remote deploy
+    print_status "SSH to $prod_ssh and deploy in $prod_dir"
+    ssh -o StrictHostKeyChecking=no "$prod_ssh" bash -lc "set -e; \
+      cd '$prod_dir'; \
+      git fetch --all; \
+      (git rev-parse --abbrev-ref HEAD | grep -qx '$branch' || git checkout '$branch'); \
+      git pull --ff-only origin '$branch'; \
+      mkdir -p data; \
+      if [ -d data/messages.db ]; then rm -rf data/messages.db; fi; \
+      touch data/messages.db; chmod 666 data/messages.db || true; \
+      sudo docker compose build --no-cache portfolio; \
+      sudo docker compose up -d --force-recreate; \
+      sleep 3; \
+      echo '--- PROD health ---'; curl -s -i http://127.0.0.1:8081/api/health | sed -n 1,40p; \
+      echo '--- PROD posts ---'; curl -s -i http://127.0.0.1:8081/api/posts | sed -n 1,60p; \
+    "
+
+    print_success "Deployment complete"
+}
+
 # Main command handler
 case ${1:-help} in
     start)
@@ -681,6 +728,10 @@ case ${1:-help} in
         ;;
     ports)
         show_ports
+        ;;
+    deploy)
+        shift
+        deploy "$@"
         ;;
     help|--help|-h)
         show_help
