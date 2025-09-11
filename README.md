@@ -103,6 +103,8 @@ make help
 ./scripts/server db-recent 5  # Show recent messages
 ```
 
+<!-- deploy-test: dummy change marker -->
+
 ## Configuration
 
 **Environment Variables:**
