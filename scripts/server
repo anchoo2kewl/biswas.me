@@ -89,7 +89,9 @@ show_help() {
     echo "  health            Check health of all services"
     echo "  clean             Clean logs and temporary files"
     echo "  ports             Show which ports are in use"
-    echo "  deploy [message]  Commit+push, then deploy to prod via SSH"
+    echo "  deploy [--prune|--no-prune] [message]  Commit+push, then deploy to prod via SSH"
+    echo "                   --prune (default) prunes Docker cache/images on prod"
+    echo "                   --no-prune skips Docker prune on prod"
     echo ""
     echo -e "${YELLOW}Examples:${NC}"
     echo "  $0 start --force                   # Force start all services"
@@ -590,7 +592,23 @@ show_ports() {
 
 # Deploy to production: commit local changes, push, SSH to prod, pull, rebuild
 deploy() {
-    local commit_msg=${1:-"deploy: update $(date -u +'%Y-%m-%dT%H:%M:%SZ')"}
+    # Flags: --prune (default) or --no-prune
+    local do_prune=1
+    while [[ ${1:-} == --* ]]; do
+        case "$1" in
+            --prune) do_prune=1; shift ;;
+            --no-prune) do_prune=0; shift ;;
+            *) break ;;
+        esac
+    done
+
+    # Remaining args form the commit message
+    local commit_msg
+    if [ -n "$*" ]; then
+        commit_msg="$*"
+    else
+        commit_msg="deploy: update $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+    fi
     local prod_ssh=${PROD_SSH:-"ubuntu@biswas.me"}
     local prod_dir=${PROD_DIR:-"/home/ubuntu/projects/biswas.me"}
 
@@ -624,9 +642,11 @@ deploy() {
       mkdir -p data; \
       if [ -d data/messages.db ]; then rm -rf data/messages.db; fi; \
       touch data/messages.db; chmod 666 data/messages.db || true; \
-      echo 'Pruning Docker builder cache and dangling images...'; \
-      sudo docker builder prune -af || true; \
-      sudo docker image prune -af || true; \
+      if [ $do_prune -eq 1 ]; then \
+        echo 'Pruning Docker builder cache and dangling images...'; \
+        sudo docker builder prune -af || true; \
+        sudo docker image prune -af || true; \
+      fi; \
       sudo docker compose build --no-cache portfolio; \
       sudo docker compose up -d --force-recreate; \
       sleep 3; \
