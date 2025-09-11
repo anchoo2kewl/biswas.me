@@ -624,6 +624,9 @@ deploy() {
       mkdir -p data; \
       if [ -d data/messages.db ]; then rm -rf data/messages.db; fi; \
       touch data/messages.db; chmod 666 data/messages.db || true; \
+      echo 'Pruning Docker builder cache and dangling images...'; \
+      sudo docker builder prune -af || true; \
+      sudo docker image prune -af || true; \
       sudo docker compose build --no-cache portfolio; \
       sudo docker compose up -d --force-recreate; \
       sleep 3; \
