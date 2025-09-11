@@ -25,6 +25,10 @@ backend/.env
 .env.production
 .env.staging
 
+# Go build artifacts
+backend/tmp/
+backend/main
+
 # IDE
 .vscode/
 .idea/
