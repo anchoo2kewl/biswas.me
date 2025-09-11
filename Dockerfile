@@ -61,7 +61,7 @@ RUN echo '#!/bin/sh' > /app/start.sh && \
     echo '' >> /app/start.sh && \
     echo '# Start Next.js server in background with explicit port' >> /app/start.sh && \
     echo 'echo "Starting Next.js frontend on port 3000..."' >> /app/start.sh && \
-    echo 'PORT=3000 node server.js &' >> /app/start.sh && \
+    echo 'HOSTNAME=0.0.0.0 PORT=3000 node server.js &' >> /app/start.sh && \
     echo 'FRONTEND_PID=$!' >> /app/start.sh && \
     echo 'sleep 2' >> /app/start.sh && \
     echo '' >> /app/start.sh && \
@@ -81,7 +81,7 @@ EXPOSE 3000 8080
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:3000 || exit 1
+  CMD sh -c 'wget --no-verbose --tries=1 --spider http://localhost:3000 || wget --no-verbose --tries=1 --spider http://127.0.0.1:8080/api/health'
 
 # Start the application
 CMD ["/app/start.sh"]
