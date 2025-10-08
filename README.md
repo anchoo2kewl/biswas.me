@@ -1,361 +1,117 @@
-# biswas.me
+<h1 align="center">
+  Mailpit - email testing for developers
+</h1>
 
-Personal portfolio website of Anshuman Biswas, VP of Engineering at Elastio. Built with modern technologies for performance and developer experience.
+<div align="center">
+    <a href="https://github.com/axllent/mailpit/actions/workflows/tests.yml"><img src="https://github.com/axllent/mailpit/actions/workflows/tests.yml/badge.svg" alt="CI Tests status"></a>
+    <a href="https://github.com/axllent/mailpit/actions/workflows/release-build.yml"><img src="https://github.com/axllent/mailpit/actions/workflows/release-build.yml/badge.svg" alt="CI build status"></a>
+    <a href="https://github.com/axllent/mailpit/actions/workflows/build-docker.yml"><img src="https://github.com/axllent/mailpit/actions/workflows/build-docker.yml/badge.svg" alt="CI Docker build status"></a>
+    <a href="https://github.com/axllent/mailpit/actions/workflows/codeql-analysis.yml"><img src="https://github.com/axllent/mailpit/actions/workflows/codeql-analysis.yml/badge.svg" alt="Code quality"></a>
+    <a href="https://goreportcard.com/report/github.com/axllent/mailpit"><img src="https://goreportcard.com/badge/github.com/axllent/mailpit" alt="Go Report Card"></a>
+    <br>
+    <a href="https://github.com/axllent/mailpit/releases/latest"><img src="https://img.shields.io/github/v/release/axllent/mailpit.svg" alt="Latest release"></a>
+    <a href="https://hub.docker.com/r/axllent/mailpit"><img src="https://img.shields.io/docker/pulls/axllent/mailpit.svg" alt="Docker pulls"></a>
+</div>
+<br>
+<p align="center">
+  <a href="https://mailpit.axllent.org">Website</a>  •
+  <a href="https://mailpit.axllent.org/docs/">Documentation</a>  •
+  <a href="https://mailpit.axllent.org/docs/api-v1/">API</a>
+</p>
 
-## Tech Stack
+<hr>
 
-**Frontend:**
-- Next.js 15 with TypeScript
-- Tailwind CSS + shadcn/ui components
-- React Hook Form + Zod validation
-- Smooth scrolling navigation
-- PDF resume viewer
+**Mailpit** is a small, fast, low memory, zero-dependency, multi-platform email testing tool & API for developers.
 
-**Backend:**
-- Go 1.24+ with SQLite database
-- reCAPTCHA verification
-- CORS-enabled REST API
-- Dual email system (notification + auto-reply)
-- Multiple email providers (Mailpit, Brevo)
+It acts as an SMTP server, provides a modern web interface to view & test captured emails, and includes an API for automated integration testing.
 
-**Development Tools:**
-- Mailpit for email testing
-- Hot reload for both frontend and backend
-- Make commands for easy development
+Mailpit was originally **inspired** by MailHog which is [no longer maintained](https://github.com/mailhog/MailHog/issues/442#issuecomment-1493415258) and hasn't seen active development or security updates for a few years now.
 
-## Prerequisites
+![Mailpit](https://raw.githubusercontent.com/axllent/mailpit/develop/server/ui-src/screenshot.png)
 
-- Node.js (v18 or higher)
-- Go (v1.24 or higher)
-- yarn package manager
-- make (for development commands)
-- Homebrew (for mailpit installation)
-- SQLite3 CLI (for database queries)
 
-## Quick Start
+## Features
 
-1. **Clone and install**
-   ```bash
-   git clone <your-repo-url>
-   cd biswas.me
-   make install
-   ```
+- Runs entirely from a single [static binary](https://mailpit.axllent.org/docs/install/) or multi-architecture [Docker images](https://mailpit.axllent.org/docs/install/docker/)
+- Modern web UI with advanced [mail search](https://mailpit.axllent.org/docs/usage/search-filters/) to view emails (formatted HTML, highlighted HTML source, text, headers, raw source, and MIME attachments
+including image thumbnails), including optional [HTTPS](https://mailpit.axllent.org/docs/configuration/http/) & [authentication](https://mailpit.axllent.org/docs/configuration/http/)
+- [SMTP server](https://mailpit.axllent.org/docs/configuration/smtp/) with optional STARTTLS or SSL/TLS, authentication (including an "accept any" mode)
+- A [REST API](https://mailpit.axllent.org/docs/api-v1/) for integration testing
+- Real-time web UI updates using web sockets for new mail & optional [browser notifications](https://mailpit.axllent.org/docs/usage/notifications/) when new mail is received
+- Optional [POP3 server](https://mailpit.axllent.org/docs/configuration/pop3/) to download captured message directly into your email client
+- [HTML check](https://mailpit.axllent.org/docs/usage/html-check/) to test & score mail client compatibility with HTML emails
+- [Link check](https://mailpit.axllent.org/docs/usage/link-check/) to test message links (HTML & text) & linked images
+- [Spam check](https://mailpit.axllent.org/docs/usage/spamassassin/) to test message "spamminess" using a running SpamAssassin server
+- [Create screenshots](https://mailpit.axllent.org/docs/usage/html-screenshots/) of HTML messages via web UI
+- Mobile and tablet HTML preview toggle in desktop mode
+- [Message tagging](https://mailpit.axllent.org/docs/usage/tagging/) including manual tagging or automated tagging using filtering and "plus addressing"
+- [SMTP relaying](https://mailpit.axllent.org/docs/configuration/smtp-relay/) (message release) - relay messages via a different SMTP server including an optional allowlist of accepted recipients
+- [SMTP forwarding](https://mailpit.axllent.org/docs/configuration/smtp-forward/) - automatically forward messages via a different SMTP server to predefined email addresses
+- Fast message [storing & processing](https://mailpit.axllent.org/docs/configuration/email-storage/) - ingesting 100-200 emails per second over SMTP depending on CPU, network speed & email size,
+easily handling tens of thousands of emails, with automatic email pruning (by default keeping the most recent 500 emails)
+- [Chaos](https://mailpit.axllent.org/docs/integration/chaos/) feature to enable configurable SMTP errors to test application resilience
+- `List-Unsubscribe` syntax validation
+- Optional [webhook](https://mailpit.axllent.org/docs/integration/webhook/) for received messages
 
-2. **Start development environment**
-   ```bash
-   make dev
-   ```
-   
-   This starts all services in parallel:
-   - Frontend: http://localhost:3000
-   - Backend API: http://localhost:8080  
-   - Mailpit (email testing): http://localhost:8025
 
-3. **Test the contact form**
-   - Fill out the contact form on the website
-   - Check received emails at http://localhost:8025
-   - Backend logs will show API requests
+## Installation
 
-4. **Generate PDF resume**
-   ```bash
-   make pdf
-   ```
-   
-   This generates a PDF from the HTML resume and updates `public/AnshumanBiswas.pdf`
+The Mailpit web UI listens by default on `http://0.0.0.0:8025` and the SMTP port on `0.0.0.0:1025`.
 
-## Development Commands
+Mailpit runs as a single binary and can be installed in different ways:
 
-```bash
-# Start all services (frontend, backend, mailpit)
-make dev
 
-# Start individual services
-make frontend    # Next.js dev server
-make backend     # Go API server  
-make mailpit     # Email testing server
+### Install via package managers
 
-# Build for production
-make build
+- **Mac**: `brew install mailpit` (to run automatically in the background: `brew services start mailpit`)
+- **Arch Linux**: available in the AUR as `mailpit`
+- **FreeBSD**: `pkg install mailpit`
 
-# Run production build
-make prod
 
-# Clean build artifacts
-make clean
+### Install via script (Linux & Mac)
 
-# Run tests
-make test
+Linux & Mac users can install it directly to `/usr/local/bin/mailpit` with:
 
-# Generate PDF resume from HTML
-make pdf
-
-# Show all available commands
-make help
-
-# Query database (local or remote)
-./scripts/query-db.sh local   # Query local database
-./scripts/query-db.sh remote  # Query production database
-
-# Unified server management (recommended)
-./scripts/server start        # Start all services
-./scripts/server stop         # Stop all services
-./scripts/server status       # Check service status
-./scripts/server db-recent 5  # Show recent messages
+```shell
+sudo sh < <(curl -sL https://raw.githubusercontent.com/axllent/mailpit/develop/install.sh)
 ```
 
-<!-- deploy-test: dummy change marker -->
+You can also change the install path to something else by setting the `INSTALL_PATH` environment, for example:
 
-## Configuration
-
-**Environment Variables:**
-Create `backend/.env`:
-```bash
-# Server
-PORT=8080
-
-# Email Provider (mailpit for dev, brevo for production)
-MAIL_PROVIDER=mailpit
-BREVO_API_KEY=your_brevo_api_key_here
-FROM_EMAIL=anshuman@biswas.me
-TO_EMAIL=anshuman@biswas.me
-
-# reCAPTCHA
-RECAPTCHA_SECRET_KEY=your_recaptcha_secret_key_here
-
-# Mailpit (development)
-MAILPIT_SMTP_HOST=localhost
-MAILPIT_SMTP_PORT=1025
+```shell
+INSTALL_PATH=/usr/bin sudo sh < <(curl -sL https://raw.githubusercontent.com/axllent/mailpit/develop/install.sh)
 ```
 
-**Email Provider Setup:**
-Switch between email providers easily:
-```bash
-# For development (local testing)
-./switch-email-provider.sh mailpit
 
-# For production (real emails via Brevo)
-./switch-email-provider.sh brevo
-```
+### Download static binary (Windows, Linux and Mac)
 
-**reCAPTCHA Setup:**
-1. Get keys from [Google reCAPTCHA](https://www.google.com/recaptcha/)
-2. Update `config/env.config.ts` with your site key
-3. Set `RECAPTCHA_SECRET_KEY` in backend environment
+Static binaries can always be found on the [releases](https://github.com/axllent/mailpit/releases/latest). The `mailpit` binary can be extracted and copied to your `$PATH`, or simply run as `./mailpit`.
 
-## Services
 
-**Frontend (Next.js):**
-- Development: http://localhost:3000
-- Hot reload enabled
-- TypeScript + Tailwind CSS
-- PDF resume viewer
-- Smooth scrolling navigation
+### Docker
 
-**Backend (Go):**
-- Development: http://localhost:8080
-- SQLite database (in-memory for dev)
-- reCAPTCHA verification
-- CORS enabled for localhost:3000
-- Email sending via SMTP
+See [Docker instructions](https://mailpit.axllent.org/docs/install/docker/) for 386, amd64 & arm64 images.
 
-**Mailpit (Email Testing):**
-- Web UI: http://localhost:8025
-- SMTP: localhost:1025
-- Catches all emails sent by backend
-- No external email services needed for development
 
-## API Endpoints
+### Compile from source
 
-**Backend API:**
-```bash
-GET  /health                 # Health check
-POST /ajax/message.php       # Contact form submission
-```
+To build Mailpit from source, see [Building from source](https://mailpit.axllent.org/docs/install/source/).
 
-**Contact Form Data:**
-```json
-{
-  "name": "string",
-  "email": "string", 
-  "message": "string",
-  "g-recaptcha-response": "string"
-}
-```
 
-## Database Access
+## Usage
 
-**SQLite Database Location:**
-- Local: `./backend/messages.db`
-- Remote: `/app/backend/messages.db` (inside Docker container)
+Run `mailpit -h` to see options. More information can be seen in [the docs](https://mailpit.axllent.org/docs/configuration/runtime-options/).
 
-**Database Schema:**
-```sql
-CREATE TABLE email (
-    id INTEGER PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    email VARCHAR(100) NOT NULL,
-    message TEXT,
-    date DATETIME,
-    ip VARCHAR(20) NOT NULL
-);
-```
+If installed using homebrew, you may run `brew services start mailpit` to always run mailpit automatically.
 
-**Query Database:**
-```bash
-# Install SQLite CLI (if not already installed)
-brew install sqlite3
 
-# Query local database
-./scripts/query-db.sh local
+### Testing Mailpit
 
-# Query remote production database
-./scripts/query-db.sh remote
+Please refer to [the documentation](https://mailpit.axllent.org/docs/install/testing/) on how to easily test email delivery to Mailpit.
 
-# Custom queries
-./scripts/query-db.sh local "SELECT COUNT(*) FROM email;"
-./scripts/query-db.sh remote "SELECT * FROM email WHERE email LIKE '%@gmail.com%';"
-```
 
-**Common Queries:**
-```sql
--- Get all messages (recent first)
-SELECT * FROM email ORDER BY date DESC LIMIT 10;
+### Configuring sendmail
 
--- Count total messages
-SELECT COUNT(*) FROM email;
-
--- Get messages by email domain
-SELECT * FROM email WHERE email LIKE '%@gmail.com%';
-
--- Get messages from last 7 days
-SELECT * FROM email WHERE date >= date('now', '-7 days');
-
--- Summary by email domain
-SELECT substr(email, instr(email, '@') + 1) as domain, COUNT(*) as count 
-FROM email GROUP BY domain ORDER BY count DESC;
-```
-
-**Direct SQLite Access:**
-```bash
-# Local database
-sqlite3 ./backend/messages.db
-
-# Remote database (via SSH + Docker)
-ssh ubuntu@biswas.me "docker-compose exec -T portfolio sqlite3 /app/backend/messages.db"
-```
-
-## Server Management Script
-
-**Unified Control with `./scripts/server`:**
-
-The server script provides a single command interface for all development operations:
-
-```bash
-# Server Control
-./scripts/server start           # Start all services (frontend, backend, mailpit)
-./scripts/server stop            # Stop all services
-./scripts/server restart         # Restart all services
-./scripts/server status          # Show status of all services
-
-# Individual Service Control
-./scripts/server start-frontend  # Start Next.js only
-./scripts/server start-backend   # Start Go backend only
-./scripts/server start-mailpit   # Start Mailpit only
-./scripts/server stop-frontend   # Stop frontend
-./scripts/server stop-backend    # Stop backend
-./scripts/server stop-mailpit    # Stop mailpit
-
-# Log Management
-./scripts/server logs             # Show logs for all services
-./scripts/server logs backend     # Show backend logs only
-./scripts/server tail frontend 100 # Tail frontend logs (100 lines)
-
-# Database Operations
-./scripts/server db               # Show recent messages (default: 10)
-./scripts/server db-count         # Show message count
-./scripts/server db-recent 5      # Show 5 recent messages
-./scripts/server db-schema        # Show database schema
-./scripts/server db "SELECT * FROM email WHERE name LIKE '%John%';"
-
-# Utilities
-./scripts/server health           # Check health of all services
-./scripts/server ports            # Show port usage
-./scripts/server clean            # Clean logs and temp files
-```
-
-**Features:**
-- ✅ **Color-coded output** for easy reading
-- ✅ **Automatic port detection** and conflict resolution
-- ✅ **Integrated database queries** with formatted output
-- ✅ **Health checks** with HTTP endpoint testing
-- ✅ **Log management** with tailing support
-- ✅ **Process management** with graceful shutdown
-
-## Project Structure
-
-```
-├── app/                 # Next.js app directory (routes)
-├── components/          # Reusable UI components
-├── config/             # Configuration files
-├── hooks/              # Custom React hooks
-├── lib/                # Utility functions
-├── public/             # Static assets (resume PDF, etc)
-├── styles/             # Global styles
-├── backend/            # Go backend server
-│   ├── main.go         # Main server file
-│   ├── go.mod          # Go dependencies
-│   ├── .env            # Environment variables
-│   └── messages.db     # SQLite database (created automatically)
-├── scripts/            # Utility scripts
-│   ├── server          # Unified server management script
-│   └── query-db.sh     # Database query script
-├── migrations/         # Database migration files
-├── Makefile           # Development commands
-├── docker-compose.yml  # Production deployment
-├── Dockerfile         # Container build configuration
-└── backup/             # Backup of original project files
-```
-
-## Troubleshooting
-
-**Port conflicts:**
-```bash
-# Check what's using ports
-lsof -i :3000  # Frontend
-lsof -i :8080  # Backend  
-lsof -i :8025  # Mailpit web
-lsof -i :1025  # Mailpit SMTP
-```
-
-**Database issues:**
-```bash
-# Reset database
-rm backend/messages.db
-# Restart backend to recreate
-```
-
-**Missing dependencies:**
-```bash
-# Reinstall everything
-make clean
-make install
-```
-
-**Email not working:**
-1. Ensure mailpit is running on :1025
-2. Check backend logs for SMTP errors
-3. Verify mailpit web UI at :8025
-
----
-
-## Production Deployment
-
-1. Build the application: `make build`
-2. Configure environment variables
-3. Set up proper SMTP server (not mailpit)
-4. Deploy frontend static files
-5. Run Go backend binary
-
-## License
-
-Personal portfolio project by Anshuman Biswas.
+Mailpit's SMTP server (default on port 1025), so you will likely need to configure your sending application to deliver mail via that port. 
+A common MTA (Mail Transfer Agent) that delivers system emails to an SMTP server is `sendmail`, used by many applications, including PHP. 
+Mailpit can also act as substitute for sendmail. For instructions on how to set this up, please refer to the [sendmail documentation](https://mailpit.axllent.org/docs/install/sendmail/).
