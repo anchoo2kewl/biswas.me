@@ -56,6 +56,7 @@ show_help() {
     echo -e "${YELLOW}Server Commands:${NC}"
     echo "  start [--force]   Start all services (frontend, backend, mailpit)"
     echo "  stop              Stop all services"
+    echo "  stop-app          Stop Docker compose application containers"
     echo "  restart [--force] Restart all services"
     echo "  status            Show status of all services"
     echo ""
@@ -250,6 +251,18 @@ stop_frontend() {
 
 stop_backend() {
     print_header "Stopping Backend"
+
+    # Kill air processes first to prevent respawning
+    local air_pids=$(pgrep -f "^air$" 2>/dev/null || true)
+    if [ -n "$air_pids" ]; then
+        print_status "Stopping air processes (auto-reload)..."
+        echo "$air_pids" | xargs kill 2>/dev/null || true
+        sleep 1
+        # Force kill if still running
+        echo "$air_pids" | xargs kill -9 2>/dev/null || true
+    fi
+
+    # Then kill the backend process
     kill_by_port $BACKEND_PORT "Backend"
     rm -f "$LOG_DIR/backend.pid"
 }
@@ -672,6 +685,23 @@ case ${1:-help} in
         stop_frontend
         stop_backend
         stop_mailpit
+
+        # Additional cleanup: ensure no stray air processes remain
+        remaining_air=$(pgrep -f "^air$" 2>/dev/null || true)
+        if [ -n "$remaining_air" ]; then
+            print_status "Cleaning up remaining air processes..."
+            echo "$remaining_air" | xargs kill -9 2>/dev/null || true
+        fi
+        ;;
+    stop-app)
+        print_header "Stopping Application (Docker Compose)"
+        print_status "Gracefully stopping Docker containers..."
+        if [ -f "docker-compose.yml" ] || [ -f "compose.yml" ]; then
+            docker compose stop
+            print_success "Application containers stopped"
+        else
+            print_warning "No docker-compose.yml or compose.yml found in current directory"
+        fi
         ;;
     restart)
         print_header "Restarting All Services"

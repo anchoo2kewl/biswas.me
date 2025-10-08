@@ -50,13 +50,18 @@ test:
 	@echo "Testing backend..."
 	cd backend && go test ./...
 
-# Generate PDF resume from HTML
-pdf:
+# Generate resume files and PDF
+pdf: resume
 	@echo "Generating PDF resume..."
 	@command -v "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" >/dev/null 2>&1 || { echo "Error: Chrome not found. Please install Google Chrome."; exit 1; }
 	@echo "Generating PDF from static HTML file..."
 	@"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless --disable-gpu --run-all-compositor-stages-before-draw --print-to-pdf=./public/AnshumanBiswas.pdf --print-to-pdf-no-header --no-pdf-header-footer --disable-pdf-tagging --virtual-time-budget=15000 --disable-background-timer-throttling "file://$(PWD)/static-resume.html" || { echo "Error: Failed to generate PDF"; exit 1; }
 	@echo "PDF generated successfully: public/AnshumanBiswas.pdf"
+
+# Generate resume files from data source
+resume:
+	@echo "Generating resume files from data source..."
+	@node scripts/generate-resume.js
 
 # Production server (after build)
 prod: build
@@ -81,6 +86,7 @@ help:
 	@echo "  make prod      - Run production build"
 	@echo "  make clean     - Clean build artifacts"
 	@echo "  make test      - Run all tests"
+	@echo "  make resume    - Generate resume files from data source"
 	@echo "  make pdf       - Generate PDF resume from HTML"
 	@echo "  make help      - Show this help"
 

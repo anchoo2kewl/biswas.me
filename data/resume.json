@@ -1,0 +1,98 @@
+{
+  "personalInfo": {
+    "name": "Anshuman Biswas",
+    "title": "VP of Engineering",
+    "email": "anshuman@biswas.me",
+    "phone": "+1 647-982-9354",
+    "website": "https://biswas.me",
+    "linkedin": "https://linkedin.com/in/anshumanbiswas"
+  },
+  "about": "Engineering leader with 18+ years of experience scaling high-performance cloud platforms and distributed systems. Proven ability to translate complex technical challenges into high-impact business solutions, driving product innovation by building and mentoring elite engineering teams.",
+  "skills": [
+    {
+      "category": "Leadership & Strategy",
+      "items": "Technology Leadership, Product & Cloud Strategy, Team Scaling & Mentorship, Product Delivery, Roadmapping, Risk Management"
+    },
+    {
+      "category": "Architecture & Systems", 
+      "items": "Distributed Systems Design, Cloud-Native Architecture (AWS, OpenStack), Enterprise Integrations, Microservices"
+    },
+    {
+      "category": "Technical Expertise",
+      "items": "DevOps & CI/CD, Infrastructure as Code (Terraform, Ansible), Performance Optimization, Automation, Data Warehousing"
+    }
+  ],
+  "education": [
+    {
+      "degree": "Ph.D., Electrical & Computer Engineering",
+      "institution": "Carleton University",
+      "year": "2019"
+    },
+    {
+      "degree": "M.Sc., Computer Science", 
+      "institution": "University of Calcutta",
+      "year": "2009"
+    },
+    {
+      "degree": "B.Sc., Computer Science",
+      "institution": "University of Calcutta", 
+      "year": "2007"
+    }
+  ],
+  "experience": [
+    {
+      "title": "VP of Engineering",
+      "company": "Elastio",
+      "companyUrl": "https://elastio.com",
+      "period": "Jan 2025 – Present",
+      "responsibilities": [
+        "Driving engineering teams to create scalable cloud ransomware detection platforms, pioneering AI-first development",
+        "Enabling MCP servers that power intelligent threat detection, automated response, and internal AI innovation",
+        "Scaling engineering teams to build high-availability, cloud-native threat detection platforms with advanced LLM integration"
+      ]
+    },
+    {
+      "title": "Senior Engineering Manager",
+      "company": "Veeva Systems", 
+      "companyUrl": "https://veeva.com",
+      "period": "Mar 2024 – Jan 2025",
+      "responsibilities": [
+        "Led the team that engineered and embedded scalable contact center capabilities into Veeva CRM, improving global customer engagement",
+        "Scaled the organization by hiring and mentoring top-tier engineers and managers while owning the full product delivery lifecycle"
+      ]
+    },
+    {
+      "title": "Senior Engineering Manager",
+      "company": "IBM Turbonomic",
+      "companyUrl": "https://turbonomic.com",
+      "period": "Jul 2017 – Mar 2024", 
+      "responsibilities": [
+        "Managed globally distributed teams responsible for core orchestration and monitoring products for the Turbonomic platform",
+        "Created and utilized Granite LLM models for advanced code analysis and security threat identification in enterprise environments",
+        "Drove DevOps automation initiatives that significantly reduced developer onboarding time and architected critical enterprise integrations"
+      ],
+      "note": "Promoted from Sr. Software Engineer → Eng. Manager (2017–2018)"
+    },
+    {
+      "title": "Prior Engineering Roles",
+      "company": "Various",
+      "period": "2007 – 2017",
+      "responsibilities": [
+        "Nearest.com (CTO): Architected and scaled a hyper-local search engine and its fault-tolerant infrastructure from concept to production on AWS & OpenStack",
+        "Trend Micro: Developed distributed cloud security systems on AWS",
+        "Carleton University: Built a research collaboration cloud app",
+        "Tata Consultancy Services: Led early on-prem to cloud migrations",
+        "Global Travel Solutions: Built an airline reservation system",
+        "2PiRadian: Developed a network stack over optical media"
+      ],
+      "priorCompanies": [
+        {"name": "Nearest.com", "url": "https://nearest.com"},
+        {"name": "Trend Micro", "url": "https://trendmicro.com"},
+        {"name": "Carleton University", "url": "https://carleton.ca"},
+        {"name": "Tata Consultancy Services", "url": "https://tcs.com"},
+        {"name": "Global Travel Solutions", "url": "https://globaltravelsolutions.com"},
+        {"name": "2PiRadian", "url": "https://2piradian.com"}
+      ]
+    }
+  ]
+}

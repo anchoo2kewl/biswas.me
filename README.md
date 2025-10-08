@@ -62,6 +62,9 @@ Personal portfolio website of Anshuman Biswas, VP of Engineering at Elastio. Bui
    ```
    
    This generates a PDF from the HTML resume and updates `public/AnshumanBiswas.pdf`
+   
+   **Single Source of Truth**: Resume content is managed in `data/resume.json`. 
+   Run `make resume` to regenerate both the React component and static HTML from this data source.
 
 ## Development Commands
 
@@ -131,7 +134,7 @@ MAILPIT_SMTP_PORT=1025
 Switch between email providers easily:
 ```bash
 # For development (local testing)
-./switch-email-provider.sh mailpit
+./switch-email-provider.sh ma`ilpit
 
 # For production (real emails via Brevo)
 ./switch-email-provider.sh brevo

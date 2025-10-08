@@ -15,10 +15,10 @@ export default function Resume() {
           __html: `
             :root {
                 --page-bg: #ffffff;
-                --main-text: #111827; /* Near black */
-                --secondary-text: #4b5563; /* Gray */
+                --main-text: #111827;
+                --secondary-text: #4b5563;
                 --light-text: #9ca3af;
-                --sidebar-bg: #f9fafb; /* Very light gray */
+                --sidebar-bg: #f9fafb;
                 --divider: #e5e7eb;
             }
 
@@ -63,14 +63,13 @@ export default function Resume() {
                 box-shadow: 0 0 15px rgba(0,0,0,0.1);
             }
 
-            /* --- Sidebar --- */
             .sidebar {
-                width: 30%; /* Reduced width */
+                width: 30%;
                 background-color: var(--sidebar-bg);
                 padding: 2.5rem 2rem;
                 display: flex;
                 flex-direction: column;
-                gap: 1.7rem; /* Reduced gap slightly */
+                gap: 1.7rem;
             }
 
             .sidebar h2 {
@@ -121,16 +120,15 @@ export default function Resume() {
                 color: var(--main-text);
             }
 
-            /* --- Main Content --- */
             .main-content {
-                width: 70%; /* Increased width */
+                width: 70%;
                 padding: 2.5rem 2rem;
-                overflow-y: hidden; /* To prevent scrollbars in print */
+                overflow-y: hidden;
             }
 
             header {
                 text-align: left;
-                margin-bottom: 1.8rem; /* Reduced margin */
+                margin-bottom: 1.8rem;
             }
             
             header h1 {
@@ -151,7 +149,7 @@ export default function Resume() {
                 display: flex;
                 flex-wrap: wrap;
                 gap: 0.5rem 1.5rem;
-                font-size: 0.75rem; /* Made font smaller */
+                font-size: 0.75rem;
             }
             
             .contact-item {
@@ -177,7 +175,6 @@ export default function Resume() {
                 color: var(--main-text);
             }
 
-
             .main-content h2 {
                 font-size: 1rem;
                 font-weight: 600;
@@ -190,7 +187,7 @@ export default function Resume() {
             }
 
             .experience-item {
-                margin-bottom: 1.1rem; /* Reduced margin */
+                margin-bottom: 1.1rem;
             }
             
             .job-header {
@@ -208,6 +205,24 @@ export default function Resume() {
 
             .job-header .company {
                 font-weight: 500;
+            }
+
+            .job-header .company a {
+                color: inherit;
+                text-decoration: none;
+            }
+
+            .job-header .company a:hover {
+                text-decoration: underline;
+            }
+
+            .company-link {
+                color: inherit;
+                text-decoration: none;
+            }
+
+            .company-link:hover {
+                text-decoration: underline;
             }
 
             .job-header .date-location {
@@ -273,13 +288,6 @@ export default function Resume() {
                     display: none !important;
                 }
                 
-                /* Hide specific unwanted elements during print */
-                .pdf-link {
-                    display: none !important;
-                }
-                
-                
-                /* Force hide the problematic bottom logo */
                 body::after,
                 body::before,
                 html::after,
@@ -326,35 +334,43 @@ export default function Resume() {
             <section className="skills">
               <h2>Skills</h2>
               <ul className="skills-list">
+                
                 <li>
                   <strong>Leadership & Strategy</strong>
                   Technology Leadership, Product & Cloud Strategy, Team Scaling & Mentorship, Product Delivery, Roadmapping, Risk Management
                 </li>
+                
                 <li>
                   <strong>Architecture & Systems</strong>
                   Distributed Systems Design, Cloud-Native Architecture (AWS, OpenStack), Enterprise Integrations, Microservices
                 </li>
+                
                 <li>
                   <strong>Technical Expertise</strong>
                   DevOps & CI/CD, Infrastructure as Code (Terraform, Ansible), Performance Optimization, Automation, Data Warehousing
                 </li>
+                
               </ul>
             </section>
 
             <section className="education">
               <h2>Education</h2>
+              
               <div className="education-item">
                 <p><strong>Ph.D., Electrical & Computer Engineering</strong></p>
                 <p>Carleton University, 2019</p>
               </div>
+              
               <div className="education-item">
                 <p><strong>M.Sc., Computer Science</strong></p>
                 <p>University of Calcutta, 2009</p>
               </div>
+              
               <div className="education-item">
                 <p><strong>B.Sc., Computer Science</strong></p>
                 <p>University of Calcutta, 2007</p>
               </div>
+              
             </section>
           </aside>
 
@@ -368,10 +384,13 @@ export default function Resume() {
                   <a href="mailto:anshuman@biswas.me">📧 anshuman@biswas.me</a>
                 </div>
                 <div className="contact-item">
-                  <a href="tel:+16479829354">📱 +1 647-982-9354</a>
+                  <a href="tel:+1 647-982-9354">📱 +1 647-982-9354</a>
                 </div>
                 <div className="contact-item">
                   <a href="https://biswas.me" target="_blank" rel="noopener noreferrer">🌐 biswas.me</a>
+                </div>
+                <div className="contact-item">
+                  <a href="https://linkedin.com/in/anshumanbiswas" target="_blank" rel="noopener noreferrer">💼 LinkedIn</a>
                 </div>
               </div>
             </header>
@@ -379,63 +398,51 @@ export default function Resume() {
             <section className="experience">
               <h2>Experience</h2>
 
+              
               <div className="experience-item">
                 <div className="job-header">
-                  <h3>VP of Engineering <span className="company">@ Elastio</span></h3>
+                  <h3>VP of Engineering <span className="company">@ <a href="https://elastio.com" target="_blank" rel="noopener noreferrer">Elastio</a></span></h3>
                   <div className="date-location">Jan 2025 – Present</div>
                 </div>
                 <ul>
-                  <li>Scaling engineering teams to build a high-availability, cloud-native threat detection platform.</li>
-                  <li>Driving product strategy, defining technical roadmaps, and partnering with management to accelerate business growth.</li>
+                  <li>Driving engineering teams to create scalable cloud ransomware detection platforms, pioneering AI-first development</li><li>Enabling MCP servers that power intelligent threat detection, automated response, and internal AI innovation</li><li>Scaling engineering teams to build high-availability, cloud-native threat detection platforms with advanced LLM integration</li>
                 </ul>
-              </div>
-
-              <div className="experience-item">
-                <div className="job-header">
-                  <h3>Senior Engineering Manager <span className="company">@ Veeva Systems</span></h3>
-                  <div className="date-location">Mar 2024 – Jan 2025</div>
-                </div>
-                <ul>
-                  <li>Led the team that engineered and embedded scalable contact center capabilities into Veeva CRM, improving global customer engagement.</li>
-                  <li>Scaled the organization by hiring and mentoring top-tier engineers and managers while owning the full product delivery lifecycle.</li>
-                </ul>
+                
               </div>
               
               <div className="experience-item">
                 <div className="job-header">
-                  <h3>Senior Engineering Manager <span className="company">@ IBM Turbonomic</span></h3>
+                  <h3>Senior Engineering Manager <span className="company">@ <a href="https://veeva.com" target="_blank" rel="noopener noreferrer">Veeva Systems</a></span></h3>
+                  <div className="date-location">Mar 2024 – Jan 2025</div>
+                </div>
+                <ul>
+                  <li>Led the team that engineered and embedded scalable contact center capabilities into Veeva CRM, improving global customer engagement</li><li>Scaled the organization by hiring and mentoring top-tier engineers and managers while owning the full product delivery lifecycle</li>
+                </ul>
+                
+              </div>
+              
+              <div className="experience-item">
+                <div className="job-header">
+                  <h3>Senior Engineering Manager <span className="company">@ <a href="https://turbonomic.com" target="_blank" rel="noopener noreferrer">IBM Turbonomic</a></span></h3>
                   <div className="date-location">Jul 2017 – Mar 2024</div>
                 </div>
                 <ul>
-                  <li>Managed globally distributed teams responsible for core orchestration and monitoring products for the Turbonomic platform.</li>
-                  <li>Drove DevOps automation initiatives that significantly reduced developer onboarding time and architected critical enterprise integrations.</li>
+                  <li>Managed globally distributed teams responsible for core orchestration and monitoring products for the Turbonomic platform</li><li>Created and utilized Granite LLM models for advanced code analysis and security threat identification in enterprise environments</li><li>Drove DevOps automation initiatives that significantly reduced developer onboarding time and architected critical enterprise integrations</li>
                 </ul>
                 <p className="earlier-roles">*Promoted from Sr. Software Engineer → Eng. Manager (2017–2018)*</p>
               </div>
               
               <div className="experience-item">
                 <div className="job-header">
-                  <h3>Chief Technology Officer <span className="company">@ Nearest.com</span></h3>
-                  <div className="date-location">Feb 2012 – Dec 2014</div>
-                </div>
-                <ul>
-                  <li>Architected and scaled a hyper-local search engine and its fault-tolerant infrastructure from concept to production on AWS & OpenStack.</li>
-                </ul>
-              </div>
-
-              <div className="experience-item">
-                <div className="job-header">
-                  <h3>Prior Engineering Roles</h3>
+                  <h3>Prior Engineering Roles <span className="company">@ Various</span></h3>
                   <div className="date-location">2007 – 2017</div>
                 </div>
                 <ul>
-                  <li><strong>Trend Micro:</strong> Developed distributed cloud security systems on AWS</li>
-                  <li><strong>Carleton University:</strong> Built a research collaboration cloud app</li>
-                  <li><strong>Tata Consultancy Services:</strong> Led early on-prem to cloud migrations</li>
-                  <li><strong>Global Travel Solutions:</strong> Built an airline reservation system</li>
-                  <li><strong>2PiRadian:</strong> Developed a network stack over optical media</li>
+                  <li><a href="https://nearest.com" target="_blank" rel="noopener noreferrer" className="company-link">Nearest.com</a> (CTO): Architected and scaled a hyper-local search engine and its fault-tolerant infrastructure from concept to production on AWS & OpenStack</li><li><a href="https://trendmicro.com" target="_blank" rel="noopener noreferrer" className="company-link">Trend Micro</a>: Developed distributed cloud security systems on AWS</li><li><a href="https://carleton.ca" target="_blank" rel="noopener noreferrer" className="company-link">Carleton University</a>: Built a research collaboration cloud app</li><li><a href="https://tcs.com" target="_blank" rel="noopener noreferrer" className="company-link">Tata Consultancy Services</a>: Led early on-prem to cloud migrations</li><li><a href="https://globaltravelsolutions.com" target="_blank" rel="noopener noreferrer" className="company-link">Global Travel Solutions</a>: Built an airline reservation system</li><li><a href="https://2piradian.com" target="_blank" rel="noopener noreferrer" className="company-link">2PiRadian</a>: Developed a network stack over optical media</li>
                 </ul>
+                
               </div>
+              
             </section>
           </main>
         </div>

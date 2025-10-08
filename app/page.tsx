@@ -305,15 +305,13 @@ export default function Home() {
           
           <div className="prose prose-lg max-w-none">
             <p className="text-gray-700 leading-relaxed">
-              I'm the VP of Engineering at <Link href="https://elastio.com" className="text-gray-900 hover:text-gray-600 underline underline-offset-4">Elastio</Link>, 
-              specializing in cloud computing and distributed systems. With nearly two decades of experience, 
-              I focus on building resilient architectures that can scale efficiently across different cloud environments.
+              I'm the Vice President of Engineering at <Link href="https://elastio.com" className="text-gray-900 hover:text-gray-600 underline underline-offset-4">Elastio</Link>, where I lead our efforts to build cutting-edge cloud-native data protection and recovery solutions. Over nearly two decades, I've been deep in the world of cloud computing and distributed systems, and more recently, I've been exploring how AI can transform the way we approach engineering challenges.
             </p>
             <p className="text-gray-700 leading-relaxed">
-              I hold a <Link href="#" className="text-gray-900 hover:text-gray-600 underline underline-offset-4">Ph.D. from Carleton University</Link> 
-              (2019) where I researched cloud middleware performance optimization using machine learning. 
-              At Elastio, I lead engineering teams building next-generation data protection and recovery solutions 
-              for cloud-native applications.
+              My focus is on creating architectures that are both scalable and resilient—systems that help organizations protect their data and recover quickly when things go wrong. I earned my <Link href="https://carleton.scholaris.ca/items/be9fc98a-4d7a-431b-9095-7eccccf8eea3/full" className="text-gray-900 hover:text-gray-600 underline underline-offset-4">Ph.D.</Link> in Computer Science from Carleton University, where I researched machine learning approaches to optimize cloud performance. That academic foundation continues to inform how I think about solving complex technical problems today.
+            </p>
+            <p className="text-gray-700 leading-relaxed">
+              At Elastio, I'm driven by two things: building exceptional engineering teams and pushing the boundaries of what's possible with AI. We're integrating custom models into our platform to improve threat detection, automate workflows, and make recovery faster and smarter across cloud environments. It's exciting work, and I'm proud of what we're building together.
             </p>
           </div>
         </div>
