@@ -305,13 +305,13 @@ export default function Home() {
           
           <div className="prose prose-lg max-w-none">
             <p className="text-gray-700 leading-relaxed">
-              I'm the Vice President of Engineering at <Link href="https://elastio.com" className="text-gray-900 hover:text-gray-600 underline underline-offset-4">Elastio</Link>, where I lead our efforts to build cutting-edge cloud-native data protection and recovery solutions. Over nearly two decades, I've been deep in the world of cloud computing and distributed systems, and more recently, I've been exploring how AI can transform the way we approach engineering challenges.
+              I serve as Vice President of Engineering at <Link href="https://elastio.com" className="text-gray-900 hover:text-gray-600 underline underline-offset-4">Elastio</Link>, where I lead the development of cutting-edge cloud-native data protection and recovery solutions. For nearly two decades, I have specialized in cloud computing and distributed systems, with recent emphasis on leveraging AI to transform engineering methodologies.
             </p>
             <p className="text-gray-700 leading-relaxed">
-              My focus is on creating architectures that are both scalable and resilient—systems that help organizations protect their data and recover quickly when things go wrong. I earned my <Link href="https://carleton.scholaris.ca/items/be9fc98a-4d7a-431b-9095-7eccccf8eea3/full" className="text-gray-900 hover:text-gray-600 underline underline-offset-4">Ph.D.</Link> in Computer Science from Carleton University, where I researched machine learning approaches to optimize cloud performance. That academic foundation continues to inform how I think about solving complex technical problems today.
+              My expertise centers on designing scalable and resilient architectures that enable organizations to safeguard their data and ensure rapid recovery from disruptions. I hold a <Link href="https://carleton.scholaris.ca/items/be9fc98a-4d7a-431b-9095-7eccccf8eea3/full" className="text-gray-900 hover:text-gray-600 underline underline-offset-4">Ph.D. in Computer Science from Carleton University</Link>, where my research focused on machine learning approaches for cloud performance optimization. This academic foundation continues to shape my approach to complex technical challenges.
             </p>
             <p className="text-gray-700 leading-relaxed">
-              At Elastio, I'm driven by two things: building exceptional engineering teams and pushing the boundaries of what's possible with AI. We're integrating custom models into our platform to improve threat detection, automate workflows, and make recovery faster and smarter across cloud environments. It's exciting work, and I'm proud of what we're building together.
+              At Elastio, I am committed to building world-class engineering teams while advancing the frontiers of AI integration. We are implementing custom models within our platform to enhance threat detection, streamline workflows, and accelerate recovery processes across cloud environments. This work represents a significant advancement in enterprise data protection, and I take pride in our collective achievements.
             </p>
           </div>
         </div>
