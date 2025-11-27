@@ -5,21 +5,21 @@
     "email": "anshuman@biswas.me",
     "phone": "+1 647-982-9354",
     "website": "https://biswas.me",
-    "linkedin": "https://linkedin.com/in/anshumanbiswas"
+    "linkedin": "https://www.linkedin.com/in/anshuman-biswas-phd-613b0145/"
   },
-  "about": "Engineering leader with 18+ years of experience scaling high-performance cloud platforms and distributed systems. Proven ability to translate complex technical challenges into high-impact business solutions, driving product innovation by building and mentoring elite engineering teams.",
+  "about": "Engineering leader with 18+ years of experience building secure, high-performance cloud platforms and distributed systems. Expert in cloud security architecture and scalable infrastructure. Proven ability to translate complex technical challenges into high-impact solutions, driving innovation by building and mentoring elite engineering teams.",
   "skills": [
     {
       "category": "Leadership & Strategy",
-      "items": "Technology Leadership, Product & Cloud Strategy, Team Scaling & Mentorship, Product Delivery, Roadmapping, Risk Management"
+      "items": "Technology Leadership, Cloud Security Strategy, Team Scaling & Mentorship, Product Delivery, Roadmapping"
     },
     {
       "category": "Architecture & Systems", 
-      "items": "Distributed Systems Design, Cloud-Native Architecture (AWS, OpenStack), Enterprise Integrations, Microservices"
+      "items": "Distributed Systems, Cloud-Native Security (AWS, Azure), High-Availability Design, Microservices, Threat Detection"
     },
     {
       "category": "Technical Expertise",
-      "items": "DevOps & CI/CD, Infrastructure as Code (Terraform, Ansible), Performance Optimization, Automation, Data Warehousing"
+      "items": "DevOps & CI/CD, Infrastructure as Code (Terraform, Ansible), Performance Optimization, Security Automation"
     }
   ],
   "education": [
@@ -46,9 +46,9 @@
       "companyUrl": "https://elastio.com",
       "period": "Jan 2025 – Present",
       "responsibilities": [
-        "Driving engineering teams to create scalable cloud ransomware detection platforms, pioneering AI-first development",
-        "Enabling MCP servers that power intelligent threat detection, automated response, and internal AI innovation",
-        "Scaling engineering teams to build high-availability, cloud-native threat detection platforms with advanced LLM integration"
+        "Lead engineering teams building cloud-native ransomware detection and data protection platforms with sub-second threat identification at petabyte scale",
+        "Architect AI-powered security systems leveraging MCP servers for intelligent threat detection, automated incident response, and recovery orchestration",
+        "Scale high-availability infrastructure across AWS and Azure, ensuring 99.99% uptime for enterprise customers' critical data protection workloads"
       ]
     },
     {
@@ -57,8 +57,8 @@
       "companyUrl": "https://veeva.com",
       "period": "Mar 2024 – Jan 2025",
       "responsibilities": [
-        "Led the team that engineered and embedded scalable contact center capabilities into Veeva CRM, improving global customer engagement",
-        "Scaled the organization by hiring and mentoring top-tier engineers and managers while owning the full product delivery lifecycle"
+        "Engineered scalable contact center capabilities into Veeva CRM, optimizing performance for global enterprise deployments",
+        "Scaled organization by hiring and mentoring engineers and managers while owning full product delivery lifecycle"
       ]
     },
     {
@@ -67,31 +67,27 @@
       "companyUrl": "https://turbonomic.com",
       "period": "Jul 2017 – Mar 2024", 
       "responsibilities": [
-        "Managed globally distributed teams responsible for core orchestration and monitoring products for the Turbonomic platform",
-        "Created and utilized Granite LLM models for advanced code analysis and security threat identification in enterprise environments",
-        "Drove DevOps automation initiatives that significantly reduced developer onboarding time and architected critical enterprise integrations"
+        "Managed globally distributed teams building core orchestration and performance monitoring systems for cloud-scale infrastructure",
+        "Deployed Granite LLM models for security threat identification and automated code analysis in enterprise environments",
+        "Drove DevOps automation reducing onboarding time 60%; architected high-throughput enterprise integrations"
       ],
-      "note": "Promoted from Sr. Software Engineer → Eng. Manager (2017–2018)"
+      "note": "Promoted from Sr. Software Engineer → Engineering Manager (2017–2018)"
     },
     {
       "title": "Prior Engineering Roles",
       "company": "Various",
       "period": "2007 – 2017",
       "responsibilities": [
-        "Nearest.com (CTO): Architected and scaled a hyper-local search engine and its fault-tolerant infrastructure from concept to production on AWS & OpenStack",
-        "Trend Micro: Developed distributed cloud security systems on AWS",
-        "Carleton University: Built a research collaboration cloud app",
-        "Tata Consultancy Services: Led early on-prem to cloud migrations",
-        "Global Travel Solutions: Built an airline reservation system",
-        "2PiRadian: Developed a network stack over optical media"
+        "Nearest.com (CTO): Architected fault-tolerant, auto-scaling search infrastructure on AWS & OpenStack",
+        "Trend Micro: Built distributed cloud security systems with real-time threat detection on AWS",
+        "Tata Consultancy Services: Led enterprise cloud migrations optimizing for security and performance",
+        "Additional: Research cloud platforms (Carleton), airline reservation systems, network stack development"
       ],
       "priorCompanies": [
         {"name": "Nearest.com", "url": "https://nearest.com"},
         {"name": "Trend Micro", "url": "https://trendmicro.com"},
         {"name": "Carleton University", "url": "https://carleton.ca"},
-        {"name": "Tata Consultancy Services", "url": "https://tcs.com"},
-        {"name": "Global Travel Solutions", "url": "https://globaltravelsolutions.com"},
-        {"name": "2PiRadian", "url": "https://2piradian.com"}
+        {"name": "Tata Consultancy Services", "url": "https://tcs.com"}
       ]
     }
   ]
