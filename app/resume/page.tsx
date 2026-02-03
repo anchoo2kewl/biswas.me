@@ -410,7 +410,7 @@ export default function Resume() {
                   <div className="date-location">Jan '25 – Present</div>
                 </div>
                 <ul>
-                  <li>Lead teams building ransomware detection & malware scanning w/ AI-powered anomaly detection, behavioral analysis & threat identification</li><li>Design security infrastructure protecting from ransomware, zero-day exploits & APTs; implement secure SDLC w/ threat modeling & pen testing</li><li>Architect cloud-scale backup security scanning 100M+ files daily; integrate w/ AWS/Azure security services for defense-in-depth protection</li><li>Build automated incident response workflows reducing MTTR from hours to minutes; enable customers to recover from attacks in under 15 minutes</li>
+                  <li>Lead teams building ransomware detection & malware scanning w/ AI-powered anomaly detection, behavioral analysis & threat identification</li><li>Design security infrastructure protecting from ransomware, zero-day exploits & APTs; implement secure SDLC w/ threat modeling & pen testing</li><li>Architect cloud-scale backup security scanning 100M+ files daily; integrate w/ AWS/Azure security services for defense-in-depth protection</li><li>Build automated incident response workflows reducing MTTR from hours to minutes; enable customers to recover from attacks in under 15 minutes</li><li>Direct cross-functional engineering teams across 3 product lines; accelerate feature delivery velocity 2x while maintaining 99.9% uptime</li>
                 </ul>
                 
               </div>
