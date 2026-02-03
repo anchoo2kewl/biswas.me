@@ -432,7 +432,7 @@ export default function Resume() {
                   <div className="date-location">Jul '17 – Mar '24</div>
                 </div>
                 <ul>
-                  <li>Managed distributed teams building orchestration & monitoring w/ security controls; deployed Granite LLM for threat identification & vulnerability detection</li><li>Drove DevOps automation w/ security gates reducing onboarding 60%; built secure integrations w/ OAuth2/SAML; led incident response & forensics</li><li>Established security champions program across 15+ teams; reduced security vulnerabilities 40% through automated scanning & developer training</li>
+                  <li>Managed distributed teams building orchestration & monitoring w/ security controls; deployed Granite LLM for threat identification</li><li>Drove DevOps automation w/ security gates reducing onboarding 60%; built OAuth2/SAML integrations; led incident response</li><li>Established security champions program across 15+ teams; reduced vulnerabilities 40% via automated scanning & training</li>
                 </ul>
                 <p className="earlier-roles">Sr. Software Engineer → Engineering Mgr ('18) → Sr. Engineering Mgr ('21)</p>
               </div>
