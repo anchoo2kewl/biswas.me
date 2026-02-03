@@ -396,9 +396,7 @@ export default function Resume() {
             </header>
 
             <section className="experience">
-              <h2>Experience</h2>
 
-              
               <div className="experience-item">
                 <div className="job-header">
                   <h3>VP of Engineering <span className="company">@ <a href="https://elastio.com" target="_blank" rel="noopener noreferrer">Elastio</a></span></h3>
@@ -429,7 +427,7 @@ export default function Resume() {
                 <ul>
                   <li>Managed globally distributed teams building core orchestration and performance monitoring systems for cloud-scale infrastructure</li><li>Deployed Granite LLM models for security threat identification and automated code analysis in enterprise environments</li><li>Drove DevOps automation reducing onboarding time 60%; architected high-throughput enterprise integrations</li>
                 </ul>
-                <p className="earlier-roles"><strong>Promoted:</strong> Sr. Software Engineer ('18) → Engineering Manager ('21) → Sr. Engineering Manager</p>
+                <p className="earlier-roles">Sr. Software Engineer ('18) → Engineering Manager ('21) → Sr. Engineering Manager</p>
               </div>
               
               <div className="experience-item">
