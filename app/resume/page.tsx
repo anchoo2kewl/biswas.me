@@ -327,50 +327,50 @@ export default function Resume() {
             <section className="about">
               <h2>About</h2>
               <p>
-                Engineering leader w/ 18+ yrs building secure, high-performance cloud platforms & distributed systems. Led teams developing ransomware detection, malware analysis, & threat identification systems. Expert in cloud security architecture, incident response automation, & scaling infrastructure protecting enterprise systems.
+                Engineering leader w/ 18+ yrs building secure, high-performance cloud platforms & distributed systems. Led teams developing ransomware detection, malware analysis & threat identification. Expert in cloud security, incident response automation & scaling infrastructure.
               </p>
             </section>
-            
+
             <section className="skills">
               <h2>Skills</h2>
               <ul className="skills-list">
-                
+
                 <li>
                   <strong>Leadership & Strategy</strong>
-                  Technology Leadership, Cloud Security Strategy, Team Scaling & Mentorship, Product Delivery, Roadmapping
+                  Technology Leadership, Cloud Security Strategy, Team Scaling, Product Delivery, Roadmapping
                 </li>
-                
+
                 <li>
                   <strong>Architecture & Systems</strong>
-                  Distributed Systems, Cloud-Native Security (AWS, Azure), High-Availability Design, Microservices, Threat Detection
+                  Distributed Systems, Cloud-Native (AWS, Azure), High-Availability, Microservices, Threat Detection
                 </li>
-                
+
                 <li>
                   <strong>Technical Expertise</strong>
-                  Backend Development (Go, Python, Node.js), Database Design & Optimization (PostgreSQL, MySQL, MongoDB), Infrastructure as Code (Terraform, Ansible), API Design, Performance Tuning, Security Automation
+                  Go, Python, Node.js, Java, Rust, PostgreSQL, MySQL, MongoDB, Terraform, Ansible, API Design, Performance Tuning
                 </li>
-                
+
               </ul>
             </section>
 
             <section className="education">
               <h2>Education</h2>
-              
+
               <div className="education-item">
-                <p><strong>Ph.D., Electrical & Computer Engineering</strong></p>
+                <p><strong>Ph.D. Electrical & Comp. Eng.</strong></p>
                 <p>Carleton University, 2019</p>
               </div>
-              
+
               <div className="education-item">
-                <p><strong>M.Sc., Computer Science</strong></p>
+                <p><strong>M.Sc. Computer Science</strong></p>
                 <p>University of Calcutta, 2009</p>
               </div>
-              
+
               <div className="education-item">
-                <p><strong>B.Sc. Comp. Science</strong></p>
+                <p><strong>B.Sc. Computer Science</strong></p>
                 <p>University of Calcutta, 2007</p>
               </div>
-              
+
             </section>
           </aside>
 
