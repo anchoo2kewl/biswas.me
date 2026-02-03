@@ -14,8 +14,11 @@ When the user asks to "deploy" or "deploy to production" or "push to production"
    - Why it changed
    - Include Claude Code attribution footer
 3. Push to GitHub (origin master)
-4. Run the deployment script: `./deploy.sh`
-5. Wait for deployment to complete (may take 2-3 minutes for Docker build)
+4. Deploy to server using SSH:
+   ```bash
+   ssh ubuntu@biswas.me "cd /home/ubuntu/projects/biswas.me && git pull origin master && docker-compose build --no-cache && docker-compose down && docker-compose up -d"
+   ```
+5. Wait for deployment to complete (may take 3-5 minutes for Docker build without cache)
 6. Verify deployment by checking https://biswas.me
 
 ## Script Details
