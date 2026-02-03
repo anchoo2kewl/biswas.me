@@ -367,7 +367,7 @@ export default function Resume() {
               </div>
               
               <div className="education-item">
-                <p><strong>B.Sc. Computer Science</strong></p>
+                <p><strong>B.Sc. Comp. Science</strong></p>
                 <p>University of Calcutta, 2007</p>
               </div>
               
