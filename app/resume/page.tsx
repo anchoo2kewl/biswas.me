@@ -327,7 +327,7 @@ export default function Resume() {
             <section className="about">
               <h2>About</h2>
               <p>
-                Engineering leader w/ 18+ yrs building secure, high-performance cloud platforms & distributed systems. Led teams developing ransomware detection, malware analysis & threat identification. Expert in cloud security, incident response automation & scaling infrastructure.
+                Engineering leader w/ 18+ yrs building secure, high-performance cloud platforms & distributed systems. Led teams developing ransomware detection, malware analysis & threat identification. Expert in cloud security architecture, incident response automation & scaling infrastructure.
               </p>
             </section>
 
@@ -337,17 +337,17 @@ export default function Resume() {
 
                 <li>
                   <strong>Leadership & Strategy</strong>
-                  Technology Leadership, Cloud Security Strategy, Team Scaling, Product Delivery, Roadmapping
+                  Technology Leadership, Cloud Security Strategy, Team Scaling & Mentorship, Product Delivery, Roadmapping
                 </li>
 
                 <li>
                   <strong>Architecture & Systems</strong>
-                  Distributed Systems, Cloud-Native (AWS, Azure), High-Availability, Microservices, Threat Detection
+                  Distributed Systems, Cloud-Native Security (AWS, Azure), High-Availability Design, Microservices, Threat Detection
                 </li>
 
                 <li>
                   <strong>Technical Expertise</strong>
-                  Go, Python, Node.js, Java, Rust, PostgreSQL, MySQL, MongoDB, Terraform, Ansible, API Design, Performance Tuning
+                  Backend Development (Go, Python, Node.js, Java, Rust), Database Design & Optimization (PostgreSQL, MySQL, MongoDB), Infrastructure as Code (Terraform, Ansible), API Design, Performance Tuning, Security Automation
                 </li>
 
               </ul>
