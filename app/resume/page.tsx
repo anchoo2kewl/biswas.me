@@ -347,7 +347,7 @@ export default function Resume() {
                 
                 <li>
                   <strong>Technical Expertise</strong>
-                  DevOps & CI/CD, Infrastructure as Code (Terraform, Ansible), Performance Optimization, Security Automation
+                  Backend Development (Go, Python, Node.js), Database Design & Optimization (PostgreSQL, MySQL, MongoDB), Infrastructure as Code (Terraform, Ansible), API Design, Performance Tuning, Security Automation
                 </li>
                 
               </ul>
