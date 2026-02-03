@@ -527,8 +527,8 @@ export default function Home() {
           </div>
 
           <div className="flex items-center gap-6">
-            <Link 
-              href="https://github.com/anshumanbiswas" 
+            <Link
+              href="https://github.com/anchoo2kewl"
               className="text-gray-600 hover:text-gray-900 transition-colors"
             >
               <Github className="h-4 w-4" />
