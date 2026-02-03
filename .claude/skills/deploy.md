@@ -85,3 +85,71 @@ curl -s https://biswas.me/resume | grep -o "github.com/anchoo2kewl"
 # Check date format
 curl -s https://biswas.me/resume | grep -o "Jan &#x27;25"
 ```
+
+## Updating Resume PDF
+
+When the resume PDF needs to be updated to match the live resume page:
+
+### 1. Ensure Local Resume is Up-to-Date
+```bash
+git pull origin master
+# Verify local resume has all changes
+grep -o "SEARCH_TEXT" app/resume/page.tsx
+```
+
+### 2. Start Local Dev Server (if not running)
+```bash
+yarn dev
+# Wait for server to start on http://localhost:3000
+```
+
+### 3. Generate PDF from Local Dev Server
+```bash
+"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
+  --headless \
+  --disable-gpu \
+  --run-all-compositor-stages-before-draw \
+  --print-to-pdf=./public/AnshumanBiswas.pdf \
+  --print-to-pdf-no-header \
+  --no-pdf-header-footer \
+  --disable-pdf-tagging \
+  --virtual-time-budget=30000 \
+  --disable-background-timer-throttling \
+  http://localhost:3000/resume
+```
+
+**IMPORTANT:** Use `virtual-time-budget=30000` (30 seconds) to ensure full page rendering
+
+### 4. Verify PDF Content Locally
+```bash
+open ./public/AnshumanBiswas.pdf
+```
+Manually verify the PDF has all expected content before deploying
+
+### 5. Deploy PDF to Production
+```bash
+# Commit the updated PDF
+git add public/AnshumanBiswas.pdf
+git commit -m "Update resume PDF with latest changes"
+git push
+
+# MUST rebuild Docker container to include new PDF
+ssh ubuntu@biswas.me "cd /home/ubuntu/projects/biswas.me && \
+  git pull origin master && \
+  docker-compose build --no-cache && \
+  docker-compose down && \
+  docker-compose up -d"
+```
+
+**CRITICAL:** The PDF is baked into the Docker image during build. Simply pulling git changes or restarting the container will NOT update the PDF. You MUST rebuild the Docker container with `docker-compose build --no-cache` to include the new PDF file.
+
+### 6. Verify PDF on Production
+After deployment completes and services start (wait 20-30 seconds):
+```bash
+# Check PDF file size changed
+curl -I https://biswas.me/AnshumanBiswas.pdf | grep Content-Length
+
+# Download and verify manually
+curl -o /tmp/production-resume.pdf https://biswas.me/AnshumanBiswas.pdf
+open /tmp/production-resume.pdf
+```
