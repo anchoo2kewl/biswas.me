@@ -403,7 +403,7 @@ export default function Resume() {
                   <div className="date-location">Jan '25 – Present</div>
                 </div>
                 <ul>
-                  <li>Lead engineering teams building cloud-native ransomware detection & data protection platforms identifying threats in seconds across enterprise backups</li><li>Architect malware scanning engines w/ AI-powered anomaly detection, behavioral analysis & signature-based threat identification for automated incident response</li><li>Design security-first infrastructure across AWS & Azure protecting customers from ransomware, zero-day exploits & advanced persistent threats w/ 99.99% uptime</li><li>Implement secure SDLC practices including threat modeling, security code reviews, vulnerability scanning & penetration testing across all product lines</li>
+                  <li>Lead teams building ransomware detection & malware scanning w/ AI-powered anomaly detection, behavioral analysis & threat identification</li><li>Design security infrastructure protecting from ransomware, zero-day exploits & APTs; implement secure SDLC w/ threat modeling & penetration testing</li>
                 </ul>
                 
               </div>
@@ -414,7 +414,7 @@ export default function Resume() {
                   <div className="date-location">Mar '24 – Jan '25</div>
                 </div>
                 <ul>
-                  <li>Engineered secure, scalable contact center capabilities into Veeva CRM w/ end-to-end encryption, access controls & compliance features for global pharma enterprises</li><li>Implemented security compliance frameworks (SOC2, HIPAA) across product lifecycle; led security audits & vulnerability remediation programs</li><li>Scaled organization by hiring & mentoring engineers/managers; established secure coding standards & security-focused development practices</li>
+                  <li>Built secure contact center for Veeva CRM w/ encryption, access controls & SOC2/HIPAA compliance; led security audits & vulnerability remediation</li><li>Scaled team by hiring & mentoring engineers/managers; established secure coding standards & security practices</li>
                 </ul>
                 
               </div>
@@ -425,7 +425,7 @@ export default function Resume() {
                   <div className="date-location">Jul '17 – Mar '24</div>
                 </div>
                 <ul>
-                  <li>Managed globally distributed teams building core orchestration & performance monitoring systems w/ built-in security controls for cloud infrastructure</li><li>Deployed Granite LLM models for security threat identification, automated code analysis & vulnerability detection in enterprise environments</li><li>Drove DevOps automation w/ security gates reducing onboarding time 60%; architected secure, high-throughput enterprise integrations w/ OAuth2/SAML</li><li>Established security incident response protocols; led forensic analysis & post-incident reviews for production security events</li>
+                  <li>Managed distributed teams building orchestration & monitoring w/ security controls; deployed Granite LLM for threat identification & vulnerability detection</li><li>Drove DevOps automation w/ security gates reducing onboarding 60%; built secure integrations w/ OAuth2/SAML; led incident response & forensics</li>
                 </ul>
                 <p className="earlier-roles">Sr. Software Engineer → Engineering Mgr ('18) → Sr. Engineering Mgr ('21)</p>
               </div>
@@ -436,7 +436,7 @@ export default function Resume() {
                   <div className="date-location">'07 – '17</div>
                 </div>
                 <ul>
-                  <li><a href="https://trendmicro.com" target="_blank" rel="noopener noreferrer" className="company-link">Trend Micro</a> (Software Engineer, '16-'17): Built cloud security systems w/ real-time malware detection, heuristic analysis & online DB migration tool enabling zero-downtime updates</li><li><a href="https://nearest.com" target="_blank" rel="noopener noreferrer" className="company-link">Nearest.com</a> (CTO, '12-'14): Architected fault-tolerant search infrastructure on AWS & OpenStack w/ DDoS protection & secure API gateways serving millions of queries</li><li><a href="https://tcs.com" target="_blank" rel="noopener noreferrer" className="company-link">Tata Consultancy Services</a> ('09-'12): Led enterprise SAP BI implementations & cloud migrations w/ security hardening for Fortune 500 clients</li><li>Additional: Research cloud platforms & security (Carleton, '15-'16), airline reservation systems ('09), network stack development ('07-'08)</li>
+                  <li><a href="https://trendmicro.com" target="_blank" rel="noopener noreferrer" className="company-link">Trend Micro</a> (Software Engineer, '16-'17): Built cloud security w/ real-time malware detection, heuristic analysis & online DB migration tool</li><li><a href="https://nearest.com" target="_blank" rel="noopener noreferrer" className="company-link">Nearest.com</a> (CTO, '12-'14): Architected fault-tolerant search on AWS & OpenStack w/ DDoS protection & secure APIs serving millions</li><li><a href="https://tcs.com" target="_blank" rel="noopener noreferrer" className="company-link">Tata Consultancy Services</a> ('09-'12): Led SAP BI implementations & cloud migrations w/ security hardening for Fortune 500 clients</li><li>Additional: Cloud platforms research (Carleton, '15-'16), airline systems ('09), network stack ('07-'08)</li>
                 </ul>
                 
               </div>
