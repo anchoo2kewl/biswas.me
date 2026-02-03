@@ -7,7 +7,7 @@
     "website": "https://biswas.me",
     "linkedin": "https://www.linkedin.com/in/anshuman-biswas-phd-613b0145/"
   },
-  "about": "Engineering leader with 18+ years of experience building secure, high-performance cloud platforms and distributed systems. Expert in cloud security architecture and scalable infrastructure. Proven ability to translate complex technical challenges into high-impact solutions, driving innovation by building and mentoring elite engineering teams.",
+  "about": "Engineering leader w/ 18+ yrs building secure, high-performance cloud platforms & distributed systems. Led teams developing ransomware detection, malware analysis, & threat identification systems. Expert in cloud security architecture, incident response automation, & scaling infrastructure protecting enterprise systems.",
   "skills": [
     {
       "category": "Leadership & Strategy",
@@ -44,18 +44,18 @@
       "title": "VP of Engineering",
       "company": "Elastio",
       "companyUrl": "https://elastio.com",
-      "period": "Jan 2025 – Present",
+      "period": "Jan '25 – Present",
       "responsibilities": [
-        "Lead engineering teams building cloud-native ransomware detection and data protection platforms with sub-second threat identification at petabyte scale",
-        "Architect AI-powered security systems leveraging MCP servers for intelligent threat detection, automated incident response, and recovery orchestration",
-        "Scale high-availability infrastructure across AWS and Azure, ensuring 99.99% uptime for enterprise customers' critical data protection workloads"
+        "Lead engineering teams building cloud-native ransomware detection and data protection platforms identifying threats in seconds across enterprise backups",
+        "Architect malware scanning engines with AI-powered anomaly detection for automated incident response and recovery orchestration",
+        "Scale security infrastructure across AWS and Azure, protecting enterprise customers from ransomware attacks with 99.99% uptime SLAs"
       ]
     },
     {
       "title": "Senior Engineering Manager",
       "company": "Veeva Systems", 
       "companyUrl": "https://veeva.com",
-      "period": "Mar 2024 – Jan 2025",
+      "period": "Mar '24 – Jan '25",
       "responsibilities": [
         "Engineered scalable contact center capabilities into Veeva CRM, optimizing performance for global enterprise deployments",
         "Scaled organization by hiring and mentoring engineers and managers while owning full product delivery lifecycle"
@@ -65,29 +65,29 @@
       "title": "Senior Engineering Manager",
       "company": "IBM Turbonomic",
       "companyUrl": "https://turbonomic.com",
-      "period": "Jul 2017 – Mar 2024", 
+      "period": "Jul '17 – Mar '24",
       "responsibilities": [
         "Managed globally distributed teams building core orchestration and performance monitoring systems for cloud-scale infrastructure",
         "Deployed Granite LLM models for security threat identification and automated code analysis in enterprise environments",
         "Drove DevOps automation reducing onboarding time 60%; architected high-throughput enterprise integrations"
       ],
-      "note": "Promoted from Sr. Software Engineer → Engineering Manager (2017–2018)"
+      "note": "Promoted: Sr. Software Engineer ('18) → Engineering Manager ('21) → Sr. Engineering Manager"
     },
     {
       "title": "Prior Engineering Roles",
       "company": "Various",
-      "period": "2007 – 2017",
+      "period": "'07 – '17",
       "responsibilities": [
-        "Nearest.com (CTO): Architected fault-tolerant, auto-scaling search infrastructure on AWS & OpenStack",
-        "Trend Micro: Built distributed cloud security systems with real-time threat detection on AWS",
-        "Tata Consultancy Services: Led enterprise cloud migrations optimizing for security and performance",
-        "Additional: Research cloud platforms (Carleton), airline reservation systems, network stack development"
+        "Trend Micro (Senior Software Engineer, '16-'17): Built distributed cloud security systems with real-time malware detection and online database migration tool enabling zero-downtime security updates",
+        "Nearest.com (CTO, '12-'14): Architected fault-tolerant, auto-scaling search infrastructure on AWS & OpenStack serving millions of location queries",
+        "Tata Consultancy Services ('09-'12): Led enterprise SAP BI implementations and cloud migrations with security hardening for Fortune 500 clients",
+        "Additional: Research cloud platforms & security (Carleton, '15-'16), airline reservation systems ('09), network stack development ('07-'08)"
       ],
       "priorCompanies": [
-        {"name": "Nearest.com", "url": "https://nearest.com"},
         {"name": "Trend Micro", "url": "https://trendmicro.com"},
-        {"name": "Carleton University", "url": "https://carleton.ca"},
-        {"name": "Tata Consultancy Services", "url": "https://tcs.com"}
+        {"name": "Nearest.com", "url": "https://nearest.com"},
+        {"name": "Tata Consultancy Services", "url": "https://tcs.com"},
+        {"name": "Carleton University", "url": "https://carleton.ca"}
       ]
     }
   ]

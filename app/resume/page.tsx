@@ -327,7 +327,7 @@ export default function Resume() {
             <section className="about">
               <h2>About</h2>
               <p>
-                Engineering leader with 18+ years of experience building secure, high-performance cloud platforms and distributed systems. Expert in cloud security architecture and scalable infrastructure. Proven ability to translate complex technical challenges into high-impact solutions, driving innovation by building and mentoring elite engineering teams.
+                Engineering leader w/ 18+ yrs building secure, high-performance cloud platforms & distributed systems. Led teams developing ransomware detection, malware analysis, & threat identification systems. Expert in cloud security architecture, incident response automation, & scaling infrastructure protecting enterprise systems.
               </p>
             </section>
             
@@ -402,10 +402,10 @@ export default function Resume() {
               <div className="experience-item">
                 <div className="job-header">
                   <h3>VP of Engineering <span className="company">@ <a href="https://elastio.com" target="_blank" rel="noopener noreferrer">Elastio</a></span></h3>
-                  <div className="date-location">Jan 2025 – Present</div>
+                  <div className="date-location">Jan '25 – Present</div>
                 </div>
                 <ul>
-                  <li>Lead engineering teams building cloud-native ransomware detection and data protection platforms with sub-second threat identification at petabyte scale</li><li>Architect AI-powered security systems leveraging MCP servers for intelligent threat detection, automated incident response, and recovery orchestration</li><li>Scale high-availability infrastructure across AWS and Azure, ensuring 99.99% uptime for enterprise customers' critical data protection workloads</li>
+                  <li>Lead engineering teams building cloud-native ransomware detection and data protection platforms identifying threats in seconds across enterprise backups</li><li>Architect malware scanning engines with AI-powered anomaly detection for automated incident response and recovery orchestration</li><li>Scale security infrastructure across AWS and Azure, protecting enterprise customers from ransomware attacks with 99.99% uptime SLAs</li>
                 </ul>
                 
               </div>
@@ -413,7 +413,7 @@ export default function Resume() {
               <div className="experience-item">
                 <div className="job-header">
                   <h3>Senior Engineering Manager <span className="company">@ <a href="https://veeva.com" target="_blank" rel="noopener noreferrer">Veeva Systems</a></span></h3>
-                  <div className="date-location">Mar 2024 – Jan 2025</div>
+                  <div className="date-location">Mar '24 – Jan '25</div>
                 </div>
                 <ul>
                   <li>Engineered scalable contact center capabilities into Veeva CRM, optimizing performance for global enterprise deployments</li><li>Scaled organization by hiring and mentoring engineers and managers while owning full product delivery lifecycle</li>
@@ -424,21 +424,21 @@ export default function Resume() {
               <div className="experience-item">
                 <div className="job-header">
                   <h3>Senior Engineering Manager <span className="company">@ <a href="https://turbonomic.com" target="_blank" rel="noopener noreferrer">IBM Turbonomic</a></span></h3>
-                  <div className="date-location">Jul 2017 – Mar 2024</div>
+                  <div className="date-location">Jul '17 – Mar '24</div>
                 </div>
                 <ul>
                   <li>Managed globally distributed teams building core orchestration and performance monitoring systems for cloud-scale infrastructure</li><li>Deployed Granite LLM models for security threat identification and automated code analysis in enterprise environments</li><li>Drove DevOps automation reducing onboarding time 60%; architected high-throughput enterprise integrations</li>
                 </ul>
-                <p className="earlier-roles">*Promoted from Sr. Software Engineer → Engineering Manager (2017–2018)*</p>
+                <p className="earlier-roles"><strong>Promoted:</strong> Sr. Software Engineer ('18) → Engineering Manager ('21) → Sr. Engineering Manager</p>
               </div>
               
               <div className="experience-item">
                 <div className="job-header">
                   <h3>Prior Engineering Roles <span className="company">@ Various</span></h3>
-                  <div className="date-location">2007 – 2017</div>
+                  <div className="date-location">'07 – '17</div>
                 </div>
                 <ul>
-                  <li><a href="https://nearest.com" target="_blank" rel="noopener noreferrer" className="company-link">Nearest.com</a> (CTO): Architected fault-tolerant, auto-scaling search infrastructure on AWS & OpenStack</li><li><a href="https://trendmicro.com" target="_blank" rel="noopener noreferrer" className="company-link">Trend Micro</a>: Built distributed cloud security systems with real-time threat detection on AWS</li><li><a href="https://tcs.com" target="_blank" rel="noopener noreferrer" className="company-link">Tata Consultancy Services</a>: Led enterprise cloud migrations optimizing for security and performance</li><li>Additional: Research cloud platforms (Carleton), airline reservation systems, network stack development</li>
+                  <li><a href="https://trendmicro.com" target="_blank" rel="noopener noreferrer" className="company-link">Trend Micro</a> (Senior Software Engineer, '16-'17): Built distributed cloud security systems with real-time malware detection and online database migration tool enabling zero-downtime security updates</li><li><a href="https://nearest.com" target="_blank" rel="noopener noreferrer" className="company-link">Nearest.com</a> (CTO, '12-'14): Architected fault-tolerant, auto-scaling search infrastructure on AWS & OpenStack serving millions of location queries</li><li><a href="https://tcs.com" target="_blank" rel="noopener noreferrer" className="company-link">Tata Consultancy Services</a> ('09-'12): Led enterprise SAP BI implementations and cloud migrations with security hardening for Fortune 500 clients</li><li>Additional: Research cloud platforms & security (Carleton, '15-'16), airline reservation systems ('09), network stack development ('07-'08)</li>
                 </ul>
                 
               </div>
