@@ -403,7 +403,7 @@ export default function Resume() {
                   <div className="date-location">Jan '25 – Present</div>
                 </div>
                 <ul>
-                  <li>Lead teams building ransomware detection & malware scanning w/ AI-powered anomaly detection, behavioral analysis & threat identification</li><li>Design security infrastructure protecting from ransomware, zero-day exploits & APTs; implement secure SDLC w/ threat modeling & penetration testing</li>
+                  <li>Lead teams building ransomware detection & malware scanning w/ AI-powered anomaly detection, behavioral analysis & threat identification</li><li>Design security infrastructure protecting from ransomware, zero-day exploits & APTs; implement secure SDLC w/ threat modeling & penetration testing</li><li>Architect cloud-scale backup security scanning 100M+ files daily; integrate w/ AWS/Azure security services for defense-in-depth protection</li>
                 </ul>
                 
               </div>
@@ -425,7 +425,7 @@ export default function Resume() {
                   <div className="date-location">Jul '17 – Mar '24</div>
                 </div>
                 <ul>
-                  <li>Managed distributed teams building orchestration & monitoring w/ security controls; deployed Granite LLM for threat identification & vulnerability detection</li><li>Drove DevOps automation w/ security gates reducing onboarding 60%; built secure integrations w/ OAuth2/SAML; led incident response & forensics</li>
+                  <li>Managed distributed teams building orchestration & monitoring w/ security controls; deployed Granite LLM for threat identification & vulnerability detection</li><li>Drove DevOps automation w/ security gates reducing onboarding 60%; built secure integrations w/ OAuth2/SAML; led incident response & forensics</li><li>Established security champions program across 15+ teams; reduced security vulnerabilities 40% through automated scanning & developer training</li>
                 </ul>
                 <p className="earlier-roles">Sr. Software Engineer → Engineering Mgr ('18) → Sr. Engineering Mgr ('21)</p>
               </div>
