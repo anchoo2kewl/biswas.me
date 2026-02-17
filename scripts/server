@@ -5,6 +5,11 @@
 
 set -e
 
+# Always run from project root (parent of scripts/)
+# Resolve symlinks to get the real script location
+PROJECT_ROOT="$(cd "$(dirname "$(readlink -f "$0")")/.."; pwd)"
+cd "$PROJECT_ROOT"
+
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -78,6 +83,12 @@ show_help() {
     echo "  mail-toggle       Toggle between Mailpit and Brevo"
     echo "  mail-status       Show current mail provider"
     echo "  mail-web          Open Mailpit web interface"
+    echo "  mail-edit <key>   Replace Brevo API key in prod and restart"
+    echo ""
+    echo -e "${YELLOW}Brevo API Key Commands:${NC}"
+    echo "  brevo-key [local|prod]       Show current Brevo API key (masked)"
+    echo "  brevo-key-set <key> [local|prod]  Set/rotate Brevo API key"
+    echo "  brevo-key-test [local|prod]  Test Brevo API key against Brevo API"
     echo ""
     echo -e "${YELLOW}Database Commands:${NC}"
     echo "  db [query]        Execute SQL query on local database"
@@ -103,6 +114,13 @@ show_help() {
     echo "  $0 tail frontend 100               # Tail frontend logs (100 lines)"
     echo "  $0 db \"SELECT COUNT(*) FROM email;\" # Execute SQL query"
     echo "  $0 db-recent 5                     # Show 5 recent messages"
+    echo "  $0 brevo-key prod                  # Show prod Brevo API key (masked)"
+    echo "  $0 brevo-key-set xkeysib-... prod  # Rotate prod Brevo API key"
+    echo "  $0 brevo-key-test prod             # Test prod Brevo API key"
+    echo ""
+    echo -e "${YELLOW}Zsh Autocomplete:${NC}"
+    echo "  Add to your .zshrc:  eval \"\$($PROJECT_ROOT/scripts/server --completions)\""
+    echo "  Then restart your shell or run: source ~/.zshrc"
 }
 
 # Function to check if a port is in use
@@ -514,6 +532,61 @@ open_mail_web() {
     fi
 }
 
+mail_edit() {
+    local new_key="$1"
+
+    if [ -z "$new_key" ]; then
+        print_error "Usage: $0 mail-edit <brevo-api-key>"
+        return 1
+    fi
+
+    print_header "Replacing Brevo API Key in Prod"
+
+    # Show old key
+    local old_key
+    old_key=$(_get_brevo_key prod)
+    if [ -n "$old_key" ]; then
+        echo -e "${CYAN}Old key:${NC} $(_mask_key "$old_key")"
+    fi
+    echo -e "${CYAN}New key:${NC} $(_mask_key "$new_key")"
+
+    # Test new key from prod server
+    print_status "Validating new key from prod server..."
+    local http_code
+    http_code=$(ssh -o ConnectTimeout=10 "$PROD_SSH" \
+        "curl -s -o /dev/null -w '%{http_code}' \
+            -H 'api-key: $new_key' \
+            -H 'accept: application/json' \
+            'https://api.brevo.com/v3/account'")
+
+    if [ "$http_code" != "200" ]; then
+        print_error "New key failed validation from prod (HTTP $http_code). Aborting."
+        return 1
+    fi
+    print_success "Key is valid (tested from prod)"
+
+    # Update on prod
+    ssh -o ConnectTimeout=10 "$PROD_SSH" "
+        sed -i 's|^BREVO_API_KEY=.*|BREVO_API_KEY=$new_key|' '$PROD_DIR/backend/.env'
+    "
+    print_success "Key updated in prod .env"
+
+    # Restart container to pick up new key
+    print_status "Restarting container..."
+    ssh -o ConnectTimeout=10 "$PROD_SSH" "cd '$PROD_DIR' && sudo docker compose restart portfolio"
+    print_success "Container restarted"
+
+    # Verify
+    sleep 5
+    local verify_key
+    verify_key=$(_get_brevo_key prod)
+    if [ "$verify_key" = "$new_key" ]; then
+        print_success "Verified: prod .env has the new key"
+    else
+        print_warning "Key in .env doesn't match — container may still use old key until next rebuild"
+    fi
+}
+
 clear_database() {
     if [ ! -f "$DB_PATH" ]; then
         print_warning "Database not found at $DB_PATH"
@@ -603,6 +676,152 @@ show_ports() {
     done
 }
 
+# Brevo API key management functions
+PROD_SSH=${PROD_SSH:-"ubuntu@biswas.me"}
+PROD_DIR=${PROD_DIR:-"/home/ubuntu/projects/biswas.me"}
+
+# Helper: read BREVO_API_KEY from a .env file (local or remote)
+_get_brevo_key() {
+    local env=${1:-local}
+    if [ "$env" = "prod" ]; then
+        ssh -o ConnectTimeout=10 "$PROD_SSH" "grep '^BREVO_API_KEY=' '$PROD_DIR/backend/.env'" 2>/dev/null | cut -d'=' -f2-
+    else
+        grep "^BREVO_API_KEY=" "$BACKEND_DIR/.env" 2>/dev/null | cut -d'=' -f2-
+    fi
+}
+
+# Helper: mask an API key, showing first 10 and last 4 chars
+_mask_key() {
+    local key="$1"
+    local len=${#key}
+    if [ "$len" -le 14 ]; then
+        echo "$key"
+    else
+        echo "${key:0:10}...${key:$((len-4)):4}"
+    fi
+}
+
+show_brevo_key() {
+    local env=${1:-local}
+    print_header "Brevo API Key ($env)"
+
+    local key
+    key=$(_get_brevo_key "$env")
+
+    if [ -z "$key" ]; then
+        print_error "BREVO_API_KEY not found in $env backend/.env"
+        return 1
+    fi
+
+    echo -e "${CYAN}Environment:${NC} $env"
+    echo -e "${CYAN}Key (masked):${NC} $(_mask_key "$key")"
+    echo -e "${CYAN}Key length:${NC}   ${#key} chars"
+}
+
+set_brevo_key() {
+    local new_key="$1"
+    local env=${2:-local}
+
+    if [ -z "$new_key" ]; then
+        print_error "Usage: $0 brevo-key-set <new-api-key> [local|prod]"
+        return 1
+    fi
+
+    # Basic validation
+    if [[ ! "$new_key" == xkeysib-* ]]; then
+        print_warning "Key doesn't start with 'xkeysib-'. Are you sure this is a valid Brevo key?"
+        read -p "Continue anyway? [y/N] " confirm
+        [[ "$confirm" =~ ^[Yy]$ ]] || { print_status "Aborted"; return 1; }
+    fi
+
+    print_header "Rotating Brevo API Key ($env)"
+
+    local old_key
+    old_key=$(_get_brevo_key "$env")
+    if [ -n "$old_key" ]; then
+        echo -e "${CYAN}Old key:${NC} $(_mask_key "$old_key")"
+    fi
+    echo -e "${CYAN}New key:${NC} $(_mask_key "$new_key")"
+
+    if [ "$env" = "prod" ]; then
+        # Update on prod via SSH
+        ssh -o ConnectTimeout=10 "$PROD_SSH" "
+            sed -i 's|^BREVO_API_KEY=.*|BREVO_API_KEY=$new_key|' '$PROD_DIR/backend/.env'
+        "
+        print_success "Brevo API key updated on prod"
+        print_warning "The running container still has the old key."
+        print_status "Restart the container to apply: ssh $PROD_SSH 'cd $PROD_DIR && docker compose restart portfolio'"
+    else
+        if [[ "$OSTYPE" == "darwin"* ]]; then
+            sed -i '' "s|^BREVO_API_KEY=.*|BREVO_API_KEY=$new_key|" "$BACKEND_DIR/.env"
+        else
+            sed -i "s|^BREVO_API_KEY=.*|BREVO_API_KEY=$new_key|" "$BACKEND_DIR/.env"
+        fi
+        print_success "Brevo API key updated locally"
+        if port_in_use $BACKEND_PORT; then
+            print_warning "Backend is running. Restart to apply: $0 restart"
+        fi
+    fi
+}
+
+test_brevo_key() {
+    local env=${1:-local}
+    print_header "Testing Brevo API Key ($env)"
+
+    local key
+    key=$(_get_brevo_key "$env")
+
+    if [ -z "$key" ]; then
+        print_error "BREVO_API_KEY not found in $env backend/.env"
+        return 1
+    fi
+
+    echo -e "${CYAN}Key (masked):${NC} $(_mask_key "$key")"
+
+    local response http_code body
+
+    if [ "$env" = "prod" ]; then
+        print_status "Calling Brevo /account from prod server..."
+        response=$(ssh -o ConnectTimeout=10 "$PROD_SSH" \
+            "curl -s -w '\n%{http_code}' \
+                -H 'api-key: $key' \
+                -H 'accept: application/json' \
+                'https://api.brevo.com/v3/account'" 2>&1)
+    else
+        print_status "Calling Brevo /account locally..."
+        response=$(curl -s -w "\n%{http_code}" \
+            -H "api-key: $key" \
+            -H "accept: application/json" \
+            "https://api.brevo.com/v3/account" 2>&1)
+    fi
+
+    http_code=$(echo "$response" | tail -1)
+    body=$(echo "$response" | sed '$d')
+
+    if [ "$http_code" = "200" ]; then
+        print_success "API key is valid (HTTP $http_code)"
+        local email company
+        email=$(echo "$body" | grep -o '"email":"[^"]*"' | head -1 | cut -d'"' -f4)
+        company=$(echo "$body" | grep -o '"companyName":"[^"]*"' | head -1 | cut -d'"' -f4)
+        echo -e "${CYAN}Account email:${NC}   $email"
+        echo -e "${CYAN}Company:${NC}         $company"
+
+        # Show remaining email credits
+        local credits_info
+        credits_info=$(echo "$body" | grep -o '"credits":[0-9]*' | head -1 | cut -d':' -f2)
+        if [ -n "$credits_info" ]; then
+            echo -e "${CYAN}Email credits:${NC}   $credits_info"
+        fi
+    elif [ "$http_code" = "401" ]; then
+        print_error "API key is INVALID (HTTP 401 Unauthorized)"
+        return 1
+    else
+        print_error "Unexpected response (HTTP $http_code)"
+        echo "$body" | head -5
+        return 1
+    fi
+}
+
 # Deploy to production: commit local changes, push, SSH to prod, pull, rebuild
 deploy() {
     # Flags: --prune (default) or --no-prune
@@ -669,6 +888,80 @@ deploy() {
 
     print_success "Deployment complete"
 }
+
+# Zsh completion output (called via: eval "$(server --completions)")
+if [ "${1:-}" = "--completions" ]; then
+    cat <<'COMP'
+_server() {
+    local -a subcmds
+    subcmds=(
+        'start:Start all services'
+        'stop:Stop all services'
+        'stop-app:Stop Docker compose containers'
+        'restart:Restart all services'
+        'status:Show status of all services'
+        'start-frontend:Start Next.js frontend'
+        'start-backend:Start Go backend'
+        'start-mailpit:Start Mailpit email server'
+        'stop-frontend:Stop frontend'
+        'stop-backend:Stop backend'
+        'stop-mailpit:Stop mailpit'
+        'logs:Show logs for services'
+        'tail:Tail logs for a service'
+        'mail:Show recent emails from Mailpit'
+        'mail-status:Show current mail provider'
+        'mail-toggle:Toggle between Mailpit and Brevo'
+        'mail-web:Open Mailpit web interface'
+        'mail-edit:Replace Brevo API key in prod and restart'
+        'db:Execute SQL query on local database'
+        'db-schema:Show database schema'
+        'db-count:Show message count'
+        'db-recent:Show recent messages'
+        'db-clear:Clear all messages'
+        'health:Check health of all services'
+        'clean:Clean logs and temporary files'
+        'ports:Show which ports are in use'
+        'brevo-key:Show current Brevo API key'
+        'brevo-key-set:Set/rotate Brevo API key'
+        'brevo-key-test:Test Brevo API key'
+        'deploy:Commit, push, and deploy to prod'
+        'help:Show help'
+    )
+
+    local -a env_opts=('local:Local environment' 'prod:Production environment')
+    local -a svc_opts=('frontend:Next.js frontend' 'backend:Go backend' 'mailpit:Mailpit email' 'all:All services')
+    local -a force_opts=('--force:Force restart/stop first')
+
+    if (( CURRENT == 2 )); then
+        _describe 'command' subcmds
+    elif (( CURRENT == 3 )); then
+        case "${words[2]}" in
+            start|restart|start-frontend|start-backend|start-mailpit)
+                _describe 'option' force_opts ;;
+            logs|tail)
+                _describe 'service' svc_opts ;;
+            brevo-key|brevo-key-test)
+                _describe 'environment' env_opts ;;
+            brevo-key-set)
+                _message 'new API key' ;;
+            deploy)
+                _describe 'option' '("--prune:Prune Docker cache (default)" "--no-prune:Skip Docker prune")' ;;
+            *)
+                ;;
+        esac
+    elif (( CURRENT == 4 )); then
+        case "${words[2]}" in
+            brevo-key-set)
+                _describe 'environment' env_opts ;;
+            *)
+                ;;
+        esac
+    fi
+}
+compdef _server server
+COMP
+    exit 0
+fi
 
 # Main command handler
 case ${1:-help} in
@@ -754,6 +1047,9 @@ case ${1:-help} in
     mail-web)
         open_mail_web
         ;;
+    mail-edit)
+        mail_edit "$2"
+        ;;
     db)
         if [ -n "$2" ]; then
             execute_db_query "$2"
@@ -781,6 +1077,15 @@ case ${1:-help} in
         ;;
     ports)
         show_ports
+        ;;
+    brevo-key)
+        show_brevo_key "$2"
+        ;;
+    brevo-key-set)
+        set_brevo_key "$2" "$3"
+        ;;
+    brevo-key-test)
+        test_brevo_key "$2"
         ;;
     deploy)
         shift
