@@ -16,6 +16,8 @@ services:
       - FROM_EMAIL=anshuman@biswas.me
       - TO_EMAIL=anshuman@biswas.me
       - DB_PATH=./messages.db
+      - BLOG_API_URL=https://anshumanbiswas.com
+      - BLOG_API_TOKEN=productionSecretToken456
     env_file:
       - backend/.env
     volumes:
