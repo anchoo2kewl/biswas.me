@@ -1,0 +1,93 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy to biswas.me
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup SSH key
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H biswas.me >> ~/.ssh/known_hosts
+
+      - name: Deploy to server
+        run: |
+          ssh ubuntu@biswas.me << 'EOF'
+            set -e
+
+            echo "📦 Deploying biswas.me..."
+
+            # Navigate to project directory
+            cd ~/projects/biswas.me
+
+            # Pull latest changes
+            echo "⬇️  Pulling latest changes from GitHub..."
+            git fetch origin
+            git reset --hard origin/main
+
+            # Stop and remove existing container
+            echo "🛑 Stopping existing container..."
+            docker-compose stop portfolio || true
+            docker-compose rm -f portfolio || true
+
+            # Remove old image to force rebuild
+            echo "🗑️  Removing old Docker image..."
+            docker rmi biswasme_portfolio || true
+
+            # Build and start new container
+            echo "🔨 Building Docker image..."
+            docker-compose build --no-cache portfolio
+
+            echo "🚀 Starting container..."
+            docker-compose up -d portfolio
+
+            # Wait for container to be healthy
+            echo "⏳ Waiting for container to be ready..."
+            sleep 10
+
+            # Check container status
+            echo "✅ Checking container status..."
+            docker ps | grep biswas-me
+
+            # Show recent logs
+            echo "📋 Recent logs:"
+            docker logs biswas-me --tail 20
+
+            echo "✨ Deployment complete!"
+          EOF
+
+      - name: Verify deployment
+        run: |
+          echo "🔍 Verifying deployment..."
+
+          # Wait a bit for services to fully start
+          sleep 5
+
+          # Check if frontend is responding
+          if curl -f -s -o /dev/null -w "%{http_code}" https://biswas.me | grep -q "200\|301\|302"; then
+            echo "✅ Frontend is responding"
+          else
+            echo "❌ Frontend health check failed"
+            exit 1
+          fi
+
+          echo "🎉 Deployment verified successfully!"
+
+      - name: Cleanup
+        if: always()
+        run: |
+          rm -f ~/.ssh/id_rsa
