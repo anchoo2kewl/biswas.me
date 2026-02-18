@@ -6,7 +6,7 @@ This repository is configured with automatic deployment to production using GitH
 
 ### How it works
 
-1. **Trigger**: Every push to the `main` branch automatically triggers a deployment
+1. **Trigger**: Every push to the `master` branch automatically triggers a deployment
 2. **Build**: The GitHub Actions workflow builds the Docker image on the production server
 3. **Deploy**: The new container replaces the old one with zero-downtime deployment
 4. **Verify**: Automated health checks ensure the deployment was successful
@@ -16,13 +16,13 @@ This repository is configured with automatic deployment to production using GitH
 You can also trigger a deployment manually:
 1. Go to the [Actions tab](https://github.com/anchoo2kewl/biswas.me/actions)
 2. Select "Deploy to Production" workflow
-3. Click "Run workflow" and select the `main` branch
+3. Click "Run workflow" and select the `master` branch
 
 ## Setup Instructions
 
 ### 1. GitHub Secrets Configuration
 
-You need to add the following secret to your GitHub repository:
+You need to add the following secrets to your GitHub repository:
 
 #### SSH_PRIVATE_KEY
 
@@ -52,6 +52,26 @@ cat ~/.ssh/your_key_name
 # Verify the key is authorized on the server
 ssh ubuntu@biswas.me "cat ~/.ssh/authorized_keys"
 ```
+
+#### SONAR_TOKEN
+
+The authentication token for SonarQube analysis.
+
+**To get your SonarQube token:**
+
+1. Log in to your SonarQube instance at https://sonar.taskai.cc
+2. Go to **My Account** → **Security** → **Generate Tokens**
+3. Create a new token with name: `biswas.me-github-actions`
+4. Copy the generated token
+5. Add it to GitHub Secrets as `SONAR_TOKEN`
+
+#### SONAR_HOST_URL
+
+The URL of your SonarQube server.
+
+**Value:** `https://sonar.taskai.cc`
+
+Add this to GitHub Secrets as `SONAR_HOST_URL`
 
 ### 2. Server Requirements
 
@@ -95,7 +115,7 @@ Already configured with:
 1. **Code Pull**: Latest code is pulled from GitHub
    ```bash
    git fetch origin
-   git reset --hard origin/main
+   git reset --hard origin/master
    ```
 
 2. **Container Stop**: Existing container is gracefully stopped
@@ -130,8 +150,9 @@ Already configured with:
 ### View Deployment Status
 
 1. **GitHub Actions**: https://github.com/anchoo2kewl/biswas.me/actions
-2. **Server Logs**: `ssh ubuntu@biswas.me "docker logs biswas-me -f"`
-3. **Container Status**: `ssh ubuntu@biswas.me "docker ps | grep biswas-me"`
+2. **SonarQube Dashboard**: https://sonar.taskai.cc/dashboard?id=biswas.me
+3. **Server Logs**: `ssh ubuntu@biswas.me "docker logs biswas-me -f"`
+4. **Container Status**: `ssh ubuntu@biswas.me "docker ps | grep biswas-me"`
 
 ### Troubleshooting
 
@@ -189,7 +210,7 @@ docker-compose up -d portfolio
 The deployment workflow is defined in `.github/workflows/deploy.yml`
 
 Key features:
-- ✅ Automated deployment on push to `main`
+- ✅ Automated deployment on push to `master`
 - ✅ Manual deployment trigger available
 - ✅ Secure SSH key handling
 - ✅ Docker image rebuild with no cache
@@ -211,7 +232,7 @@ git commit -m "Add new feature"
 git push origin feature/my-feature
 
 # Create a PR on GitHub - this won't trigger deployment
-# Only merging to main triggers automatic deployment
+# Only merging to master triggers automatic deployment
 ```
 
 ## Support
