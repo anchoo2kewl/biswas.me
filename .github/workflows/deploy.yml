@@ -13,6 +13,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Create env.config.ts
+        run: cp config/env.config.sample.ts config/env.config.ts
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -42,8 +45,6 @@ jobs:
           file: ./Dockerfile.clean
           push: true
           tags: ghcr.io/${{ github.repository }}/biswas-me:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
 
       - name: Deploy to server
         env:
@@ -53,25 +54,8 @@ jobs:
           BLOG_API_TOKEN: ${{ secrets.BLOG_API_TOKEN }}
         run: |
           mkdir -p ~/.ssh
-          echo $SSH_PRIVATE_KEY > ~/.ssh/id_rsa
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan biswas.me >> ~/.ssh/known_hosts
           
-          # Deploy to server
-          ssh ubuntu@biswas.me << 'ENDSSH'
-            # Login to GitHub Container Registry
-            echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-            
-            # Pull latest image
-            docker pull ghcr.io/${{ github.repository }}/biswas-me:latest
-            
-            # Stop and remove old container
-            docker stop biswas-me 2>/dev/null || true
-            docker rm biswas-me 2>/dev/null || true
-            
-            # Start new container
-            docker run -d --name biswas-me               -p 3000:3000               -p 8081:8080               --restart unless-stopped               -e BLOG_API_URL=https://anshumanbiswas.com               -e BLOG_API_TOKEN=$BLOG_API_TOKEN               -e FROM_EMAIL=anshuman@biswas.me               -e TO_EMAIL=anshuman@biswas.me               -e MAIL_PROVIDER=brevo               -e BREVO_API_KEY=$BREVO_API_KEY               -e MAILPIT_SMTP_HOST=localhost               -e MAILPIT_SMTP_PORT=1025               -e DB_PATH=./messages.db               -e RECAPTCHA_SECRET_KEY=$RECAPTCHA_SECRET_KEY               ghcr.io/${{ github.repository }}/biswas-me:latest
-            
-            # Cleanup old images
-            docker image prune -f
-          ENDSSH
+          ssh ubuntu@biswas.me "echo '${{ secrets.GITHUB_TOKEN }}' | docker login ghcr.io -u ${{ github.actor }} --password-stdin && docker pull ghcr.io/${{ github.repository }}/biswas-me:latest && docker stop biswas-me || true && docker rm biswas-me || true && docker run -d --name biswas-me -p 3000:3000 -p 8081:8080 --restart unless-stopped -e BLOG_API_URL=https://anshumanbiswas.com -e BLOG_API_TOKEN=$BLOG_API_TOKEN -e FROM_EMAIL=anshuman@biswas.me -e TO_EMAIL=anshuman@biswas.me -e MAIL_PROVIDER=brevo -e BREVO_API_KEY=$BREVO_API_KEY -e MAILPIT_SMTP_HOST=localhost -e MAILPIT_SMTP_PORT=1025 -e DB_PATH=./messages.db -e RECAPTCHA_SECRET_KEY=$RECAPTCHA_SECRET_KEY ghcr.io/${{ github.repository }}/biswas-me:latest && docker image prune -f"
