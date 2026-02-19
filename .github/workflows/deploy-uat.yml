@@ -14,7 +14,7 @@ on:
           - uat
 
 jobs:
-  build-and-deploy:
+  deploy-uat:
     runs-on: ubuntu-latest
     environment: uat
 
@@ -22,70 +22,49 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Extract metadata for Docker
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ghcr.io/${{ github.repository }}
-          tags: |
-            type=ref,event=branch
-            type=sha,prefix={{branch}}-
-            type=raw,value=uat-latest,enable=${{ github.ref == 'refs/heads/uat' }}
-
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-          platforms: linux/arm64
-
       - name: Deploy to UAT server
         env:
           SSH_PRIVATE_KEY: ${{ secrets.UAT_SSH_PRIVATE_KEY }}
           BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
           RECAPTCHA_SECRET_KEY: ${{ secrets.RECAPTCHA_SECRET_KEY }}
           BLOG_API_TOKEN: ${{ secrets.BLOG_API_TOKEN }}
-          IMAGE_TAG: ${{ steps.meta.outputs.tags }}
+          COMMIT_SHA: ${{ github.sha }}
+          BRANCH: ${{ github.ref_name }}
         run: |
           mkdir -p ~/.ssh
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan 92.4.83.28 >> ~/.ssh/known_hosts
 
-          # Get the first tag (should be the branch name or uat-latest)
-          IMAGE=$(echo "$IMAGE_TAG" | head -n1)
+          echo "🚀 Deploying to UAT server..."
 
-          echo "Deploying image: $IMAGE"
-
-          # Deploy to UAT server
+          # Deploy to UAT server - build natively on ARM64
           ssh ubuntu@92.4.83.28 bash -s << 'ENDSSH'
             set -e
 
-            # Login to GitHub Container Registry
-            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            # Create deployment directory
+            mkdir -p ~/biswas-me-uat
+            cd ~/biswas-me-uat
 
-            # Pull the latest image
-            docker pull $IMAGE
+            # Clone or pull latest code
+            if [ -d ".git" ]; then
+              echo "📦 Pulling latest code..."
+              git fetch origin
+              git reset --hard ${COMMIT_SHA}
+            else
+              echo "📦 Cloning repository..."
+              git clone https://github.com/anchoo2kewl/biswas.me.git .
+              git checkout ${COMMIT_SHA}
+            fi
 
-            # Stop and remove existing container
+            echo "🔨 Building Docker image (native ARM64)..."
+            docker build -t biswas-me-uat:${COMMIT_SHA} -t biswas-me-uat:latest .
+
+            echo "🛑 Stopping existing container..."
             docker stop biswas-me-uat || true
             docker rm biswas-me-uat || true
 
-            # Run new container
+            echo "🚀 Starting new container..."
             docker run -d --name biswas-me-uat \
               -p 3000:3000 \
               -p 8080:8080 \
@@ -100,21 +79,37 @@ jobs:
               -e MAILPIT_SMTP_PORT=1025 \
               -e DB_PATH=./messages.db \
               -e RECAPTCHA_SECRET_KEY='${RECAPTCHA_SECRET_KEY}' \
-              $IMAGE
+              biswas-me-uat:latest
 
-            # Verify container is running
-            docker ps | grep biswas-me-uat
+            echo "🧹 Cleaning up old images..."
+            docker image prune -f --filter "label=name=biswas-me-uat" --filter "until=24h"
 
-            echo "✅ UAT deployment complete!"
+            echo "✅ Deployment complete!"
+            docker ps --filter "name=biswas-me-uat" --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
           ENDSSH
+
+      - name: Verify deployment
+        run: |
+          echo "⏳ Waiting for application to start..."
+          sleep 10
+
+          echo "🔍 Testing UAT endpoint..."
+          curl -f http://92.4.83.28:3000 || {
+            echo "❌ Health check failed"
+            exit 1
+          }
+
+          echo "✅ Health check passed"
 
       - name: Deployment summary
         run: |
           echo "## 🚀 UAT Deployment Successful" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "- **Server:** 92.4.83.28" >> $GITHUB_STEP_SUMMARY
-          echo "- **Image:** \`${{ steps.meta.outputs.tags }}\`" >> $GITHUB_STEP_SUMMARY
           echo "- **Branch:** \`${{ github.ref_name }}\`" >> $GITHUB_STEP_SUMMARY
           echo "- **Commit:** \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Build:** Native ARM64 (built on server)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Access at: http://92.4.83.28" >> $GITHUB_STEP_SUMMARY
+          echo "**Access:**" >> $GITHUB_STEP_SUMMARY
+          echo "- Frontend: http://92.4.83.28:3000" >> $GITHUB_STEP_SUMMARY
+          echo "- Backend: http://92.4.83.28:8080" >> $GITHUB_STEP_SUMMARY
