@@ -16,7 +16,6 @@ on:
 jobs:
   deploy-uat:
     runs-on: ubuntu-latest
-    environment: uat
 
     steps:
       - name: Checkout code
