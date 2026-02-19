@@ -59,17 +59,15 @@ jobs:
 
             echo "⚙️  Creating UAT config file..."
             mkdir -p config
-            cat > config/env.config.ts << 'CONFIGEOF'
-// UAT Environment Configuration
-const config = {
-  RECAPTCHA_SITE_KEY: "6LcfEZsdAAAAAH6DVoJexNRQRW0J_AL9uxSthwCt",
-  API_URL: "http://localhost:8080/api/messages",
-  BLOG_API_URL: "http://localhost:8080/api/posts",
-  BLOG_VIEW_ALL_URL: "https://anshumanbiswas.com",
-};
-
-export default config;
-CONFIGEOF
+            echo '// UAT Environment Configuration' > config/env.config.ts
+            echo 'const config = {' >> config/env.config.ts
+            echo '  RECAPTCHA_SITE_KEY: "6LcfEZsdAAAAAH6DVoJexNRQRW0J_AL9uxSthwCt",' >> config/env.config.ts
+            echo '  API_URL: "http://localhost:8080/api/messages",' >> config/env.config.ts
+            echo '  BLOG_API_URL: "http://localhost:8080/api/posts",' >> config/env.config.ts
+            echo '  BLOG_VIEW_ALL_URL: "https://anshumanbiswas.com",' >> config/env.config.ts
+            echo '};' >> config/env.config.ts
+            echo '' >> config/env.config.ts
+            echo 'export default config;' >> config/env.config.ts
 
             echo "🔨 Building Docker image (native ARM64)..."
             docker build -t biswas-me-uat:$COMMIT_SHA -t biswas-me-uat:latest .
