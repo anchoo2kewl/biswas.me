@@ -37,9 +37,10 @@ jobs:
           ssh-keyscan 92.4.83.28 >> ~/.ssh/known_hosts
 
           echo "🚀 Deploying to UAT server..."
+          echo "Commit: $COMMIT_SHA"
 
           # Deploy to UAT server - build natively on ARM64
-          ssh ubuntu@92.4.83.28 bash -s << 'ENDSSH'
+          ssh ubuntu@92.4.83.28 "bash -s" << EOF
             set -e
 
             # Create deployment directory
@@ -50,43 +51,43 @@ jobs:
             if [ -d ".git" ]; then
               echo "📦 Pulling latest code..."
               git fetch origin
-              git reset --hard ${COMMIT_SHA}
+              git reset --hard $COMMIT_SHA
             else
               echo "📦 Cloning repository..."
               git clone https://github.com/anchoo2kewl/biswas.me.git .
-              git checkout ${COMMIT_SHA}
+              git checkout $COMMIT_SHA
             fi
 
             echo "🔨 Building Docker image (native ARM64)..."
-            docker build -t biswas-me-uat:${COMMIT_SHA} -t biswas-me-uat:latest .
+            docker build -t biswas-me-uat:$COMMIT_SHA -t biswas-me-uat:latest .
 
             echo "🛑 Stopping existing container..."
             docker stop biswas-me-uat || true
             docker rm biswas-me-uat || true
 
             echo "🚀 Starting new container..."
-            docker run -d --name biswas-me-uat \
-              -p 3000:3000 \
-              -p 8080:8080 \
-              --restart unless-stopped \
-              -e BLOG_API_URL=https://anshumanbiswas.com \
-              -e BLOG_API_TOKEN='${BLOG_API_TOKEN}' \
-              -e FROM_EMAIL=anshuman@biswas.me \
-              -e TO_EMAIL=anshuman@biswas.me \
-              -e MAIL_PROVIDER=brevo \
-              -e BREVO_API_KEY='${BREVO_API_KEY}' \
-              -e MAILPIT_SMTP_HOST=localhost \
-              -e MAILPIT_SMTP_PORT=1025 \
-              -e DB_PATH=./messages.db \
-              -e RECAPTCHA_SECRET_KEY='${RECAPTCHA_SECRET_KEY}' \
+            docker run -d --name biswas-me-uat \\
+              -p 3000:3000 \\
+              -p 8080:8080 \\
+              --restart unless-stopped \\
+              -e BLOG_API_URL=https://anshumanbiswas.com \\
+              -e BLOG_API_TOKEN='$BLOG_API_TOKEN' \\
+              -e FROM_EMAIL=anshuman@biswas.me \\
+              -e TO_EMAIL=anshuman@biswas.me \\
+              -e MAIL_PROVIDER=brevo \\
+              -e BREVO_API_KEY='$BREVO_API_KEY' \\
+              -e MAILPIT_SMTP_HOST=localhost \\
+              -e MAILPIT_SMTP_PORT=1025 \\
+              -e DB_PATH=./messages.db \\
+              -e RECAPTCHA_SECRET_KEY='$RECAPTCHA_SECRET_KEY' \\
               biswas-me-uat:latest
 
             echo "🧹 Cleaning up old images..."
-            docker image prune -f --filter "label=name=biswas-me-uat" --filter "until=24h"
+            docker image prune -f --filter "until=24h"
 
             echo "✅ Deployment complete!"
             docker ps --filter "name=biswas-me-uat" --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
-          ENDSSH
+          EOF
 
       - name: Verify deployment
         run: |
