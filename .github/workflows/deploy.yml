@@ -1,8 +1,8 @@
-name: Deploy biswas.me
+name: Deploy to Production
 
 on:
   push:
-    branches: [ master, main ]
+    branches: [ production, master ]
   workflow_dispatch:
 
 jobs:
@@ -30,11 +30,15 @@ jobs:
           mkdir -p ~/.ssh
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan biswas.me >> ~/.ssh/known_hosts
-          
+          ssh-keyscan 31.97.102.48 >> ~/.ssh/known_hosts
+
+          echo "🚀 Deploying to Production server (31.97.102.48)..."
+          echo "Branch: ${{ github.ref_name }}"
+          echo "Commit: ${{ github.sha }}"
+
           # Deploy using existing Mac-clean image on server
           # Pass environment variables through SSH
-          ssh ubuntu@biswas.me bash -s << EOF
+          ssh ubuntu@31.97.102.48 bash -s << EOF
             cd ~/projects/biswas.me
             docker stop biswas-me || true
             docker rm biswas-me || true
