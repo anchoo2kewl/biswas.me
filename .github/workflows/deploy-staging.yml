@@ -31,15 +31,15 @@ jobs:
           BRANCH: ${{ github.ref_name }}
         run: |
           mkdir -p ~/.ssh
-          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
           ssh-keyscan 129.213.82.37 >> ~/.ssh/known_hosts
 
           echo "🚀 Deploying to Staging server..."
           echo "Commit: $COMMIT_SHA"
 
           # Deploy to Staging server
-          ssh ubuntu@129.213.82.37 "bash -s" << EOF
+          ssh -i ~/.ssh/deploy_key ubuntu@129.213.82.37 "bash -s" << EOF
             set -e
 
             # Create deployment directory
