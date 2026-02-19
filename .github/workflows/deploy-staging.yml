@@ -72,7 +72,11 @@ jobs:
             echo "🔨 Building Docker image..."
             docker build -t biswas-me-staging:$COMMIT_SHA -t biswas-me-staging:latest .
 
-            echo "🛑 Stopping existing container..."
+            echo "🛑 Stopping existing containers on ports 3000 and 8081..."
+            # Stop any container using port 3000
+            docker ps -q --filter "publish=3000" | xargs -r docker stop || true
+            docker ps -aq --filter "publish=3000" | xargs -r docker rm || true
+            # Stop staging container by name if it exists
             docker stop biswas-me-staging || true
             docker rm biswas-me-staging || true
 
