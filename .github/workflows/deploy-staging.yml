@@ -57,8 +57,12 @@ jobs:
           CONFIGEND
 
           docker build -t biswas-me-staging:latest .
-          docker stop biswas-me-staging 2>/dev/null || true
-          docker rm biswas-me-staging 2>/dev/null || true
+
+          # Force remove any existing container (running, stopped, or created)
+          docker rm -f biswas-me-staging 2>/dev/null || true
+
+          # Wait a moment for port to be released
+          sleep 2
 
           docker run -d --name biswas-me-staging \
             -p 3001:3000 \
