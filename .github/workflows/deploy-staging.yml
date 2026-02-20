@@ -78,17 +78,17 @@ jobs:
 
             echo "⚙️  Creating Staging config file..."
             mkdir -p config
-            cat > config/env.config.ts <<'CONFIG'
-// Staging Environment Configuration
-const config = {
-  RECAPTCHA_SITE_KEY: "6LcfEZsdAAAAAH6DVoJexNRQRW0J_AL9uxSthwCt",
-  API_URL: "http://localhost:8082/api/messages",
-  BLOG_API_URL: "https://staging.anshumanbiswas.com/api/posts/formatted",
-  BLOG_VIEW_ALL_URL: "https://staging.anshumanbiswas.com",
-  BLOG_API_TOKEN: undefined,
-};
-export default config;
-CONFIG
+            printf '%s\n' \
+              '// Staging Environment Configuration' \
+              'const config = {' \
+              '  RECAPTCHA_SITE_KEY: "6LcfEZsdAAAAAH6DVoJexNRQRW0J_AL9uxSthwCt",' \
+              '  API_URL: "http://localhost:8082/api/messages",' \
+              '  BLOG_API_URL: "https://staging.anshumanbiswas.com/api/posts/formatted",' \
+              '  BLOG_VIEW_ALL_URL: "https://staging.anshumanbiswas.com",' \
+              '  BLOG_API_TOKEN: undefined,' \
+              '};' \
+              'export default config;' \
+              > config/env.config.ts
 
             echo "🔨 Building Docker image..."
             docker build -t biswas-me-staging:$COMMIT_SHA -t biswas-me-staging:latest .
