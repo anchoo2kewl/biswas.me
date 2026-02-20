@@ -82,8 +82,8 @@ jobs:
               '// Staging Environment Configuration' \
               'const config = {' \
               '  RECAPTCHA_SITE_KEY: "6LcfEZsdAAAAAH6DVoJexNRQRW0J_AL9uxSthwCt",' \
-              '  API_URL: "http://localhost:8082/api/messages",' \
-              '  BLOG_API_URL: "http://localhost:8082/api/posts",' \
+              '  API_URL: "/api/messages",' \
+              '  BLOG_API_URL: "/api/posts",' \
               '  BLOG_VIEW_ALL_URL: "https://staging.anshumanbiswas.com",' \
               '  BLOG_API_TOKEN: undefined,' \
               '};' \
