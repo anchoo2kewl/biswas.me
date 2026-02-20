@@ -46,8 +46,10 @@ type EmailConfig struct {
 }
 
 type BlogConfig struct {
-	APIURL   string
-	APIToken string
+	APIURL           string
+	APIToken         string
+	CFAccessClientID string
+	CFAccessSecret   string
 }
 
 type BlogPost struct {
@@ -89,8 +91,10 @@ func main() {
 
 	// Initialize blog configuration
 	blogConfig = BlogConfig{
-		APIURL:   getEnvWithDefault("BLOG_API_URL", "http://localhost:22222"),
-		APIToken: os.Getenv("BLOG_API_TOKEN"),
+		APIURL:           getEnvWithDefault("BLOG_API_URL", "http://localhost:22222"),
+		APIToken:         os.Getenv("BLOG_API_TOKEN"),
+		CFAccessClientID: os.Getenv("CF_ACCESS_CLIENT_ID"),
+		CFAccessSecret:   os.Getenv("CF_ACCESS_CLIENT_SECRET"),
 	}
 
 	logger.Info("Email configuration loaded", 
@@ -833,6 +837,13 @@ func fetchBlogPosts() ([]BlogPost, error) {
 	// Add authorization header
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", blogConfig.APIToken))
 	req.Header.Set("Accept", "application/json")
+
+	// Add Cloudflare Access headers if available
+	if blogConfig.CFAccessClientID != "" && blogConfig.CFAccessSecret != "" {
+		req.Header.Set("CF-Access-Client-Id", blogConfig.CFAccessClientID)
+		req.Header.Set("CF-Access-Client-Secret", blogConfig.CFAccessSecret)
+		logger.Info("Adding CF Access headers to blog API request")
+	}
 
 	// Make the request
 	resp, err := client.Do(req)

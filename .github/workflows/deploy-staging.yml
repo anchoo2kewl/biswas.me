@@ -83,7 +83,7 @@ jobs:
               'const config = {' \
               '  RECAPTCHA_SITE_KEY: "6LcfEZsdAAAAAH6DVoJexNRQRW0J_AL9uxSthwCt",' \
               '  API_URL: "http://localhost:8082/api/messages",' \
-              '  BLOG_API_URL: "https://staging.anshumanbiswas.com/api/posts/formatted",' \
+              '  BLOG_API_URL: "http://localhost:8082/api/posts",' \
               '  BLOG_VIEW_ALL_URL: "https://staging.anshumanbiswas.com",' \
               '  BLOG_API_TOKEN: undefined,' \
               '};' \
@@ -102,6 +102,7 @@ jobs:
               -p 3001:3000 \\
               -p 8082:8080 \\
               --restart unless-stopped \\
+              -e BLOG_API_URL='https://staging.anshumanbiswas.com' \\
               -e BLOG_API_TOKEN='$BLOG_API_TOKEN' \\
               -e CF_ACCESS_CLIENT_ID='$CF_ACCESS_CLIENT_ID' \\
               -e CF_ACCESS_CLIENT_SECRET='$CF_ACCESS_CLIENT_SECRET' \\
