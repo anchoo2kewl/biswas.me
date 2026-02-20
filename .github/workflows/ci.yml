@@ -22,7 +22,12 @@ jobs:
           cache: 'yarn'
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: |
+          for i in 1 2 3; do
+            yarn install --frozen-lockfile --network-timeout 60000 && break
+            echo "Attempt $i failed, retrying in 10s..."
+            sleep 10
+          done
 
       - name: Create stub config
         run: |
@@ -59,7 +64,12 @@ jobs:
           cache: 'yarn'
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: |
+          for i in 1 2 3; do
+            yarn install --frozen-lockfile --network-timeout 60000 && break
+            echo "Attempt $i failed, retrying in 10s..."
+            sleep 10
+          done
 
       - name: Create stub config
         run: |
