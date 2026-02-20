@@ -94,36 +94,6 @@ jobs:
             docker rm -f biswas-me-staging 2>/dev/null || true
             sleep 2
 
-            echo "📝 Configuring nginx..."
-            sudo tee /etc/nginx/sites-available/staging.biswas.me > /dev/null << 'NGINXCONF'
-server {
-    listen 80;
-    listen [::]:80;
-    server_name staging.biswas.me;
-
-    # API routes to Go backend
-    location /api/ {
-        proxy_pass http://127.0.0.1:8082;
-        proxy_set_header Host \$host;
-        proxy_set_header X-Forwarded-Proto \$scheme;
-        proxy_set_header X-Real-IP \$remote_addr;
-        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-    }
-
-    # Frontend routes to Next.js
-    location / {
-        proxy_pass http://127.0.0.1:3001;
-        proxy_set_header Host \$host;
-        proxy_set_header X-Forwarded-Proto \$scheme;
-        proxy_set_header X-Real-IP \$remote_addr;
-        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-    }
-}
-NGINXCONF
-
-            sudo ln -sf /etc/nginx/sites-available/staging.biswas.me /etc/nginx/sites-enabled/staging.biswas.me
-            sudo nginx -t && sudo systemctl reload nginx
-
             echo "🚀 Starting new container..."
             docker run -d --name biswas-me-staging \\
               -p 3001:3000 \\
