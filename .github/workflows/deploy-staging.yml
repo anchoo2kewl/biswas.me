@@ -100,15 +100,15 @@ jobs:
               -p 8082:8080 \\
               --restart unless-stopped \\
               -e BLOG_API_URL=https://anshumanbiswas.com \\
-              -e BLOG_API_TOKEN='$BLOG_API_TOKEN' \\
+              -e BLOG_API_TOKEN="$BLOG_API_TOKEN" \\
               -e FROM_EMAIL=anshuman@biswas.me \\
               -e TO_EMAIL=anshuman@biswas.me \\
               -e MAIL_PROVIDER=brevo \\
-              -e BREVO_API_KEY='$BREVO_API_KEY' \\
+              -e BREVO_API_KEY="$BREVO_API_KEY" \\
               -e MAILPIT_SMTP_HOST=localhost \\
               -e MAILPIT_SMTP_PORT=1025 \\
               -e DB_PATH=./messages.db \\
-              -e RECAPTCHA_SECRET_KEY='$RECAPTCHA_SECRET_KEY' \\
+              -e RECAPTCHA_SECRET_KEY="$RECAPTCHA_SECRET_KEY" \\
               biswas-me-staging:latest
 
             echo "🧹 Cleaning up old images..."
