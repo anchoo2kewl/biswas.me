@@ -26,6 +26,14 @@ export async function fetchBlogPosts(): Promise<BlogPost[]> {
       headers['Authorization'] = `Bearer ${apiToken}`;
     }
 
+    // Add Cloudflare Access headers if available
+    const cfClientId = process.env.CF_ACCESS_CLIENT_ID;
+    const cfClientSecret = process.env.CF_ACCESS_CLIENT_SECRET;
+    if (cfClientId && cfClientSecret) {
+      headers['CF-Access-Client-Id'] = cfClientId;
+      headers['CF-Access-Client-Secret'] = cfClientSecret;
+    }
+
     const response = await fetch(config.BLOG_API_URL, {
       method: 'GET',
       headers,

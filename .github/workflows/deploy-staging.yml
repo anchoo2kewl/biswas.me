@@ -44,6 +44,8 @@ jobs:
           BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
           RECAPTCHA_SECRET_KEY: ${{ secrets.RECAPTCHA_SECRET_KEY }}
           BLOG_API_TOKEN: ${{ secrets.BLOG_API_TOKEN }}
+          CF_ACCESS_CLIENT_ID: ${{ secrets.CF_ACCESS_CLIENT_ID }}
+          CF_ACCESS_CLIENT_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
           COMMIT_SHA: ${{ github.sha }}
           BRANCH: ${{ github.ref_name }}
         run: |
@@ -80,7 +82,7 @@ jobs:
             echo 'const config = {' >> config/env.config.ts
             echo '  RECAPTCHA_SITE_KEY: "6LcfEZsdAAAAAH6DVoJexNRQRW0J_AL9uxSthwCt",' >> config/env.config.ts
             echo '  API_URL: "http://localhost:8082/api/messages",' >> config/env.config.ts
-            echo '  BLOG_API_URL: "http://172.17.0.1:22222/api/posts/formatted",' >> config/env.config.ts
+            echo '  BLOG_API_URL: "https://staging.anshumanbiswas.com/api/posts/formatted",' >> config/env.config.ts
             echo '  BLOG_VIEW_ALL_URL: "https://staging.anshumanbiswas.com",' >> config/env.config.ts
             echo '  BLOG_API_TOKEN: undefined,' >> config/env.config.ts
             echo '};' >> config/env.config.ts
@@ -99,8 +101,9 @@ jobs:
               -p 3001:3000 \\
               -p 8082:8080 \\
               --restart unless-stopped \\
-              -e BLOG_API_URL=https://anshumanbiswas.com \\
               -e BLOG_API_TOKEN=$BLOG_API_TOKEN \\
+              -e CF_ACCESS_CLIENT_ID=$CF_ACCESS_CLIENT_ID \\
+              -e CF_ACCESS_CLIENT_SECRET=$CF_ACCESS_CLIENT_SECRET \\
               -e FROM_EMAIL=anshuman@biswas.me \\
               -e TO_EMAIL=anshuman@biswas.me \\
               -e MAIL_PROVIDER=brevo \\
@@ -120,7 +123,7 @@ jobs:
 
           # Copy script to server and execute
           scp -i ~/.ssh/deploy_key /tmp/deploy-staging.sh ubuntu@129.213.82.37:/tmp/deploy-staging.sh
-          ssh -i ~/.ssh/deploy_key ubuntu@129.213.82.37 "BREVO_API_KEY='$BREVO_API_KEY' BLOG_API_TOKEN='$BLOG_API_TOKEN' RECAPTCHA_SECRET_KEY='$RECAPTCHA_SECRET_KEY' COMMIT_SHA='$COMMIT_SHA' bash /tmp/deploy-staging.sh"
+          ssh -i ~/.ssh/deploy_key ubuntu@129.213.82.37 "BREVO_API_KEY='$BREVO_API_KEY' BLOG_API_TOKEN='$BLOG_API_TOKEN' RECAPTCHA_SECRET_KEY='$RECAPTCHA_SECRET_KEY' CF_ACCESS_CLIENT_ID='$CF_ACCESS_CLIENT_ID' CF_ACCESS_CLIENT_SECRET='$CF_ACCESS_CLIENT_SECRET' COMMIT_SHA='$COMMIT_SHA' bash /tmp/deploy-staging.sh"
 
       - name: Verify deployment
         run: |
