@@ -55,8 +55,8 @@ jobs:
           echo "🚀 Deploying to Staging server..."
           echo "Commit: $COMMIT_SHA"
 
-          # Deploy to Staging server
-          ssh -i ~/.ssh/deploy_key ubuntu@129.213.82.37 "bash -s" << EOF
+          # Create deployment script
+          cat > /tmp/deploy-staging.sh << 'DEPLOYSCRIPT'
             set -e
 
             # Create deployment directory
@@ -145,7 +145,11 @@ NGINXCONF
 
             echo "✅ Deployment complete!"
             docker ps --filter "name=biswas-me-staging" --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
-          EOF
+          DEPLOYSCRIPT
+
+          # Copy script to server and execute
+          scp -i ~/.ssh/deploy_key /tmp/deploy-staging.sh ubuntu@129.213.82.37:/tmp/deploy-staging.sh
+          ssh -i ~/.ssh/deploy_key ubuntu@129.213.82.37 "BREVO_API_KEY='$BREVO_API_KEY' BLOG_API_TOKEN='$BLOG_API_TOKEN' RECAPTCHA_SECRET_KEY='$RECAPTCHA_SECRET_KEY' COMMIT_SHA='$COMMIT_SHA' bash /tmp/deploy-staging.sh"
 
       - name: Verify deployment
         run: |

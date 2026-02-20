@@ -55,8 +55,8 @@ jobs:
           echo "🚀 Deploying to UAT server..."
           echo "Commit: $COMMIT_SHA"
 
-          # Deploy to UAT server - build natively on ARM64
-          ssh ubuntu@92.4.83.28 "bash -s" << EOF
+          # Create deployment script
+          cat > /tmp/deploy-uat.sh << 'DEPLOYSCRIPT'
             set -e
 
             # Create deployment directory
@@ -145,7 +145,11 @@ NGINXCONF
 
             echo "✅ Deployment complete!"
             docker ps --filter "name=biswas-me-uat" --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
-          EOF
+          DEPLOYSCRIPT
+
+          # Copy script to server and execute
+          scp -i ~/.ssh/id_rsa /tmp/deploy-uat.sh ubuntu@92.4.83.28:/tmp/deploy-uat.sh
+          ssh -i ~/.ssh/id_rsa ubuntu@92.4.83.28 "BREVO_API_KEY='$BREVO_API_KEY' BLOG_API_TOKEN='$BLOG_API_TOKEN' RECAPTCHA_SECRET_KEY='$RECAPTCHA_SECRET_KEY' COMMIT_SHA='$COMMIT_SHA' bash /tmp/deploy-uat.sh"
 
       - name: Verify deployment
         run: |
