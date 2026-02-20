@@ -40,15 +40,15 @@ jobs:
             fi
 
             mkdir -p config
-            cat > config/env.config.ts << 'CONFIGEND'
-const config = {
-  RECAPTCHA_SITE_KEY: "6LcfEZsdAAAAAH6DVoJexNRQRW0J_AL9uxSthwCt",
-  API_URL: "http://localhost:8080/api/messages",
-  BLOG_API_URL: "http://localhost:8080/api/posts",
-  BLOG_VIEW_ALL_URL: "https://staging.anshumanbiswas.com",
-};
-export default config;
-CONFIGEND
+            printf '%s\n' \\
+              'const config = {' \\
+              '  RECAPTCHA_SITE_KEY: "6LcfEZsdAAAAAH6DVoJexNRQRW0J_AL9uxSthwCt",' \\
+              '  API_URL: "http://localhost:8080/api/messages",' \\
+              '  BLOG_API_URL: "http://localhost:8080/api/posts",' \\
+              '  BLOG_VIEW_ALL_URL: "https://staging.anshumanbiswas.com",' \\
+              '};' \\
+              'export default config;' \\
+              > config/env.config.ts
 
             docker build -t biswas-me-staging:latest .
             docker stop biswas-me-staging 2>/dev/null || true
