@@ -57,8 +57,8 @@ jobs:
           echo "🚀 Deploying to UAT server..."
           echo "Commit: $COMMIT_SHA"
 
-          # Create deployment script
-          cat > /tmp/deploy-uat.sh << 'DEPLOYSCRIPT'
+          # Deploy directly via SSH
+          ssh -i ~/.ssh/id_rsa ubuntu@92.4.83.28 bash -s <<EOF
             set -e
 
             # Create deployment directory
@@ -97,36 +97,6 @@ jobs:
             docker rm -f biswas-me-uat 2>/dev/null || true
             sleep 2
 
-            echo "📝 Configuring nginx..."
-            sudo tee /etc/nginx/sites-available/uat.biswas.me > /dev/null << 'NGINXCONF'
-server {
-    listen 80;
-    listen [::]:80;
-    server_name uat.biswas.me;
-
-    # API routes to Go backend
-    location /api/ {
-        proxy_pass http://127.0.0.1:8080;
-        proxy_set_header Host \$host;
-        proxy_set_header X-Forwarded-Proto \$scheme;
-        proxy_set_header X-Real-IP \$remote_addr;
-        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-    }
-
-    # Frontend routes to Next.js
-    location / {
-        proxy_pass http://127.0.0.1:3000;
-        proxy_set_header Host \$host;
-        proxy_set_header X-Forwarded-Proto \$scheme;
-        proxy_set_header X-Real-IP \$remote_addr;
-        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-    }
-}
-NGINXCONF
-
-            sudo ln -sf /etc/nginx/sites-available/uat.biswas.me /etc/nginx/sites-enabled/uat.biswas.me
-            sudo nginx -t && sudo systemctl reload nginx
-
             echo "🚀 Starting new container..."
             docker run -d --name biswas-me-uat \\
               -p 3000:3000 \\
@@ -151,11 +121,7 @@ NGINXCONF
 
             echo "✅ Deployment complete!"
             docker ps --filter "name=biswas-me-uat" --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
-          DEPLOYSCRIPT
-
-          # Copy script to server and execute
-          scp -i ~/.ssh/id_rsa /tmp/deploy-uat.sh ubuntu@92.4.83.28:/tmp/deploy-uat.sh
-          ssh -i ~/.ssh/id_rsa ubuntu@92.4.83.28 "BREVO_API_KEY='$BREVO_API_KEY' BLOG_API_TOKEN='$BLOG_API_TOKEN' CF_ACCESS_CLIENT_ID='$CF_ACCESS_CLIENT_ID' CF_ACCESS_CLIENT_SECRET='$CF_ACCESS_CLIENT_SECRET' RECAPTCHA_SECRET_KEY='$RECAPTCHA_SECRET_KEY' COMMIT_SHA='$COMMIT_SHA' bash /tmp/deploy-uat.sh"
+          EOF
 
       - name: Verify deployment
         run: |
