@@ -2,7 +2,7 @@ name: Deploy to UAT
 
 on:
   push:
-    branches: [ uat, develop ]
+    branches: [ uat ]
   workflow_dispatch:
     inputs:
       environment:
@@ -27,7 +27,7 @@ jobs:
           scan-ref: '.'
           format: 'table'
           severity: 'CRITICAL,HIGH'
-          exit-code: '0'  # Non-blocking (warn only)
+          exit-code: '1'  # Fail if vulnerabilities found
           ignore-unfixed: true
 
   deploy-uat:
@@ -103,7 +103,7 @@ jobs:
               -p 8080:8080 \\
               --restart unless-stopped \\
               -e BLOG_API_URL='https://uat.anshumanbiswas.com' \\
-              -e BLOG_API_TOKEN='uatSecretToken123' \\
+              -e BLOG_API_TOKEN='$BLOG_API_TOKEN' \\
               -e CF_ACCESS_CLIENT_ID='$CF_ACCESS_CLIENT_ID' \\
               -e CF_ACCESS_CLIENT_SECRET='$CF_ACCESS_CLIENT_SECRET' \\
               -e FROM_EMAIL=anshuman@biswas.me \\
