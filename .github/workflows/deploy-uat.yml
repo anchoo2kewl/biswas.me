@@ -44,6 +44,8 @@ jobs:
           BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
           RECAPTCHA_SECRET_KEY: ${{ secrets.RECAPTCHA_SECRET_KEY }}
           BLOG_API_TOKEN: ${{ secrets.BLOG_API_TOKEN }}
+          CF_ACCESS_CLIENT_ID: ${{ secrets.CF_ACCESS_CLIENT_ID }}
+          CF_ACCESS_CLIENT_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
           COMMIT_SHA: ${{ github.sha }}
           BRANCH: ${{ github.ref_name }}
         run: |
@@ -55,8 +57,8 @@ jobs:
           echo "🚀 Deploying to UAT server..."
           echo "Commit: $COMMIT_SHA"
 
-          # Deploy to UAT server - build natively on ARM64
-          ssh ubuntu@92.4.83.28 "bash -s" << EOF
+          # Create deployment script
+          cat > /tmp/deploy-uat.sh << 'DEPLOYSCRIPT'
             set -e
 
             # Create deployment directory
@@ -76,30 +78,64 @@ jobs:
 
             echo "⚙️  Creating UAT config file..."
             mkdir -p config
-            echo '// UAT Environment Configuration' > config/env.config.ts
-            echo 'const config = {' >> config/env.config.ts
-            echo '  RECAPTCHA_SITE_KEY: "6LcfEZsdAAAAAH6DVoJexNRQRW0J_AL9uxSthwCt",' >> config/env.config.ts
-            echo '  API_URL: "http://localhost:8080/api/messages",' >> config/env.config.ts
-            echo '  BLOG_API_URL: "http://localhost:8080/api/posts",' >> config/env.config.ts
-            echo '  BLOG_VIEW_ALL_URL: "https://anshumanbiswas.com",' >> config/env.config.ts
-            echo '};' >> config/env.config.ts
-            echo '' >> config/env.config.ts
-            echo 'export default config;' >> config/env.config.ts
+            printf '%s\n' \
+              '// UAT Environment Configuration' \
+              'const config = {' \
+              '  RECAPTCHA_SITE_KEY: "6LcfEZsdAAAAAH6DVoJexNRQRW0J_AL9uxSthwCt",' \
+              '  API_URL: "/api/messages",' \
+              '  BLOG_API_URL: "/api/posts",' \
+              '  BLOG_VIEW_ALL_URL: "https://uat.anshumanbiswas.com",' \
+              '  BLOG_API_TOKEN: undefined,' \
+              '};' \
+              'export default config;' \
+              > config/env.config.ts
 
             echo "🔨 Building Docker image (native ARM64)..."
             docker build -t biswas-me-uat:$COMMIT_SHA -t biswas-me-uat:latest .
 
             echo "🛑 Stopping existing container..."
-            docker stop biswas-me-uat || true
-            docker rm biswas-me-uat || true
+            docker rm -f biswas-me-uat 2>/dev/null || true
+            sleep 2
+
+            echo "📝 Configuring nginx..."
+            sudo tee /etc/nginx/sites-available/uat.biswas.me > /dev/null << 'NGINXCONF'
+server {
+    listen 80;
+    listen [::]:80;
+    server_name uat.biswas.me;
+
+    # API routes to Go backend
+    location /api/ {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Forwarded-Proto \$scheme;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+    }
+
+    # Frontend routes to Next.js
+    location / {
+        proxy_pass http://127.0.0.1:3000;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Forwarded-Proto \$scheme;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+    }
+}
+NGINXCONF
+
+            sudo ln -sf /etc/nginx/sites-available/uat.biswas.me /etc/nginx/sites-enabled/uat.biswas.me
+            sudo nginx -t && sudo systemctl reload nginx
 
             echo "🚀 Starting new container..."
             docker run -d --name biswas-me-uat \\
               -p 3000:3000 \\
               -p 8080:8080 \\
               --restart unless-stopped \\
-              -e BLOG_API_URL=https://anshumanbiswas.com \\
+              -e BLOG_API_URL='https://uat.anshumanbiswas.com' \\
               -e BLOG_API_TOKEN='$BLOG_API_TOKEN' \\
+              -e CF_ACCESS_CLIENT_ID='$CF_ACCESS_CLIENT_ID' \\
+              -e CF_ACCESS_CLIENT_SECRET='$CF_ACCESS_CLIENT_SECRET' \\
               -e FROM_EMAIL=anshuman@biswas.me \\
               -e TO_EMAIL=anshuman@biswas.me \\
               -e MAIL_PROVIDER=brevo \\
@@ -115,7 +151,11 @@ jobs:
 
             echo "✅ Deployment complete!"
             docker ps --filter "name=biswas-me-uat" --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
-          EOF
+          DEPLOYSCRIPT
+
+          # Copy script to server and execute
+          scp -i ~/.ssh/id_rsa /tmp/deploy-uat.sh ubuntu@92.4.83.28:/tmp/deploy-uat.sh
+          ssh -i ~/.ssh/id_rsa ubuntu@92.4.83.28 "BREVO_API_KEY='$BREVO_API_KEY' BLOG_API_TOKEN='$BLOG_API_TOKEN' CF_ACCESS_CLIENT_ID='$CF_ACCESS_CLIENT_ID' CF_ACCESS_CLIENT_SECRET='$CF_ACCESS_CLIENT_SECRET' RECAPTCHA_SECRET_KEY='$RECAPTCHA_SECRET_KEY' COMMIT_SHA='$COMMIT_SHA' bash /tmp/deploy-uat.sh"
 
       - name: Verify deployment
         run: |
