@@ -92,6 +92,10 @@ jobs:
               'export default config;' \
               > config/env.config.ts
 
+            echo "🧹 Cleaning up Docker build cache and unused images to free disk space..."
+            docker builder prune -af || true
+            docker image prune -af || true
+
             echo "🔨 Building Docker image (native ARM64)..."
             docker build -t biswas-me-uat:$COMMIT_SHA -t biswas-me-uat:latest .
 
@@ -117,9 +121,6 @@ jobs:
               -e DB_PATH=./messages.db \\
               -e RECAPTCHA_SECRET_KEY='$RECAPTCHA_SECRET_KEY' \\
               biswas-me-uat:latest
-
-            echo "🧹 Cleaning up old images..."
-            docker image prune -f --filter "until=24h"
 
             echo "✅ Container deployment complete!"
             docker ps --filter "name=biswas-me-uat" --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
