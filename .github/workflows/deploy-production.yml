@@ -60,15 +60,15 @@ jobs:
 
             echo "⚙️  Creating Production config file..."
             mkdir -p config
-            cat > config/env.config.ts << CONFIGEOF
-            const config = {
-              RECAPTCHA_SITE_KEY: "6LcfEZsdAAAAAH6DVoJexNRQRW0J_AL9uxSthwCt",
-              API_URL: "http://localhost:8080/api/messages",
-              BLOG_API_URL: "http://localhost:8080/api/posts",
-              BLOG_VIEW_ALL_URL: "https://anshumanbiswas.com",
-            };
-            export default config;
-CONFIGEOF
+            cat > config/env.config.ts <<- 'CONFIGEOF'
+		const config = {
+		  RECAPTCHA_SITE_KEY: "6LcfEZsdAAAAAH6DVoJexNRQRW0J_AL9uxSthwCt",
+		  API_URL: "http://localhost:8080/api/messages",
+		  BLOG_API_URL: "http://localhost:8080/api/posts",
+		  BLOG_VIEW_ALL_URL: "https://anshumanbiswas.com",
+		};
+		export default config;
+		CONFIGEOF
 
             echo "🔨 Building Docker image..."
             docker build -t biswasme_portfolio:latest .
