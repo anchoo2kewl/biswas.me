@@ -103,7 +103,7 @@ jobs:
               -p 8081:8080 \\
               --restart unless-stopped \\
               -e BLOG_API_URL='https://anshumanbiswas.com' \\
-              -e BLOG_API_TOKEN='productionSecretToken456' \\
+              -e BLOG_API_TOKEN='$BLOG_API_TOKEN' \\
               -e FROM_EMAIL=anshuman@biswas.me \\
               -e TO_EMAIL=anshuman@biswas.me \\
               -e MAIL_PROVIDER=brevo \\
