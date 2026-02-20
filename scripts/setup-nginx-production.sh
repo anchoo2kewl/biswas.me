@@ -116,6 +116,9 @@ server {
 }
 NGINX_CONF
 
+echo "==> Removing default site to avoid SSL conflicts..."
+rm -f /etc/nginx/sites-enabled/default
+
 echo "==> Enabling site..."
 ln -sf "/etc/nginx/sites-available/$DOMAIN" "/etc/nginx/sites-enabled/$DOMAIN"
 
