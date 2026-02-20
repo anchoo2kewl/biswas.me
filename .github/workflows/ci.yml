@@ -24,6 +24,20 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
+      - name: Create stub config
+        run: |
+          mkdir -p config
+          cat > config/env.config.ts << 'CONF'
+          const config = {
+            RECAPTCHA_SITE_KEY: "stub",
+            API_URL: "/api/messages",
+            BLOG_API_URL: "/api/posts",
+            BLOG_VIEW_ALL_URL: "https://anshumanbiswas.com",
+            BLOG_API_TOKEN: undefined,
+          };
+          export default config;
+          CONF
+
       - name: Lint
         run: yarn lint
 
