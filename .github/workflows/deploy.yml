@@ -33,6 +33,7 @@ jobs:
   deploy-production:
     needs: security-scan  # Only deploy if security scan passes
     runs-on: ubuntu-latest
+    environment: production
 
     steps:
       - name: Checkout code
@@ -44,6 +45,7 @@ jobs:
           BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
           RECAPTCHA_SECRET_KEY: ${{ secrets.RECAPTCHA_SECRET_KEY }}
           BLOG_API_TOKEN: ${{ secrets.BLOG_API_TOKEN }}
+          CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           COMMIT_SHA: ${{ github.sha }}
           BRANCH: ${{ github.ref_name }}
         run: |
@@ -115,8 +117,18 @@ jobs:
             echo "🧹 Cleaning up old images..."
             docker image prune -f --filter "until=24h"
 
-            echo "✅ Deployment complete!"
+            echo "✅ Container deployment complete!"
             docker ps --filter "name=biswas-me" --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+
+            # Setup nginx + SSL
+            echo "🔐 Setting up nginx + SSL..."
+            chmod +x scripts/setup-cloudflare-ssl.sh scripts/setup-nginx-production.sh
+            if [ ! -z "$CF_API_TOKEN" ]; then
+              sudo CF_API_TOKEN='$CF_API_TOKEN' ./scripts/setup-cloudflare-ssl.sh biswas.me
+            fi
+            sudo ./scripts/setup-nginx-production.sh
+            sudo systemctl reload nginx
+            echo "✅ Nginx + SSL setup complete!"
           EOF
 
       - name: Verify deployment
@@ -126,7 +138,7 @@ jobs:
           sleep 30
 
           echo "🔍 Testing Production endpoint..."
-          curl -f --connect-timeout 30 --max-time 60 http://31.97.102.48:3000 || {
+          curl -f --connect-timeout 30 --max-time 60 -H "Host: biswas.me" http://31.97.102.48 || {
             echo "⚠️  Health check failed (non-blocking)"
             exit 0
           }

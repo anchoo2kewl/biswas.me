@@ -33,6 +33,7 @@ jobs:
   deploy-uat:
     needs: security-scan  # Only deploy if security scan passes
     runs-on: ubuntu-latest
+    environment: uat
 
     steps:
       - name: Checkout code
@@ -46,6 +47,7 @@ jobs:
           BLOG_API_TOKEN: ${{ secrets.BLOG_API_TOKEN }}
           CF_ACCESS_CLIENT_ID: ${{ secrets.CF_ACCESS_CLIENT_ID }}
           CF_ACCESS_CLIENT_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
+          CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           COMMIT_SHA: ${{ github.sha }}
           BRANCH: ${{ github.ref_name }}
         run: |
@@ -119,8 +121,18 @@ jobs:
             echo "🧹 Cleaning up old images..."
             docker image prune -f --filter "until=24h"
 
-            echo "✅ Deployment complete!"
+            echo "✅ Container deployment complete!"
             docker ps --filter "name=biswas-me-uat" --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+
+            # Setup nginx + SSL
+            echo "🔐 Setting up nginx + SSL..."
+            chmod +x scripts/setup-cloudflare-ssl.sh scripts/setup-nginx-uat.sh
+            if [ ! -z "$CF_API_TOKEN" ]; then
+              sudo CF_API_TOKEN='$CF_API_TOKEN' ./scripts/setup-cloudflare-ssl.sh uat.biswas.me
+            fi
+            sudo ./scripts/setup-nginx-uat.sh
+            sudo systemctl reload nginx
+            echo "✅ Nginx + SSL setup complete!"
           EOF
 
       - name: Verify deployment
@@ -130,7 +142,7 @@ jobs:
           sleep 30
 
           echo "🔍 Testing UAT endpoint..."
-          curl -f --connect-timeout 30 --max-time 60 http://92.4.83.28:3000 || {
+          curl -f --connect-timeout 30 --max-time 60 -H "Host: uat.biswas.me" http://92.4.83.28 || {
             echo "⚠️  Health check failed (non-blocking)"
             exit 0
           }
