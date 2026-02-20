@@ -1,32 +1,29 @@
-name: Deploy to UAT
+name: Deploy to Staging
 
 on:
-  pull_request:
-    types: [ closed ]
-    branches: [ uat ]
+  push:
+    branches: [ main, master ]
   workflow_dispatch:
     inputs:
       environment:
         description: 'Environment to deploy'
         required: true
-        default: 'uat'
+        default: 'staging'
         type: choice
         options:
-          - uat
+          - staging
 
 jobs:
-  deploy-uat:
+  deploy-staging:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true || github.event_name == 'workflow_dispatch'
-    environment: uat
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Deploy to UAT server
+      - name: Deploy to Staging server
         env:
-          SSH_PRIVATE_KEY: ${{ secrets.UAT_SSH_PRIVATE_KEY }}
+          SSH_PRIVATE_KEY: ${{ secrets.STAGING_SSH_PRIVATE_KEY }}
           BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
           RECAPTCHA_SECRET_KEY: ${{ secrets.RECAPTCHA_SECRET_KEY }}
           BLOG_API_TOKEN: ${{ secrets.BLOG_API_TOKEN }}
@@ -36,18 +33,18 @@ jobs:
           mkdir -p ~/.ssh
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan 92.4.83.28 >> ~/.ssh/known_hosts
+          ssh-keyscan 129.213.82.37 >> ~/.ssh/known_hosts
 
-          echo "🚀 Deploying to UAT server..."
+          echo "🚀 Deploying to Staging server..."
           echo "Commit: $COMMIT_SHA"
 
-          # Deploy to UAT server - build natively on ARM64
-          ssh ubuntu@92.4.83.28 "bash -s" << EOF
+          # Deploy to Staging server - build natively on ARM64
+          ssh ubuntu@129.213.82.37 "bash -s" << EOF
             set -e
 
             # Create deployment directory
-            mkdir -p ~/biswas-me-uat
-            cd ~/biswas-me-uat
+            mkdir -p ~/biswas-me-staging
+            cd ~/biswas-me-staging
 
             # Clone or pull latest code
             if [ -d ".git" ]; then
@@ -60,33 +57,33 @@ jobs:
               git checkout $COMMIT_SHA
             fi
 
-            echo "⚙️  Creating UAT config file..."
+            echo "⚙️  Creating Staging config file..."
             mkdir -p config
             cat > config/env.config.ts << 'CONFIGEOF'
-// UAT Environment Configuration
+// Staging Environment Configuration
 const config = {
   RECAPTCHA_SITE_KEY: "6LcfEZsdAAAAAH6DVoJexNRQRW0J_AL9uxSthwCt",
   API_URL: "http://localhost:8080/api/messages",
   BLOG_API_URL: "http://localhost:8080/api/posts",
-  BLOG_VIEW_ALL_URL: "https://uat.anshumanbiswas.com",
+  BLOG_VIEW_ALL_URL: "https://staging.anshumanbiswas.com",
 };
 
 export default config;
 CONFIGEOF
 
             echo "🔨 Building Docker image (native ARM64)..."
-            docker build -t biswas-me-uat:$COMMIT_SHA -t biswas-me-uat:latest .
+            docker build -t biswas-me-staging:$COMMIT_SHA -t biswas-me-staging:latest .
 
             echo "🛑 Stopping existing container..."
-            docker stop biswas-me-uat || true
-            docker rm biswas-me-uat || true
+            docker stop biswas-me-staging || true
+            docker rm biswas-me-staging || true
 
             echo "🚀 Starting new container..."
-            docker run -d --name biswas-me-uat \\
-              -p 3000:3000 \\
-              -p 8080:8080 \\
+            docker run -d --name biswas-me-staging \\
+              -p 3001:3000 \\
+              -p 8082:8080 \\
               --restart unless-stopped \\
-              -e BLOG_API_URL=https://uat.anshumanbiswas.com \\
+              -e BLOG_API_URL=https://staging.anshumanbiswas.com \\
               -e BLOG_API_TOKEN='$BLOG_API_TOKEN' \\
               -e FROM_EMAIL=anshuman@biswas.me \\
               -e TO_EMAIL=anshuman@biswas.me \\
@@ -96,13 +93,13 @@ CONFIGEOF
               -e MAILPIT_SMTP_PORT=1025 \\
               -e DB_PATH=./messages.db \\
               -e RECAPTCHA_SECRET_KEY='$RECAPTCHA_SECRET_KEY' \\
-              biswas-me-uat:latest
+              biswas-me-staging:latest
 
             echo "🧹 Cleaning up old images..."
             docker image prune -f --filter "until=24h"
 
             echo "✅ Deployment complete!"
-            docker ps --filter "name=biswas-me-uat" --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+            docker ps --filter "name=biswas-me-staging" --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
           EOF
 
       - name: Verify deployment
@@ -110,8 +107,8 @@ CONFIGEOF
           echo "⏳ Waiting for application to start..."
           sleep 10
 
-          echo "🔍 Testing UAT endpoint..."
-          curl -f http://92.4.83.28:3000 || {
+          echo "🔍 Testing Staging endpoint..."
+          curl -f http://129.213.82.37:3001 || {
             echo "❌ Health check failed"
             exit 1
           }
@@ -120,13 +117,14 @@ CONFIGEOF
 
       - name: Deployment summary
         run: |
-          echo "## 🚀 UAT Deployment Successful" >> $GITHUB_STEP_SUMMARY
+          echo "## 🚀 Staging Deployment Successful" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "- **Server:** 92.4.83.28" >> $GITHUB_STEP_SUMMARY
+          echo "- **Server:** 129.213.82.37" >> $GITHUB_STEP_SUMMARY
           echo "- **Branch:** \`${{ github.ref_name }}\`" >> $GITHUB_STEP_SUMMARY
           echo "- **Commit:** \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
           echo "- **Build:** Native ARM64 (built on server)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Access:**" >> $GITHUB_STEP_SUMMARY
-          echo "- Frontend: http://92.4.83.28:3000" >> $GITHUB_STEP_SUMMARY
-          echo "- Backend: http://92.4.83.28:8080" >> $GITHUB_STEP_SUMMARY
+          echo "- Frontend: http://129.213.82.37:3001" >> $GITHUB_STEP_SUMMARY
+          echo "- Backend: http://129.213.82.37:8082" >> $GITHUB_STEP_SUMMARY
+          echo "- Pulls blog posts from: https://staging.anshumanbiswas.com" >> $GITHUB_STEP_SUMMARY
