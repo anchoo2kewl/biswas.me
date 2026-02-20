@@ -4,14 +4,6 @@ on:
   push:
     branches: [ main, master ]
   workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Environment to deploy'
-        required: true
-        default: 'staging'
-        type: choice
-        options:
-          - staging
 
 jobs:
   deploy-staging:
@@ -28,101 +20,61 @@ jobs:
           RECAPTCHA_SECRET_KEY: ${{ secrets.RECAPTCHA_SECRET_KEY }}
           BLOG_API_TOKEN: ${{ secrets.BLOG_API_TOKEN }}
           COMMIT_SHA: ${{ github.sha }}
-          BRANCH: ${{ github.ref_name }}
         run: |
           mkdir -p ~/.ssh
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan 129.213.82.37 >> ~/.ssh/known_hosts
 
-          echo "🚀 Deploying to Staging server..."
-          echo "Commit: $COMMIT_SHA"
-
-          # Deploy to Staging server - build natively on ARM64
-          ssh ubuntu@129.213.82.37 "bash -s" << EOF
+          ssh ubuntu@129.213.82.37 bash << EOF
             set -e
-
-            # Create deployment directory
             mkdir -p ~/biswas-me-staging
             cd ~/biswas-me-staging
 
-            # Clone or pull latest code
             if [ -d ".git" ]; then
-              echo "📦 Pulling latest code..."
               git fetch origin
-              git reset --hard $COMMIT_SHA
+              git reset --hard ${COMMIT_SHA}
             else
-              echo "📦 Cloning repository..."
               git clone https://github.com/anchoo2kewl/biswas.me.git .
-              git checkout $COMMIT_SHA
+              git checkout ${COMMIT_SHA}
             fi
 
-            echo "⚙️  Creating Staging config file..."
             mkdir -p config
-            cat > config/env.config.ts <<- 'CONFIGEOF'
-		const config = {
-		  RECAPTCHA_SITE_KEY: "6LcfEZsdAAAAAH6DVoJexNRQRW0J_AL9uxSthwCt",
-		  API_URL: "http://localhost:8080/api/messages",
-		  BLOG_API_URL: "http://localhost:8080/api/posts",
-		  BLOG_VIEW_ALL_URL: "https://staging.anshumanbiswas.com",
-		};
-		export default config;
-		CONFIGEOF
+            cat > config/env.config.ts << 'CONFIGEND'
+const config = {
+  RECAPTCHA_SITE_KEY: "6LcfEZsdAAAAAH6DVoJexNRQRW0J_AL9uxSthwCt",
+  API_URL: "http://localhost:8080/api/messages",
+  BLOG_API_URL: "http://localhost:8080/api/posts",
+  BLOG_VIEW_ALL_URL: "https://staging.anshumanbiswas.com",
+};
+export default config;
+CONFIGEND
 
-            echo "🔨 Building Docker image (native ARM64)..."
-            docker build -t biswas-me-staging:$COMMIT_SHA -t biswas-me-staging:latest .
+            docker build -t biswas-me-staging:latest .
+            docker stop biswas-me-staging 2>/dev/null || true
+            docker rm biswas-me-staging 2>/dev/null || true
 
-            echo "🛑 Stopping existing container..."
-            docker stop biswas-me-staging || true
-            docker rm biswas-me-staging || true
-
-            echo "🚀 Starting new container..."
             docker run -d --name biswas-me-staging \\
               -p 3001:3000 \\
               -p 8082:8080 \\
               --restart unless-stopped \\
               -e BLOG_API_URL=https://staging.anshumanbiswas.com \\
-              -e BLOG_API_TOKEN='$BLOG_API_TOKEN' \\
+              -e BLOG_API_TOKEN='${BLOG_API_TOKEN}' \\
               -e FROM_EMAIL=anshuman@biswas.me \\
               -e TO_EMAIL=anshuman@biswas.me \\
               -e MAIL_PROVIDER=brevo \\
-              -e BREVO_API_KEY='$BREVO_API_KEY' \\
+              -e BREVO_API_KEY='${BREVO_API_KEY}' \\
               -e MAILPIT_SMTP_HOST=localhost \\
               -e MAILPIT_SMTP_PORT=1025 \\
               -e DB_PATH=./messages.db \\
-              -e RECAPTCHA_SECRET_KEY='$RECAPTCHA_SECRET_KEY' \\
+              -e RECAPTCHA_SECRET_KEY='${RECAPTCHA_SECRET_KEY}' \\
               biswas-me-staging:latest
 
-            echo "🧹 Cleaning up old images..."
             docker image prune -f --filter "until=24h"
-
-            echo "✅ Deployment complete!"
-            docker ps --filter "name=biswas-me-staging" --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
-          EOF
+            docker ps --filter "name=biswas-me-staging"
+EOF
 
       - name: Verify deployment
         run: |
-          echo "⏳ Waiting for application to start..."
           sleep 10
-
-          echo "🔍 Testing Staging endpoint..."
-          curl -f http://129.213.82.37:3001 || {
-            echo "❌ Health check failed"
-            exit 1
-          }
-
-          echo "✅ Health check passed"
-
-      - name: Deployment summary
-        run: |
-          echo "## 🚀 Staging Deployment Successful" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "- **Server:** 129.213.82.37" >> $GITHUB_STEP_SUMMARY
-          echo "- **Branch:** \`${{ github.ref_name }}\`" >> $GITHUB_STEP_SUMMARY
-          echo "- **Commit:** \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
-          echo "- **Build:** Native ARM64 (built on server)" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Access:**" >> $GITHUB_STEP_SUMMARY
-          echo "- Frontend: http://129.213.82.37:3001" >> $GITHUB_STEP_SUMMARY
-          echo "- Backend: http://129.213.82.37:8082" >> $GITHUB_STEP_SUMMARY
-          echo "- Pulls blog posts from: https://staging.anshumanbiswas.com" >> $GITHUB_STEP_SUMMARY
+          curl -f http://129.213.82.37:3001 || exit 1
