@@ -103,7 +103,7 @@ jobs:
               -p 8080:8080 \\
               --restart unless-stopped \\
               -e BLOG_API_URL='https://uat.anshumanbiswas.com' \\
-              -e BLOG_API_TOKEN='$BLOG_API_TOKEN' \\
+              -e BLOG_API_TOKEN='uatSecretToken123' \\
               -e CF_ACCESS_CLIENT_ID='$CF_ACCESS_CLIENT_ID' \\
               -e CF_ACCESS_CLIENT_SECRET='$CF_ACCESS_CLIENT_SECRET' \\
               -e FROM_EMAIL=anshuman@biswas.me \\
