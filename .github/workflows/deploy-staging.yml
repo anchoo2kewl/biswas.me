@@ -80,8 +80,9 @@ jobs:
             echo 'const config = {' >> config/env.config.ts
             echo '  RECAPTCHA_SITE_KEY: "6LcfEZsdAAAAAH6DVoJexNRQRW0J_AL9uxSthwCt",' >> config/env.config.ts
             echo '  API_URL: "http://localhost:8082/api/messages",' >> config/env.config.ts
-            echo '  BLOG_API_URL: "http://localhost:8082/api/posts",' >> config/env.config.ts
-            echo '  BLOG_VIEW_ALL_URL: "https://anshumanbiswas.com",' >> config/env.config.ts
+            echo '  BLOG_API_URL: "http://172.17.0.1:22222/api/posts/formatted",' >> config/env.config.ts
+            echo '  BLOG_VIEW_ALL_URL: "https://staging.anshumanbiswas.com",' >> config/env.config.ts
+            echo '  BLOG_API_TOKEN: undefined,' >> config/env.config.ts
             echo '};' >> config/env.config.ts
             echo '' >> config/env.config.ts
             echo 'export default config;' >> config/env.config.ts
