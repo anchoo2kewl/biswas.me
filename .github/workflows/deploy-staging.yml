@@ -26,7 +26,7 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan 129.213.82.37 >> ~/.ssh/known_hosts
 
-          ssh ubuntu@129.213.82.37 bash << EOF
+          ssh -i ~/.ssh/id_rsa ubuntu@129.213.82.37 "bash -s" << EOF
             set -e
             mkdir -p ~/biswas-me-staging
             cd ~/biswas-me-staging
