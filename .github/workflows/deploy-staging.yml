@@ -57,8 +57,8 @@ jobs:
           echo "🚀 Deploying to Staging server..."
           echo "Commit: $COMMIT_SHA"
 
-          # Create deployment script
-          cat > /tmp/deploy-staging.sh << 'DEPLOYSCRIPT'
+          # Deploy directly via SSH
+          ssh -i ~/.ssh/deploy_key ubuntu@129.213.82.37 bash -s <<EOF
             set -e
 
             # Create deployment directory
@@ -78,16 +78,17 @@ jobs:
 
             echo "⚙️  Creating Staging config file..."
             mkdir -p config
-            echo '// Staging Environment Configuration' > config/env.config.ts
-            echo 'const config = {' >> config/env.config.ts
-            echo '  RECAPTCHA_SITE_KEY: "6LcfEZsdAAAAAH6DVoJexNRQRW0J_AL9uxSthwCt",' >> config/env.config.ts
-            echo '  API_URL: "http://localhost:8082/api/messages",' >> config/env.config.ts
-            echo '  BLOG_API_URL: "https://staging.anshumanbiswas.com/api/posts/formatted",' >> config/env.config.ts
-            echo '  BLOG_VIEW_ALL_URL: "https://staging.anshumanbiswas.com",' >> config/env.config.ts
-            echo '  BLOG_API_TOKEN: undefined,' >> config/env.config.ts
-            echo '};' >> config/env.config.ts
-            echo '' >> config/env.config.ts
-            echo 'export default config;' >> config/env.config.ts
+            cat > config/env.config.ts <<'CONFIG'
+// Staging Environment Configuration
+const config = {
+  RECAPTCHA_SITE_KEY: "6LcfEZsdAAAAAH6DVoJexNRQRW0J_AL9uxSthwCt",
+  API_URL: "http://localhost:8082/api/messages",
+  BLOG_API_URL: "https://staging.anshumanbiswas.com/api/posts/formatted",
+  BLOG_VIEW_ALL_URL: "https://staging.anshumanbiswas.com",
+  BLOG_API_TOKEN: undefined,
+};
+export default config;
+CONFIG
 
             echo "🔨 Building Docker image..."
             docker build -t biswas-me-staging:$COMMIT_SHA -t biswas-me-staging:latest .
@@ -101,17 +102,17 @@ jobs:
               -p 3001:3000 \\
               -p 8082:8080 \\
               --restart unless-stopped \\
-              -e BLOG_API_TOKEN=$BLOG_API_TOKEN \\
-              -e CF_ACCESS_CLIENT_ID=$CF_ACCESS_CLIENT_ID \\
-              -e CF_ACCESS_CLIENT_SECRET=$CF_ACCESS_CLIENT_SECRET \\
+              -e BLOG_API_TOKEN='$BLOG_API_TOKEN' \\
+              -e CF_ACCESS_CLIENT_ID='$CF_ACCESS_CLIENT_ID' \\
+              -e CF_ACCESS_CLIENT_SECRET='$CF_ACCESS_CLIENT_SECRET' \\
               -e FROM_EMAIL=anshuman@biswas.me \\
               -e TO_EMAIL=anshuman@biswas.me \\
               -e MAIL_PROVIDER=brevo \\
-              -e BREVO_API_KEY=$BREVO_API_KEY \\
+              -e BREVO_API_KEY='$BREVO_API_KEY' \\
               -e MAILPIT_SMTP_HOST=localhost \\
               -e MAILPIT_SMTP_PORT=1025 \\
               -e DB_PATH=./messages.db \\
-              -e RECAPTCHA_SECRET_KEY=$RECAPTCHA_SECRET_KEY \\
+              -e RECAPTCHA_SECRET_KEY='$RECAPTCHA_SECRET_KEY' \\
               biswas-me-staging:latest
 
             echo "🧹 Cleaning up old images..."
@@ -119,11 +120,7 @@ jobs:
 
             echo "✅ Deployment complete!"
             docker ps --filter "name=biswas-me-staging" --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
-          DEPLOYSCRIPT
-
-          # Copy script to server and execute
-          scp -i ~/.ssh/deploy_key /tmp/deploy-staging.sh ubuntu@129.213.82.37:/tmp/deploy-staging.sh
-          ssh -i ~/.ssh/deploy_key ubuntu@129.213.82.37 "BREVO_API_KEY='$BREVO_API_KEY' BLOG_API_TOKEN='$BLOG_API_TOKEN' RECAPTCHA_SECRET_KEY='$RECAPTCHA_SECRET_KEY' CF_ACCESS_CLIENT_ID='$CF_ACCESS_CLIENT_ID' CF_ACCESS_CLIENT_SECRET='$CF_ACCESS_CLIENT_SECRET' COMMIT_SHA='$COMMIT_SHA' bash /tmp/deploy-staging.sh"
+          EOF
 
       - name: Verify deployment
         run: |
