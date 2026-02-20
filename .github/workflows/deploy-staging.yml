@@ -58,11 +58,14 @@ jobs:
 
           docker build -t biswas-me-staging:latest .
 
-          # Force remove any existing container (running, stopped, or created)
-          docker rm -f biswas-me-staging 2>/dev/null || true
+          # Clean up any existing containers
+          docker ps -a --filter "name=biswas-me-staging" --format "{{.ID}}" | xargs -r docker rm -f 2>/dev/null || true
 
-          # Wait a moment for port to be released
-          sleep 2
+          # Kill any process using port 3001
+          sudo fuser -k 3001/tcp 2>/dev/null || true
+
+          # Wait for port to be fully released
+          sleep 3
 
           docker run -d --name biswas-me-staging \
             -p 3001:3000 \
