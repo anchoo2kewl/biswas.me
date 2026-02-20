@@ -26,53 +26,63 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan 129.213.82.37 >> ~/.ssh/known_hosts
 
-          ssh -i ~/.ssh/id_rsa ubuntu@129.213.82.37 "bash -s" << EOF
-            set -e
-            mkdir -p ~/biswas-me-staging
-            cd ~/biswas-me-staging
+          # Create deployment script
+          cat > /tmp/deploy.sh << 'DEPLOYSCRIPT'
+          set -e
+          COMMIT_SHA="$1"
+          BLOG_API_TOKEN="$2"
+          BREVO_API_KEY="$3"
+          RECAPTCHA_SECRET_KEY="$4"
 
-            if [ -d ".git" ]; then
-              git fetch origin
-              git reset --hard ${COMMIT_SHA}
-            else
-              git clone https://github.com/anchoo2kewl/biswas.me.git .
-              git checkout ${COMMIT_SHA}
-            fi
+          mkdir -p ~/biswas-me-staging
+          cd ~/biswas-me-staging
 
-            mkdir -p config
-            printf '%s\n' \\
-              'const config = {' \\
-              '  RECAPTCHA_SITE_KEY: "6LcfEZsdAAAAAH6DVoJexNRQRW0J_AL9uxSthwCt",' \\
-              '  API_URL: "http://localhost:8080/api/messages",' \\
-              '  BLOG_API_URL: "http://localhost:8080/api/posts",' \\
-              '  BLOG_VIEW_ALL_URL: "https://staging.anshumanbiswas.com",' \\
-              '};' \\
-              'export default config;' \\
-              > config/env.config.ts
+          if [ -d ".git" ]; then
+            git fetch origin
+            git reset --hard "$COMMIT_SHA"
+          else
+            git clone https://github.com/anchoo2kewl/biswas.me.git .
+            git checkout "$COMMIT_SHA"
+          fi
 
-            docker build -t biswas-me-staging:latest .
-            docker stop biswas-me-staging 2>/dev/null || true
-            docker rm biswas-me-staging 2>/dev/null || true
+          mkdir -p config
+          cat > config/env.config.ts << 'CONFIGEND'
+          const config = {
+            RECAPTCHA_SITE_KEY: "6LcfEZsdAAAAAH6DVoJexNRQRW0J_AL9uxSthwCt",
+            API_URL: "http://localhost:8080/api/messages",
+            BLOG_API_URL: "http://localhost:8080/api/posts",
+            BLOG_VIEW_ALL_URL: "https://staging.anshumanbiswas.com",
+          };
+          export default config;
+          CONFIGEND
 
-            docker run -d --name biswas-me-staging \\
-              -p 3001:3000 \\
-              -p 8082:8080 \\
-              --restart unless-stopped \\
-              -e BLOG_API_URL=https://staging.anshumanbiswas.com \\
-              -e BLOG_API_TOKEN='${BLOG_API_TOKEN}' \\
-              -e FROM_EMAIL=anshuman@biswas.me \\
-              -e TO_EMAIL=anshuman@biswas.me \\
-              -e MAIL_PROVIDER=brevo \\
-              -e BREVO_API_KEY='${BREVO_API_KEY}' \\
-              -e MAILPIT_SMTP_HOST=localhost \\
-              -e MAILPIT_SMTP_PORT=1025 \\
-              -e DB_PATH=./messages.db \\
-              -e RECAPTCHA_SECRET_KEY='${RECAPTCHA_SECRET_KEY}' \\
-              biswas-me-staging:latest
+          docker build -t biswas-me-staging:latest .
+          docker stop biswas-me-staging 2>/dev/null || true
+          docker rm biswas-me-staging 2>/dev/null || true
 
-            docker image prune -f --filter "until=24h"
-            docker ps --filter "name=biswas-me-staging"
-EOF
+          docker run -d --name biswas-me-staging \
+            -p 3001:3000 \
+            -p 8082:8080 \
+            --restart unless-stopped \
+            -e BLOG_API_URL=https://staging.anshumanbiswas.com \
+            -e BLOG_API_TOKEN="$BLOG_API_TOKEN" \
+            -e FROM_EMAIL=anshuman@biswas.me \
+            -e TO_EMAIL=anshuman@biswas.me \
+            -e MAIL_PROVIDER=brevo \
+            -e BREVO_API_KEY="$BREVO_API_KEY" \
+            -e MAILPIT_SMTP_HOST=localhost \
+            -e MAILPIT_SMTP_PORT=1025 \
+            -e DB_PATH=./messages.db \
+            -e RECAPTCHA_SECRET_KEY="$RECAPTCHA_SECRET_KEY" \
+            biswas-me-staging:latest
+
+          docker image prune -f --filter "until=24h"
+          docker ps --filter "name=biswas-me-staging"
+          DEPLOYSCRIPT
+
+          # Copy and execute deployment script
+          scp -i ~/.ssh/id_rsa /tmp/deploy.sh ubuntu@129.213.82.37:/tmp/deploy-biswas-staging.sh
+          ssh -i ~/.ssh/id_rsa ubuntu@129.213.82.37 "bash /tmp/deploy-biswas-staging.sh '$COMMIT_SHA' '$BLOG_API_TOKEN' '$BREVO_API_KEY' '$RECAPTCHA_SECRET_KEY'"
 
       - name: Verify deployment
         run: |
