@@ -79,8 +79,8 @@ jobs:
             echo '// Staging Environment Configuration' > config/env.config.ts
             echo 'const config = {' >> config/env.config.ts
             echo '  RECAPTCHA_SITE_KEY: "6LcfEZsdAAAAAH6DVoJexNRQRW0J_AL9uxSthwCt",' >> config/env.config.ts
-            echo '  API_URL: "http://localhost:8081/api/messages",' >> config/env.config.ts
-            echo '  BLOG_API_URL: "http://localhost:8081/api/posts",' >> config/env.config.ts
+            echo '  API_URL: "http://localhost:8082/api/messages",' >> config/env.config.ts
+            echo '  BLOG_API_URL: "http://localhost:8082/api/posts",' >> config/env.config.ts
             echo '  BLOG_VIEW_ALL_URL: "https://anshumanbiswas.com",' >> config/env.config.ts
             echo '};' >> config/env.config.ts
             echo '' >> config/env.config.ts
@@ -89,18 +89,44 @@ jobs:
             echo "🔨 Building Docker image..."
             docker build -t biswas-me-staging:$COMMIT_SHA -t biswas-me-staging:latest .
 
-            echo "🛑 Stopping existing containers on ports 3000 and 8081..."
-            # Stop any container using port 3000
-            docker ps -q --filter "publish=3000" | xargs -r docker stop || true
-            docker ps -aq --filter "publish=3000" | xargs -r docker rm || true
-            # Stop staging container by name if it exists
-            docker stop biswas-me-staging || true
-            docker rm biswas-me-staging || true
+            echo "🛑 Stopping existing containers..."
+            docker rm -f biswas-me-staging 2>/dev/null || true
+            sleep 2
+
+            echo "📝 Configuring nginx..."
+            sudo tee /etc/nginx/sites-available/staging.biswas.me > /dev/null << 'NGINXCONF'
+server {
+    listen 80;
+    listen [::]:80;
+    server_name staging.biswas.me;
+
+    # API routes to Go backend
+    location /api/ {
+        proxy_pass http://127.0.0.1:8082;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Forwarded-Proto \$scheme;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+    }
+
+    # Frontend routes to Next.js
+    location / {
+        proxy_pass http://127.0.0.1:3001;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Forwarded-Proto \$scheme;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+    }
+}
+NGINXCONF
+
+            sudo ln -sf /etc/nginx/sites-available/staging.biswas.me /etc/nginx/sites-enabled/staging.biswas.me
+            sudo nginx -t && sudo systemctl reload nginx
 
             echo "🚀 Starting new container..."
             docker run -d --name biswas-me-staging \\
-              -p 3000:3000 \\
-              -p 8081:8080 \\
+              -p 3001:3000 \\
+              -p 8082:8080 \\
               --restart unless-stopped \\
               -e BLOG_API_URL=https://anshumanbiswas.com \\
               -e BLOG_API_TOKEN='$BLOG_API_TOKEN' \\
@@ -127,7 +153,7 @@ jobs:
           sleep 10
 
           echo "🔍 Testing Staging endpoint..."
-          curl -f http://129.213.82.37:3000 || {
+          curl -f http://129.213.82.37:3001 || {
             echo "❌ Health check failed"
             exit 1
           }
@@ -144,6 +170,6 @@ jobs:
           echo "- **Domain:** staging.biswas.me" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Access:**" >> $GITHUB_STEP_SUMMARY
-          echo "- Frontend: http://129.213.82.37:3000" >> $GITHUB_STEP_SUMMARY
-          echo "- Backend: http://129.213.82.37:8081" >> $GITHUB_STEP_SUMMARY
+          echo "- Frontend: http://129.213.82.37:3001" >> $GITHUB_STEP_SUMMARY
+          echo "- Backend: http://129.213.82.37:8082" >> $GITHUB_STEP_SUMMARY
           echo "- Public: https://staging.biswas.me (via Cloudflare)" >> $GITHUB_STEP_SUMMARY
