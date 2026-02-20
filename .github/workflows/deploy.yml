@@ -76,15 +76,17 @@ jobs:
 
             echo "⚙️  Creating Production config file..."
             mkdir -p config
-            echo '// Production Environment Configuration' > config/env.config.ts
-            echo 'const config = {' >> config/env.config.ts
-            echo '  RECAPTCHA_SITE_KEY: "6LcfEZsdAAAAAH6DVoJexNRQRW0J_AL9uxSthwCt",' >> config/env.config.ts
-            echo '  API_URL: "http://localhost:8081/api/messages",' >> config/env.config.ts
-            echo '  BLOG_API_URL: "http://localhost:8081/api/posts",' >> config/env.config.ts
-            echo '  BLOG_VIEW_ALL_URL: "https://anshumanbiswas.com",' >> config/env.config.ts
-            echo '};' >> config/env.config.ts
-            echo '' >> config/env.config.ts
-            echo 'export default config;' >> config/env.config.ts
+            printf '%s\n' \
+              '// Production Environment Configuration' \
+              'const config = {' \
+              '  RECAPTCHA_SITE_KEY: "6LcfEZsdAAAAAH6DVoJexNRQRW0J_AL9uxSthwCt",' \
+              '  API_URL: "/api/messages",' \
+              '  BLOG_API_URL: "/api/posts",' \
+              '  BLOG_VIEW_ALL_URL: "https://anshumanbiswas.com",' \
+              '  BLOG_API_TOKEN: undefined,' \
+              '};' \
+              'export default config;' \
+              > config/env.config.ts
 
             echo "🔨 Building Docker image..."
             docker build -t biswas-me-production:$COMMIT_SHA -t biswas-me-production:latest .
