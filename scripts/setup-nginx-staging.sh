@@ -78,7 +78,22 @@ server {
     gzip_min_length 1024;
     gzip_types text/plain text/css text/xml text/javascript application/javascript application/json application/xml+rss;
 
-    # API proxy with rate limiting
+    # Blog API should stay on Next.js so app routes can enrich and normalize posts
+    location ^~ /api/posts {
+        proxy_pass http://127.0.0.1:3001;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_connect_timeout 60s;
+        proxy_send_timeout 60s;
+        proxy_read_timeout 60s;
+    }
+
+    # Contact/message API stays on the Go backend
     location /api/ {
         limit_req zone=biswas_staging burst=20 nodelay;
         proxy_pass http://127.0.0.1:8082;
