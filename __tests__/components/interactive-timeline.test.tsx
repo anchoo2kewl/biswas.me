@@ -193,16 +193,17 @@ describe("InteractiveTimeline", () => {
     expect(expandedImg).toHaveAttribute("src", "/04.png");
   });
 
-  it("does not show images section for items without images", async () => {
+  it("shows the Elastio image section", async () => {
     const user = userEvent.setup();
     render(<InteractiveTimeline />);
 
-    // Open Elastio popup (no images)
+    // Open Elastio popup
     const elastioItem = screen.getByText("Elastio").closest("[data-timeline-id]");
     const clickableArea = elastioItem!.querySelector(".cursor-pointer");
     await user.click(clickableArea!);
 
-    expect(screen.queryByText("Click image to expand")).not.toBeInTheDocument();
+    expect(screen.getByAltText("Elastio")).toBeInTheDocument();
+    expect(screen.getByText("Click image to expand")).toBeInTheDocument();
   });
 
   it("renders timeline line", () => {

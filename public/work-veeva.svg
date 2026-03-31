@@ -1,0 +1,52 @@
+<svg width="1600" height="900" viewBox="0 0 1600 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1600" height="900" fill="#F4F8FC"/>
+  <rect x="72" y="72" width="1456" height="756" rx="26" fill="white" stroke="#D7E3EF"/>
+  <rect x="72" y="72" width="1456" height="88" rx="26" fill="#F8FBFF"/>
+  <rect x="72" y="118" width="1456" height="42" fill="#F8FBFF"/>
+  <circle cx="122" cy="116" r="9" fill="#A7BBD1"/>
+  <circle cx="152" cy="116" r="9" fill="#C5D3E2"/>
+  <circle cx="182" cy="116" r="9" fill="#DDE7F1"/>
+  <text x="746" y="123" fill="#5A7A9B" font-family="Arial, sans-serif" font-size="18" letter-spacing="4">VEEVA SERVICE CENTER</text>
+
+  <rect x="112" y="200" width="288" height="580" rx="22" fill="#F6FAFD" stroke="#E2EDF7"/>
+  <text x="152" y="256" fill="#7C97B3" font-family="Arial, sans-serif" font-size="18" letter-spacing="3">WORKSPACE</text>
+  <rect x="152" y="288" width="208" height="58" rx="18" fill="#EAF4FB"/>
+  <text x="184" y="325" fill="#3D6C96" font-family="Arial, sans-serif" font-size="22" font-weight="700">Service Center</text>
+  <rect x="152" y="368" width="208" height="18" rx="9" fill="#D7E6F3"/>
+  <rect x="152" y="402" width="176" height="18" rx="9" fill="#D7E6F3"/>
+  <rect x="152" y="436" width="192" height="18" rx="9" fill="#D7E6F3"/>
+
+  <rect x="456" y="200" width="1016" height="132" rx="24" fill="url(#hero)" stroke="#D9EAF6"/>
+  <text x="512" y="254" fill="#2D5878" font-family="Arial, sans-serif" font-size="20" letter-spacing="3">CASE OPERATIONS</text>
+  <text x="512" y="302" fill="#103B5F" font-family="Arial, sans-serif" font-size="38" font-weight="700">Medical and commercial support in one flow</text>
+
+  <rect x="456" y="372" width="484" height="182" rx="22" fill="#FFFFFF" stroke="#D7E3EF"/>
+  <text x="492" y="420" fill="#7691AD" font-family="Arial, sans-serif" font-size="18" letter-spacing="3">OPEN CASES</text>
+  <rect x="492" y="446" width="412" height="26" rx="13" fill="#EEF5FB"/>
+  <rect x="492" y="490" width="368" height="26" rx="13" fill="#EEF5FB"/>
+  <rect x="492" y="534" width="324" height="26" rx="13" fill="#EEF5FB"/>
+
+  <rect x="988" y="372" width="484" height="182" rx="22" fill="#FFFFFF" stroke="#D7E3EF"/>
+  <text x="1024" y="420" fill="#7691AD" font-family="Arial, sans-serif" font-size="18" letter-spacing="3">AGENT PRODUCTIVITY</text>
+  <rect x="1024" y="448" width="154" height="68" rx="18" fill="#EAF4FB"/>
+  <text x="1054" y="490" fill="#1C5A87" font-family="Arial, sans-serif" font-size="30" font-weight="700">42</text>
+  <text x="1198" y="490" fill="#1C5A87" font-family="Arial, sans-serif" font-size="30" font-weight="700">96%</text>
+  <text x="1054" y="520" fill="#6A8BAA" font-family="Arial, sans-serif" font-size="16">active queues</text>
+  <text x="1198" y="520" fill="#6A8BAA" font-family="Arial, sans-serif" font-size="16">SLA compliance</text>
+
+  <rect x="456" y="594" width="1016" height="186" rx="24" fill="#FFFFFF" stroke="#D7E3EF"/>
+  <text x="492" y="642" fill="#7691AD" font-family="Arial, sans-serif" font-size="18" letter-spacing="3">SERVICE PANELS</text>
+  <rect x="492" y="672" width="292" height="72" rx="18" fill="#F5FAFE"/>
+  <text x="524" y="716" fill="#355E80" font-family="Arial, sans-serif" font-size="24" font-weight="700">Case routing</text>
+  <rect x="818" y="672" width="292" height="72" rx="18" fill="#F5FAFE"/>
+  <text x="850" y="716" fill="#355E80" font-family="Arial, sans-serif" font-size="24" font-weight="700">Knowledge access</text>
+  <rect x="1144" y="672" width="292" height="72" rx="18" fill="#F5FAFE"/>
+  <text x="1176" y="716" fill="#355E80" font-family="Arial, sans-serif" font-size="24" font-weight="700">Resolution workflow</text>
+
+  <defs>
+    <linearGradient id="hero" x1="456" y1="200" x2="1472" y2="332" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#EAF7FF"/>
+      <stop offset="1" stop-color="#F9FCFF"/>
+    </linearGradient>
+  </defs>
+</svg>

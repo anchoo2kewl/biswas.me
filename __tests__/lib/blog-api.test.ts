@@ -73,6 +73,21 @@ describe("fetchBlogPosts", () => {
     );
   });
 
+  it("appends the limit when provided", async () => {
+    (fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve([]),
+    });
+
+    await fetchBlogPosts(10);
+    expect(fetch).toHaveBeenCalledWith(
+      "/api/posts?limit=10",
+      expect.objectContaining({
+        method: "GET",
+      })
+    );
+  });
+
   it("returns empty array on network error", async () => {
     (fetch as ReturnType<typeof vi.fn>).mockRejectedValue(new Error("Network error"));
 

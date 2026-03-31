@@ -44,15 +44,6 @@ vi.mock("@/components/ui/button", () => ({
   },
 }));
 
-vi.mock("@/components/ui/card", () => ({
-  Card: ({ children, ...props }: any) => <div data-testid="card" {...props}>{children}</div>,
-  CardContent: ({ children, ...props }: any) => <div {...props}>{children}</div>,
-}));
-
-vi.mock("@/components/ui/badge", () => ({
-  Badge: ({ children, ...props }: any) => <span data-testid="badge" {...props}>{children}</span>,
-}));
-
 const mockPosts: BlogPost[] = [
   {
     date: "2024-01-15",
@@ -60,6 +51,8 @@ const mockPosts: BlogPost[] = [
     categories: ["Cloud"],
     read_time: "5 min read",
     link: "https://example.com/post1",
+    excerpt: "Cloud computing teams need simpler operating models.",
+    cover_image_url: "https://example.com/post1.jpg",
   },
   {
     date: "2024-01-10",
@@ -67,6 +60,8 @@ const mockPosts: BlogPost[] = [
     categories: ["Engineering"],
     read_time: "8 min read",
     link: "https://example.com/post2",
+    excerpt: "Distributed systems design notes.",
+    cover_image_url: "https://example.com/post2.jpg",
   },
 ];
 
@@ -98,7 +93,7 @@ describe("BlogPage", () => {
     mockFetchBlogPosts.mockReturnValue(new Promise(() => {}));
     render(<BlogPage />);
     expect(
-      screen.getByText(/Thoughts on cloud computing/)
+      screen.getByText(/Essays on enterprise SaaS/)
     ).toBeInTheDocument();
   });
 
@@ -124,9 +119,10 @@ describe("BlogPage", () => {
       expect(screen.getByText("Cloud Computing Best Practices")).toBeInTheDocument();
     });
     expect(screen.getByText("Distributed Systems Design")).toBeInTheDocument();
+    expect(mockFetchBlogPosts).toHaveBeenCalledWith(9);
   });
 
-  it("renders post categories as badges", async () => {
+  it("renders post categories", async () => {
     mockFetchBlogPosts.mockResolvedValue(mockPosts);
     render(<BlogPage />);
 
@@ -156,17 +152,29 @@ describe("BlogPage", () => {
     expect(screen.getByText("8 min read")).toBeInTheDocument();
   });
 
-  it("renders Read More links", async () => {
+  it("renders post links", async () => {
     mockFetchBlogPosts.mockResolvedValue(mockPosts);
     render(<BlogPage />);
 
     await waitFor(() => {
-      const readMoreLinks = screen.getAllByText("Read More");
-      expect(readMoreLinks).toHaveLength(2);
-      expect(readMoreLinks[0].closest("a")).toHaveAttribute(
+      const articleLinks = screen.getAllByRole("link");
+      const postLink = articleLinks.find((link) => link.getAttribute("href") === "https://example.com/post1");
+      expect(postLink).toBeTruthy();
+      expect(postLink).toHaveAttribute(
         "href",
         "https://example.com/post1"
       );
+    });
+  });
+
+  it("renders post excerpts", async () => {
+    mockFetchBlogPosts.mockResolvedValue(mockPosts);
+    render(<BlogPage />);
+
+    await waitFor(() => {
+      expect(
+        screen.getByText("Cloud computing teams need simpler operating models.")
+      ).toBeInTheDocument();
     });
   });
 
@@ -190,6 +198,6 @@ describe("BlogPage", () => {
   it("renders navigation logo", () => {
     mockFetchBlogPosts.mockReturnValue(new Promise(() => {}));
     render(<BlogPage />);
-    expect(screen.getByText("nshuman Biswas")).toBeInTheDocument();
+    expect(screen.getByText("Anshuman Biswas")).toBeInTheDocument();
   });
 });

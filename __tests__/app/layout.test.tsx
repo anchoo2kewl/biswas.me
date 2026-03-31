@@ -3,8 +3,11 @@ import { render, screen } from "@testing-library/react";
 
 // Mock next/font/google
 vi.mock("next/font/google", () => ({
-  Inter: () => ({
-    className: "inter-mock",
+  Manrope: () => ({
+    variable: "manrope-mock",
+  }),
+  Fraunces: () => ({
+    variable: "fraunces-mock",
   }),
 }));
 
@@ -35,7 +38,7 @@ describe("RootLayout", () => {
 
   it("exports correct metadata", () => {
     expect(metadata.title).toBe(
-      "Anshuman Biswas | VP of Engineering & Cloud Architect"
+      "Anshuman Biswas | Products, Libraries, and Systems"
     );
     expect(metadata.description).toContain("Anshuman Biswas");
     expect(metadata.description).toContain("Elastio");

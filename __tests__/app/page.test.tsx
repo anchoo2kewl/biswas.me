@@ -3,7 +3,6 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { BlogPost } from "@/lib/blog-api";
 
-// Mock config
 vi.mock("@/config", () => ({
   default: {
     RECAPTCHA_SITE_KEY: "test-site-key",
@@ -14,13 +13,11 @@ vi.mock("@/config", () => ({
   },
 }));
 
-// Mock blog-api
 const mockFetchBlogPosts = vi.fn();
 vi.mock("@/lib/blog-api", () => ({
   fetchBlogPosts: (...args: any[]) => mockFetchBlogPosts(...args),
 }));
 
-// Mock Next.js modules
 vi.mock("next/link", () => ({
   default: ({ children, href, onClick, ...props }: any) => (
     <a href={href} onClick={onClick} {...props}>
@@ -30,11 +27,9 @@ vi.mock("next/link", () => ({
 }));
 
 vi.mock("next/dynamic", () => ({
-  default: (loader: any) => {
-    // Return a component that calls the loader
-    const Component = (props: any) => {
-      return <div data-testid="dynamic-component" {...props} />;
-    };
+  default: () => {
+    const Component = ({ isOpen }: any) =>
+      isOpen ? <div data-testid="pdf-viewer">PDF Viewer</div> : null;
     Component.displayName = "DynamicComponent";
     return Component;
   },
@@ -44,17 +39,17 @@ vi.mock("next/script", () => ({
   default: (props: any) => <script {...props} />,
 }));
 
-// Mock lucide-react
 vi.mock("lucide-react", () => ({
   Github: () => <span data-testid="github-icon">GitHub</span>,
   Linkedin: () => <span data-testid="linkedin-icon">LinkedIn</span>,
   Mail: () => <span data-testid="mail-icon">Mail</span>,
   Calendar: () => <span data-testid="calendar-icon">Cal</span>,
-  ArrowUpRight: () => <span data-testid="arrow-up-right">ArrowUpRight</span>,
+  ArrowUpRight: () => <span data-testid="arrow-up-right">Arrow</span>,
+  ExternalLink: () => <span data-testid="external-link">External</span>,
   FileText: () => <span data-testid="file-text">FileText</span>,
+  X: () => <span data-testid="x-icon">X</span>,
 }));
 
-// Mock UI components
 vi.mock("@/components/ui/button", () => ({
   Button: ({ children, onClick, asChild, ...props }: any) => {
     if (asChild) return <>{children}</>;
@@ -74,50 +69,43 @@ vi.mock("@/components/ui/textarea", () => ({
   Textarea: (props: any) => <textarea {...props} />,
 }));
 
-// Mock InteractiveTimeline
 vi.mock("@/components/interactive-timeline", () => ({
-  InteractiveTimeline: () => (
-    <div data-testid="interactive-timeline">Timeline</div>
-  ),
-}));
-
-// Mock SimplePDFViewer (dynamically imported)
-vi.mock("@/components/simple-pdf-viewer", () => ({
-  SimplePDFViewer: ({ isOpen, onClose, pdfUrl }: any) =>
-    isOpen ? (
-      <div data-testid="pdf-viewer">
-        <button onClick={onClose}>Close PDF</button>
-      </div>
-    ) : null,
+  InteractiveTimeline: () => <div data-testid="interactive-timeline">Timeline</div>,
 }));
 
 const mockPosts: BlogPost[] = [
   {
-    date: "2024-01-15",
-    title: "Test Blog Post",
-    categories: ["Cloud"],
+    date: "2026-03-25",
+    title: "Practical AI Systems",
+    categories: ["AI"],
     read_time: "5 min read",
     link: "https://example.com/post1",
+    excerpt: "A practical note on AI systems.",
+    cover_image_url: "https://example.com/cover1.jpg",
   },
   {
-    date: "2024-01-10",
-    title: "Another Post",
-    categories: ["Tech"],
-    read_time: "3 min read",
-    link: "https://example.com/post2",
-  },
-  {
-    date: "2024-01-05",
-    title: "Third Post",
-    categories: ["AI"],
-    read_time: "7 min read",
-    link: "https://example.com/post3",
-  },
-  {
-    date: "2024-01-01",
-    title: "Fourth Post (not shown)",
-    categories: ["ML"],
+    date: "2026-03-20",
+    title: "Small Software Wins",
+    categories: ["Product"],
     read_time: "4 min read",
+    link: "https://example.com/post2",
+    excerpt: "Why smaller software still wins.",
+    cover_image_url: "https://example.com/cover2.jpg",
+  },
+  {
+    date: "2026-03-10",
+    title: "Cloud Systems Notes",
+    categories: ["Cloud"],
+    read_time: "6 min read",
+    link: "https://example.com/post3",
+    excerpt: "Cloud systems notes.",
+    cover_image_url: "https://example.com/cover3.jpg",
+  },
+  {
+    date: "2026-03-01",
+    title: "Hidden Post",
+    categories: ["Other"],
+    read_time: "3 min read",
     link: "https://example.com/post4",
   },
 ];
@@ -127,7 +115,6 @@ import Home from "@/app/page";
 describe("HomePage", () => {
   beforeEach(() => {
     mockFetchBlogPosts.mockReset();
-    // Reset location hash
     Object.defineProperty(window, "location", {
       writable: true,
       value: { ...window.location, hash: "", pathname: "/", search: "" },
@@ -138,216 +125,140 @@ describe("HomePage", () => {
     vi.restoreAllMocks();
   });
 
-  describe("Navigation", () => {
-    it("renders the logo", () => {
-      mockFetchBlogPosts.mockResolvedValue([]);
-      render(<Home />);
-      expect(screen.getByText("nshuman Biswas")).toBeInTheDocument();
-    });
+  it("renders the hero content and resume actions", async () => {
+    mockFetchBlogPosts.mockResolvedValue([]);
+    render(<Home />);
 
-    it("renders navigation links", () => {
-      mockFetchBlogPosts.mockResolvedValue([]);
-      render(<Home />);
-      // "About" appears both in nav and as a section heading
-      const aboutLinks = screen.getAllByText("About");
-      expect(aboutLinks.length).toBeGreaterThanOrEqual(2);
-      expect(screen.getByText("Work")).toBeInTheDocument();
-      expect(screen.getByText("Writing")).toBeInTheDocument();
-      expect(screen.getByText("Contact")).toBeInTheDocument();
+    await waitFor(() => {
+      expect(mockFetchBlogPosts).toHaveBeenCalled();
     });
+    expect(screen.getAllByText("Anshuman Biswas").length).toBeGreaterThan(0);
+    expect(screen.getByText("I build enterprise software")).toBeInTheDocument();
+    expect(screen.getByText("View PDF resume")).toBeInTheDocument();
+    expect(screen.getByText("Open HTML resume")).toBeInTheDocument();
+    expect(screen.getByText("Download PDF")).toBeInTheDocument();
   });
 
-  describe("Hero Section", () => {
-    it("renders the main heading", () => {
-      mockFetchBlogPosts.mockResolvedValue([]);
-      render(<Home />);
+  it("renders section navigation and core sections", async () => {
+    mockFetchBlogPosts.mockResolvedValue([]);
+    render(<Home />);
+
+    await waitFor(() => {
+      expect(mockFetchBlogPosts).toHaveBeenCalled();
+    });
+    expect(screen.getAllByText("Description").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Products").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Libraries").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Work").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Writing").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Contact").length).toBeGreaterThan(0);
+    expect(screen.getByText("What I build outside work")).toBeInTheDocument();
+    expect(screen.getByText("Libraries and tools I reuse")).toBeInTheDocument();
+  });
+
+  it("renders showcased products and libraries", async () => {
+    mockFetchBlogPosts.mockResolvedValue([]);
+    render(<Home />);
+
+    await waitFor(() => {
+      expect(mockFetchBlogPosts).toHaveBeenCalled();
+    });
+    expect(screen.getAllByText("TaskAI").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Pingrly").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("FlagTGL").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("AI Agent Lens").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("go-wiki").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("go-draw").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("BuildMe").length).toBeGreaterThan(0);
+  });
+
+  it("opens project details in the modal lightbox", async () => {
+    mockFetchBlogPosts.mockResolvedValue([]);
+    render(<Home />);
+    const user = userEvent.setup();
+
+    await user.click(screen.getAllByText("Open details")[0]);
+
+    expect(screen.getByText("Snapshot")).toBeInTheDocument();
+    expect(screen.queryByText("Visit source")).not.toBeInTheDocument();
+    expect(screen.getByText("Visit taskai.cc")).toBeInTheDocument();
+  });
+
+  it("shows the pdf viewer when resume is opened", async () => {
+    mockFetchBlogPosts.mockResolvedValue([]);
+    render(<Home />);
+    const user = userEvent.setup();
+
+    await user.click(screen.getByText("View PDF resume"));
+    expect(screen.getByTestId("pdf-viewer")).toBeInTheDocument();
+  });
+
+  it("renders the career timeline section", async () => {
+    mockFetchBlogPosts.mockResolvedValue([]);
+    render(<Home />);
+
+    await waitFor(() => {
+      expect(mockFetchBlogPosts).toHaveBeenCalled();
+    });
+    expect(screen.getByText("Career journey")).toBeInTheDocument();
+    expect(screen.getByTestId("interactive-timeline")).toBeInTheDocument();
+  });
+
+  it("shows only the first three blog posts", async () => {
+    mockFetchBlogPosts.mockResolvedValue(mockPosts);
+    render(<Home />);
+
+    await waitFor(() => {
+      expect(screen.getByText("Practical AI Systems")).toBeInTheDocument();
+    });
+
+    expect(screen.getByText("Small Software Wins")).toBeInTheDocument();
+    expect(screen.getByText("Cloud Systems Notes")).toBeInTheDocument();
+    expect(screen.queryByText("Hidden Post")).not.toBeInTheDocument();
+  });
+
+  it("shows empty state when there are no blog posts", async () => {
+    mockFetchBlogPosts.mockResolvedValue([]);
+    render(<Home />);
+
+    await waitFor(() => {
       expect(
-        screen.getByText("I optimize cloud systems for scale.")
+        screen.getByText("No blog posts available at the moment.")
       ).toBeInTheDocument();
     });
-
-    it("renders the bio text", () => {
-      mockFetchBlogPosts.mockResolvedValue([]);
-      render(<Home />);
-      expect(screen.getByText(/VP of Engineering at/)).toBeInTheDocument();
-    });
-
-    it("renders resume action buttons", () => {
-      mockFetchBlogPosts.mockResolvedValue([]);
-      render(<Home />);
-      expect(screen.getByText("View PDF Resume")).toBeInTheDocument();
-      expect(screen.getByText(/HTML Resume/)).toBeInTheDocument();
-      expect(screen.getByText("Download PDF")).toBeInTheDocument();
-    });
-
-    it("renders social links in hero", () => {
-      mockFetchBlogPosts.mockResolvedValue([]);
-      render(<Home />);
-      // There are multiple GitHub links on the page
-      const githubLinks = screen.getAllByText("GitHub");
-      expect(githubLinks.length).toBeGreaterThan(0);
-    });
-
-    it("renders the profile image", () => {
-      mockFetchBlogPosts.mockResolvedValue([]);
-      render(<Home />);
-      const img = screen.getByAltText("Anshuman Biswas");
-      expect(img).toBeInTheDocument();
-      expect(img).toHaveAttribute("src", "/me_medium.jpg");
-    });
   });
 
-  describe("About Section", () => {
-    it("renders about heading", () => {
-      mockFetchBlogPosts.mockResolvedValue([]);
-      render(<Home />);
-      const aboutElements = screen.getAllByText("About");
-      // One in nav, one as section heading
-      expect(aboutElements.length).toBeGreaterThanOrEqual(2);
-    });
+  it("renders contact form fields and links", async () => {
+    mockFetchBlogPosts.mockResolvedValue([]);
+    render(<Home />);
 
-    it("renders about content", () => {
-      mockFetchBlogPosts.mockResolvedValue([]);
-      render(<Home />);
-      expect(
-        screen.getByText(/I serve as Vice President of Engineering/)
-      ).toBeInTheDocument();
+    await waitFor(() => {
+      expect(mockFetchBlogPosts).toHaveBeenCalled();
     });
+    expect(screen.getByLabelText("Name")).toBeInTheDocument();
+    expect(screen.getByLabelText("Email")).toBeInTheDocument();
+    expect(screen.getByLabelText("Message")).toBeInTheDocument();
+    expect(screen.getByText("Send message")).toBeInTheDocument();
+    expect(screen.getAllByText("github.com/anchoo2kewl").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("linkedin.com/in/anshumanbiswas").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("anshuman@biswas.me").length).toBeGreaterThan(0);
   });
 
-  describe("Career Journey Section", () => {
-    it("renders career journey heading", () => {
-      mockFetchBlogPosts.mockResolvedValue([]);
-      render(<Home />);
-      expect(screen.getByText("Career Journey")).toBeInTheDocument();
-    });
+  it("updates form fields on input", async () => {
+    mockFetchBlogPosts.mockResolvedValue([]);
+    render(<Home />);
+    const user = userEvent.setup();
 
-    it("renders the interactive timeline component", () => {
-      mockFetchBlogPosts.mockResolvedValue([]);
-      render(<Home />);
-      expect(screen.getByTestId("interactive-timeline")).toBeInTheDocument();
-    });
-  });
+    const nameInput = screen.getByLabelText("Name");
+    await user.type(nameInput, "John Doe");
+    expect(nameInput).toHaveValue("John Doe");
 
-  describe("Recent Writing Section", () => {
-    it("renders writing heading", () => {
-      mockFetchBlogPosts.mockResolvedValue([]);
-      render(<Home />);
-      expect(screen.getByText("Recent Writing")).toBeInTheDocument();
-    });
+    const emailInput = screen.getByLabelText("Email");
+    await user.type(emailInput, "john@example.com");
+    expect(emailInput).toHaveValue("john@example.com");
 
-    it("shows loading skeletons initially", () => {
-      mockFetchBlogPosts.mockReturnValue(new Promise(() => {}));
-      const { container } = render(<Home />);
-      const skeletons = container.querySelectorAll(".animate-pulse");
-      expect(skeletons.length).toBeGreaterThan(0);
-    });
-
-    it("shows only first 3 blog posts", async () => {
-      mockFetchBlogPosts.mockResolvedValue(mockPosts);
-      render(<Home />);
-
-      await waitFor(() => {
-        expect(screen.getByText("Test Blog Post")).toBeInTheDocument();
-      });
-      expect(screen.getByText("Another Post")).toBeInTheDocument();
-      expect(screen.getByText("Third Post")).toBeInTheDocument();
-      // Fourth post should not be displayed
-      expect(
-        screen.queryByText("Fourth Post (not shown)")
-      ).not.toBeInTheDocument();
-    });
-
-    it("shows empty state when no posts", async () => {
-      mockFetchBlogPosts.mockResolvedValue([]);
-      render(<Home />);
-
-      await waitFor(() => {
-        expect(
-          screen.getByText("No blog posts available at the moment.")
-        ).toBeInTheDocument();
-      });
-    });
-
-    it("renders 'View all posts' link", () => {
-      mockFetchBlogPosts.mockResolvedValue([]);
-      render(<Home />);
-      const link = screen.getByText("View all posts");
-      expect(link.closest("a")).toHaveAttribute("href", "/blog");
-    });
-  });
-
-  describe("Contact Section", () => {
-    it("renders contact heading", () => {
-      mockFetchBlogPosts.mockResolvedValue([]);
-      render(<Home />);
-      expect(screen.getByText("Get In Touch")).toBeInTheDocument();
-    });
-
-    it("renders contact form fields", () => {
-      mockFetchBlogPosts.mockResolvedValue([]);
-      render(<Home />);
-      expect(screen.getByLabelText("Name")).toBeInTheDocument();
-      expect(screen.getByLabelText("Email")).toBeInTheDocument();
-      expect(screen.getByLabelText("Message")).toBeInTheDocument();
-    });
-
-    it("renders submit button", () => {
-      mockFetchBlogPosts.mockResolvedValue([]);
-      render(<Home />);
-      expect(screen.getByText("Send Message")).toBeInTheDocument();
-    });
-
-    it("renders contact info links", () => {
-      mockFetchBlogPosts.mockResolvedValue([]);
-      render(<Home />);
-      expect(screen.getByText("github.com/anchoo2kewl")).toBeInTheDocument();
-      expect(
-        screen.getByText("linkedin.com/in/anshumanbiswas")
-      ).toBeInTheDocument();
-      expect(screen.getByText("anshuman@biswas.me")).toBeInTheDocument();
-    });
-
-    it("updates form fields on input", async () => {
-      mockFetchBlogPosts.mockResolvedValue([]);
-      render(<Home />);
-      const user = userEvent.setup();
-
-      const nameInput = screen.getByLabelText("Name");
-      await user.type(nameInput, "John Doe");
-      expect(nameInput).toHaveValue("John Doe");
-
-      const emailInput = screen.getByLabelText("Email");
-      await user.type(emailInput, "john@example.com");
-      expect(emailInput).toHaveValue("john@example.com");
-
-      const messageInput = screen.getByLabelText("Message");
-      await user.type(messageInput, "Hello!");
-      expect(messageInput).toHaveValue("Hello!");
-    });
-  });
-
-  describe("Footer", () => {
-    it("renders footer with name", () => {
-      mockFetchBlogPosts.mockResolvedValue([]);
-      render(<Home />);
-      // Footer has "Anshuman Biswas" link
-      const footerLinks = screen.getAllByText("Anshuman Biswas");
-      expect(footerLinks.length).toBeGreaterThan(0);
-    });
-
-    it("renders footer with title", () => {
-      mockFetchBlogPosts.mockResolvedValue([]);
-      render(<Home />);
-      expect(
-        screen.getByText("VP of Engineering & Cloud Architect")
-      ).toBeInTheDocument();
-    });
-
-    it("renders copyright", () => {
-      mockFetchBlogPosts.mockResolvedValue([]);
-      render(<Home />);
-      expect(screen.getByText(/All rights reserved/)).toBeInTheDocument();
-    });
+    const messageInput = screen.getByLabelText("Message");
+    await user.type(messageInput, "Hello!");
+    expect(messageInput).toHaveValue("Hello!");
   });
 });
