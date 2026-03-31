@@ -1442,14 +1442,10 @@ export default function Home() {
                 Enterprise SaaS operator, product builder, and writer.
               </h2>
               <p className="text-lg leading-8 text-slate-600">
-                Most of my career has been spent building enterprise SaaS. I care about durable
-                systems, strong teams, and software that can survive real operational pressure.
-                That perspective shapes both my work at Elastio and the projects I build outside
-                of work.
-              </p>
-              <p className="text-lg leading-8 text-slate-600">
-                This site starts with the work, then moves into the play projects: products,
-                libraries, and writing that reflect how I like software to be designed and run.
+                Most of my career has been spent building enterprise SaaS. I care most about
+                enterprise security, durable systems, strong teams, and software that can survive
+                real operational pressure. That perspective shapes both my work at Elastio and the
+                projects I build outside of work.
               </p>
             </div>
 
