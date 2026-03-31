@@ -53,11 +53,13 @@ type BlogConfig struct {
 }
 
 type BlogPost struct {
-	Date       string   `json:"date"`
-	Title      string   `json:"title"`
-	Categories []string `json:"categories"`
-	ReadTime   string   `json:"read_time"`
-	Link       string   `json:"link"`
+	Date          string   `json:"date"`
+	Title         string   `json:"title"`
+	Categories    []string `json:"categories"`
+	ReadTime      string   `json:"read_time"`
+	Link          string   `json:"link"`
+	Excerpt       string   `json:"excerpt,omitempty"`
+	CoverImageURL string   `json:"cover_image_url,omitempty"`
 }
 
 var (

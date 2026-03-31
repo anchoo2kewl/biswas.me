@@ -6,6 +6,8 @@ export interface BlogPost {
   categories: string[];
   read_time: string;
   link: string;
+  excerpt?: string;
+  cover_image_url?: string;
 }
 
 export interface ApiResponse<T> {
@@ -14,7 +16,7 @@ export interface ApiResponse<T> {
   error_message?: string;
 }
 
-export async function fetchBlogPosts(): Promise<BlogPost[]> {
+export async function fetchBlogPosts(limit?: number): Promise<BlogPost[]> {
   try {
     const headers: HeadersInit = {
       'Content-Type': 'application/json',
@@ -34,7 +36,17 @@ export async function fetchBlogPosts(): Promise<BlogPost[]> {
       headers['CF-Access-Client-Secret'] = cfClientSecret;
     }
 
-    const response = await fetch(config.BLOG_API_URL, {
+    const apiUrl = new URL(config.BLOG_API_URL, "http://localhost");
+    if (limit && limit > 0) {
+      apiUrl.searchParams.set("limit", String(limit));
+    }
+
+    const requestUrl =
+      apiUrl.origin === "http://localhost"
+        ? `${apiUrl.pathname}${apiUrl.search}`
+        : apiUrl.toString();
+
+    const response = await fetch(requestUrl, {
       method: 'GET',
       headers,
       // Add cache options for better performance
