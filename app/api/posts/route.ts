@@ -32,6 +32,15 @@ function normalizeRemoteUrl(value: string | undefined, baseURL: string) {
     return value;
   }
 
+  // Some older load-more payloads contain wrapped absolute URLs such as:
+  // https://anshumanbiswas.com/static/https://res.cloudinary.com/...
+  // or /static/https://res.cloudinary.com/...
+  // Prefer the embedded absolute URL when present.
+  const wrappedAbsoluteMatch = value.match(/\/static\/(https?:\/\/.+)$/i);
+  if (wrappedAbsoluteMatch?.[1]) {
+    return wrappedAbsoluteMatch[1];
+  }
+
   try {
     const normalized = new URL(value, baseURL);
     const base = new URL(baseURL);
