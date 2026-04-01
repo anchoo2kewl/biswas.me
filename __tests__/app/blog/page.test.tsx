@@ -30,7 +30,6 @@ vi.mock("next/link", () => ({
 
 // Mock lucide-react
 vi.mock("lucide-react", () => ({
-  ArrowLeft: () => <span data-testid="arrow-left">ArrowLeft</span>,
   Calendar: () => <span data-testid="calendar">Cal</span>,
   ArrowUpRight: () => <span data-testid="arrow-up-right">ArrowUpRight</span>,
   ExternalLink: () => <span data-testid="external-link">ExtLink</span>,
@@ -104,11 +103,15 @@ describe("BlogPage", () => {
     expect(blogLink).toHaveAttribute("href", "https://anshumanbiswas.com");
   });
 
-  it("renders Back to Home link", () => {
+  it("renders shared header navigation links", () => {
     mockFetchBlogPosts.mockReturnValue(new Promise(() => {}));
     render(<BlogPage />);
-    const homeLink = screen.getByText("Back to Home");
-    expect(homeLink.closest("a")).toHaveAttribute("href", "/");
+    expect(screen.getByText("Description").closest("a")).toHaveAttribute("href", "/#description");
+    expect(screen.getByText("Work").closest("a")).toHaveAttribute("href", "/#work");
+    expect(screen.getByText("Products").closest("a")).toHaveAttribute("href", "/#products");
+    expect(screen.getByText("Libraries").closest("a")).toHaveAttribute("href", "/#libraries");
+    expect(screen.getByText("Writing").closest("a")).toHaveAttribute("href", "/blog");
+    expect(screen.getByText("Contact").closest("a")).toHaveAttribute("href", "/#contact");
   });
 
   it("renders blog posts after loading", async () => {

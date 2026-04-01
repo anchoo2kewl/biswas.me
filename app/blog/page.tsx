@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { ArrowLeft, Calendar, ArrowUpRight, ExternalLink } from "lucide-react";
+import { Calendar, ArrowUpRight, ExternalLink } from "lucide-react";
 import { fetchBlogPosts, type BlogPost } from "@/lib/blog-api";
 import config from "@/config";
 
@@ -31,43 +31,40 @@ export default function BlogPage() {
 
   return (
     <main className="min-h-screen">
-      {/* Navigation */}
-      <nav className="mx-auto max-w-6xl px-4 py-8 md:px-6">
-        <div className="flex justify-between items-center">
-          <Link href="/" className="flex items-center gap-1 text-xl font-semibold text-gray-900 hover:text-gray-600 transition-colors">
-            <div className="w-8 h-8 inline-flex items-center justify-center">
-              <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" className="transition-transform hover:scale-125">
-                <circle cx="16" cy="16" r="16" fill="url(#gradient)" />
-                <g fill="#ffffff">
-                  <path d="M16 9 L21 23 L19.25 23 L18.25 20 L13.75 20 L12.75 23 L11 23 L16 9 Z" />
-                  <rect x="14.25" y="17" width="3.5" height="1.5" />
-                  <path d="M16 12 L17.25 16 L14.75 16 L16 12 Z" fill="url(#gradient)" />
-                </g>
-                <g opacity="0.6" fill="#ffffff">
-                  <rect x="5" y="5" width="1" height="1" />
-                  <rect x="26" y="5" width="1" height="1" />
-                  <rect x="5" y="26" width="1" height="1" />
-                  <rect x="26" y="26" width="1" height="1" />
-                </g>
-                <defs>
-                  <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" style={{stopColor: '#667eea', stopOpacity: 1}} />
-                    <stop offset="50%" style={{stopColor: '#764ba2', stopOpacity: 1}} />
-                    <stop offset="100%" style={{stopColor: '#4338ca', stopOpacity: 1}} />
-                  </linearGradient>
-                </defs>
-              </svg>
+      <nav className="sticky top-0 z-40 border-b border-slate-200/70 bg-[#f7f5ef]/85 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-5 md:px-6">
+          <Link href="/" className="flex items-center gap-3 text-slate-950">
+            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-slate-950 text-sm font-semibold text-white shadow-lg shadow-slate-950/15">
+              AB
             </div>
-            <span className="font-semibold tracking-tight">Anshuman Biswas</span>
+            <div>
+              <p className="text-sm font-semibold tracking-[0.16em] text-slate-950 uppercase">
+                Anshuman Biswas
+              </p>
+              <p className="text-xs text-slate-500">Products, systems, and writing</p>
+            </div>
           </Link>
-          
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:border-slate-400 hover:bg-slate-50 hover:text-slate-950"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Back to Home
-          </Link>
+
+          <div className="hidden items-center gap-6 text-sm text-slate-600 md:flex">
+            <Link href="/#description" className="transition hover:text-slate-950">
+              Description
+            </Link>
+            <Link href="/#work" className="transition hover:text-slate-950">
+              Work
+            </Link>
+            <Link href="/#products" className="transition hover:text-slate-950">
+              Products
+            </Link>
+            <Link href="/#libraries" className="transition hover:text-slate-950">
+              Libraries
+            </Link>
+            <Link href="/blog" className="transition hover:text-slate-950">
+              Writing
+            </Link>
+            <Link href="/#contact" className="transition hover:text-slate-950">
+              Contact
+            </Link>
+          </div>
         </div>
       </nav>
 
