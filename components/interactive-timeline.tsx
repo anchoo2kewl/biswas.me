@@ -126,14 +126,17 @@ const TimelinePopup = ({ item, isOpen, onClose }: TimelinePopupProps) => {
             </div>
 
             {item.images && item.images.length > 0 && (
-              <div className="mb-6">
-                <img
-                  src={item.images[0]}
-                  alt={`${item.company}`}
-                  className="w-full h-48 object-cover rounded-lg cursor-pointer hover:opacity-80 transition-opacity"
-                  onClick={() => setExpandedImage(item.images![0])}
-                />
-                <p className="text-xs text-gray-500 mt-2 text-center">Click image to expand</p>
+              <div className="mb-6 space-y-3">
+                {item.images.map((imageSrc, index) => (
+                  <img
+                    key={imageSrc}
+                    src={imageSrc}
+                    alt={`${item.company} concept ${index + 1}`}
+                    className="w-full h-48 object-cover rounded-lg cursor-pointer hover:opacity-80 transition-opacity"
+                    onClick={() => setExpandedImage(imageSrc)}
+                  />
+                ))}
+                <p className="text-xs text-gray-500 text-center">Click image to expand</p>
               </div>
             )}
 
@@ -272,6 +275,21 @@ const timelineData: TimelineItem[] = [
     images: ['/01.png'],
     link: 'https://carleton.ca',
     side: 'left'
+  },
+  {
+    id: '2007-2011',
+    title: 'Early Career Foundations',
+    company: '2PiRad, Global Travel Solution, and Tata Consultancy Services',
+    period: '2007 - 2011',
+    description: 'Started in optical-layer communication, built a travel booking engine, then moved into SAP BI and cloud exploration.',
+    highlights: [
+      'Worked on image-based communication at 2PiRad from 2007 to 2009.',
+      'Built an airline booking engine for Global Travel Solution in 2009.',
+      'Worked on SAP BI at TCS from 2009 to 2011.',
+      'First AWS exposure in 2010 turned cloud into a long-term research focus.'
+    ],
+    images: ['/concept-2pirad.svg', '/concept-travel.svg', '/concept-sapbi.svg'],
+    side: 'right'
   }
 ];
 

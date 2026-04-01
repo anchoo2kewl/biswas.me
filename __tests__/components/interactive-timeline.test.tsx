@@ -23,6 +23,7 @@ describe("InteractiveTimeline", () => {
     expect(screen.getByText("Software Engineer")).toBeInTheDocument();
     expect(screen.getByText("CTO & Co-Founder")).toBeInTheDocument();
     expect(screen.getByText("Ph.D. in Computer Engineering")).toBeInTheDocument();
+    expect(screen.getByText("Early Career Foundations")).toBeInTheDocument();
   });
 
   it("renders company names", () => {
@@ -33,6 +34,7 @@ describe("InteractiveTimeline", () => {
     expect(screen.getByText("Trend Micro")).toBeInTheDocument();
     expect(screen.getByText("Nearest")).toBeInTheDocument();
     expect(screen.getByText("Carleton University")).toBeInTheDocument();
+    expect(screen.getByText("2PiRad, Global Travel Solution, and Tata Consultancy Services")).toBeInTheDocument();
   });
 
   it("renders periods for each item", () => {
@@ -43,12 +45,13 @@ describe("InteractiveTimeline", () => {
     expect(screen.getByText("2016 - 2017")).toBeInTheDocument();
     expect(screen.getByText("2012 - 2014")).toBeInTheDocument();
     expect(screen.getByText("2011 - 2019")).toBeInTheDocument();
+    expect(screen.getByText("2007 - 2011")).toBeInTheDocument();
   });
 
   it("renders 'Click to learn more' for each item", () => {
     render(<InteractiveTimeline />);
     const learnMoreTexts = screen.getAllByText(/Click to learn more/);
-    expect(learnMoreTexts).toHaveLength(6);
+    expect(learnMoreTexts).toHaveLength(7);
   });
 
   it("opens popup when a timeline item is clicked", async () => {
@@ -137,36 +140,55 @@ describe("InteractiveTimeline", () => {
   it("renders timeline items with data-timeline-id attributes", () => {
     const { container } = render(<InteractiveTimeline />);
     const items = container.querySelectorAll("[data-timeline-id]");
-    expect(items).toHaveLength(6);
+    expect(items).toHaveLength(7);
     expect(items[0].getAttribute("data-timeline-id")).toBe("2025");
-    expect(items[5].getAttribute("data-timeline-id")).toBe("2011");
+    expect(items[6].getAttribute("data-timeline-id")).toBe("2007-2011");
   });
 
   it("shows images in popup for items that have them", async () => {
     const user = userEvent.setup();
     render(<InteractiveTimeline />);
 
-    // Click on Turbonomic item (which has images)
-    const turbonomicItem = screen
-      .getByText("Turbonomic, an IBM Company")
+    // Click on the combined early-career item (which has images)
+    const earlyCareerItem = screen
+      .getByText("2PiRad, Global Travel Solution, and Tata Consultancy Services")
       .closest("[data-timeline-id]");
-    const clickableArea = turbonomicItem!.querySelector(".cursor-pointer");
+    const clickableArea = earlyCareerItem!.querySelector(".cursor-pointer");
     await user.click(clickableArea!);
 
     // Should have an image in the popup
-    const img = screen.getByAltText("Turbonomic, an IBM Company");
+    const img = screen.getByAltText("2PiRad, Global Travel Solution, and Tata Consultancy Services concept 1");
     expect(img).toBeInTheDocument();
-    expect(img).toHaveAttribute("src", "/04.png");
+    expect(img).toHaveAttribute("src", "/concept-2pirad.svg");
+  });
+
+  it("shows the second and third images in the combined early-career popup", async () => {
+    const user = userEvent.setup();
+    render(<InteractiveTimeline />);
+
+    const earlyCareerItem = screen
+      .getByText("2PiRad, Global Travel Solution, and Tata Consultancy Services")
+      .closest("[data-timeline-id]");
+    const clickableArea = earlyCareerItem!.querySelector(".cursor-pointer");
+    await user.click(clickableArea!);
+
+    const secondImage = screen.getByAltText("2PiRad, Global Travel Solution, and Tata Consultancy Services concept 2");
+    expect(secondImage).toBeInTheDocument();
+    expect(secondImage).toHaveAttribute("src", "/concept-travel.svg");
+
+    const thirdImage = screen.getByAltText("2PiRad, Global Travel Solution, and Tata Consultancy Services concept 3");
+    expect(thirdImage).toBeInTheDocument();
+    expect(thirdImage).toHaveAttribute("src", "/concept-sapbi.svg");
   });
 
   it("shows image expand text for items with images", async () => {
     const user = userEvent.setup();
     render(<InteractiveTimeline />);
 
-    const turbonomicItem = screen
-      .getByText("Turbonomic, an IBM Company")
+    const earlyCareerItem = screen
+      .getByText("2PiRad, Global Travel Solution, and Tata Consultancy Services")
       .closest("[data-timeline-id]");
-    const clickableArea = turbonomicItem!.querySelector(".cursor-pointer");
+    const clickableArea = earlyCareerItem!.querySelector(".cursor-pointer");
     await user.click(clickableArea!);
 
     expect(screen.getByText("Click image to expand")).toBeInTheDocument();
@@ -177,20 +199,20 @@ describe("InteractiveTimeline", () => {
     render(<InteractiveTimeline />);
 
     // Open Turbonomic popup
-    const turbonomicItem = screen
-      .getByText("Turbonomic, an IBM Company")
+    const earlyCareerItem = screen
+      .getByText("2PiRad, Global Travel Solution, and Tata Consultancy Services")
       .closest("[data-timeline-id]");
-    const clickableArea = turbonomicItem!.querySelector(".cursor-pointer");
+    const clickableArea = earlyCareerItem!.querySelector(".cursor-pointer");
     await user.click(clickableArea!);
 
     // Click the image to expand
-    const img = screen.getByAltText("Turbonomic, an IBM Company");
+    const img = screen.getByAltText("2PiRad, Global Travel Solution, and Tata Consultancy Services concept 1");
     await user.click(img);
 
     // Should show the expanded image modal
     const expandedImg = screen.getByAltText("Expanded view");
     expect(expandedImg).toBeInTheDocument();
-    expect(expandedImg).toHaveAttribute("src", "/04.png");
+    expect(expandedImg).toHaveAttribute("src", "/concept-2pirad.svg");
   });
 
   it("shows the Elastio image section", async () => {
@@ -202,7 +224,7 @@ describe("InteractiveTimeline", () => {
     const clickableArea = elastioItem!.querySelector(".cursor-pointer");
     await user.click(clickableArea!);
 
-    expect(screen.getByAltText("Elastio")).toBeInTheDocument();
+    expect(screen.getByAltText("Elastio concept 1")).toBeInTheDocument();
     expect(screen.getByText("Click image to expand")).toBeInTheDocument();
   });
 
