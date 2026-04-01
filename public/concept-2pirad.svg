@@ -1,0 +1,50 @@
+<svg width="1200" height="760" viewBox="0 0 1200 760" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="120" y1="80" x2="1080" y2="700" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#06111f"/>
+      <stop offset="1" stop-color="#111b33"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="180" y1="180" x2="1030" y2="650" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7dd3fc" stop-opacity=".35"/>
+      <stop offset="1" stop-color="#22c55e" stop-opacity=".12"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="760" rx="28" fill="url(#bg)"/>
+  <rect x="24" y="24" width="1152" height="712" rx="22" fill="url(#glow)" fill-opacity=".25" stroke="rgba(255,255,255,0.12)"/>
+  <rect x="24" y="24" width="1152" height="68" rx="22" fill="rgba(255,255,255,0.06)"/>
+  <circle cx="58" cy="58" r="8" fill="#ef4444"/>
+  <circle cx="82" cy="58" r="8" fill="#f59e0b"/>
+  <circle cx="106" cy="58" r="8" fill="#22c55e"/>
+  <text x="600" y="69" text-anchor="middle" fill="#dbeafe" font-size="24" font-family="Inter, Arial, sans-serif" letter-spacing="0.22em">2PiRad</text>
+  <text x="600" y="120" text-anchor="middle" fill="#93c5fd" font-size="14" font-family="Inter, Arial, sans-serif" letter-spacing="0.34em">IMAGE-BASED OPTICAL COMMUNICATION CONCEPT</text>
+
+  <g opacity=".9">
+    <rect x="150" y="210" width="250" height="220" rx="20" fill="#0f172a" stroke="rgba(125,211,252,.35)"/>
+    <rect x="800" y="210" width="250" height="220" rx="20" fill="#0f172a" stroke="rgba(125,211,252,.35)"/>
+    <rect x="186" y="246" width="178" height="148" rx="14" fill="#172554"/>
+    <rect x="836" y="246" width="178" height="148" rx="14" fill="#1e293b"/>
+    <rect x="214" y="274" width="122" height="20" rx="10" fill="#38bdf8" fill-opacity=".85"/>
+    <rect x="214" y="306" width="96" height="14" rx="7" fill="#bfdbfe" fill-opacity=".6"/>
+    <rect x="214" y="334" width="108" height="14" rx="7" fill="#bfdbfe" fill-opacity=".35"/>
+    <rect x="864" y="274" width="112" height="20" rx="10" fill="#22c55e" fill-opacity=".82"/>
+    <rect x="864" y="306" width="84" height="14" rx="7" fill="#d1fae5" fill-opacity=".6"/>
+    <rect x="864" y="334" width="126" height="14" rx="7" fill="#d1fae5" fill-opacity=".35"/>
+  </g>
+
+  <g stroke="#7dd3fc" stroke-width="3" stroke-linecap="round">
+    <path d="M400 320C488 286 515 286 600 320"/>
+    <path d="M400 346C488 310 515 310 600 346"/>
+    <path d="M600 320C685 286 712 286 800 320"/>
+    <path d="M600 346C685 310 712 310 800 346"/>
+  </g>
+  <g fill="#7dd3fc">
+    <circle cx="470" cy="304" r="5"/>
+    <circle cx="535" cy="320" r="5"/>
+    <circle cx="685" cy="304" r="5"/>
+    <circle cx="735" cy="320" r="5"/>
+  </g>
+  <text x="600" y="292" text-anchor="middle" fill="#e0f2fe" font-size="28" font-family="Inter, Arial, sans-serif" font-weight="700">Through images, not cables</text>
+  <text x="600" y="520" text-anchor="middle" fill="#cbd5e1" font-size="18" font-family="Inter, Arial, sans-serif" letter-spacing="0.12em">Optical layer communication, imagined as a product surface</text>
+  <rect x="360" y="564" width="480" height="88" rx="18" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)"/>
+  <text x="600" y="616" text-anchor="middle" fill="#f8fafc" font-size="22" font-family="Inter, Arial, sans-serif">Concept work for 2PiRad</text>
+</svg>
