@@ -1372,9 +1372,9 @@ export default function Home() {
                 </div>
                 <div className="mt-5 flex items-center gap-5">
                   <img
-                    src="/me_new.jpg"
+                    src="/profile-cutout.png"
                     alt="Anshuman Biswas"
-                    className="h-28 w-28 object-cover"
+                    className="h-32 w-28 object-contain object-bottom"
                   />
                   <div className="space-y-2">
                     <h2 className="text-2xl font-semibold text-slate-950">Enterprise work first. Builder energy always.</h2>
