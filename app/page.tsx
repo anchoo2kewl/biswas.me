@@ -359,9 +359,10 @@ const motivationPoints = [
 ];
 
 const operatingPrinciples = [
-  "Fast interfaces, small stacks, and low operational drag.",
-  "Tools that can be embedded, self-hosted, and composed.",
-  "AI used where it improves execution.",
+  { label: "Speed", text: "Fast interfaces, low operational drag." },
+  { label: "Accuracy", text: "Precise execution, fewer avoidable mistakes." },
+  { label: "Security", text: "Secure by default, audit-ready always." },
+  { label: "AI First", text: "Applied everywhere with guardrails." },
 ];
 
 function isExternalLink(href?: string) {
@@ -1292,10 +1293,9 @@ export default function Home() {
                   I build enterprise software
                 </h1>
                 <p className="max-w-2xl text-xl leading-8 text-slate-600">
-                  For nearly two decades I&apos;ve built enterprise SaaS systems. Today I&apos;m VP of
-                  Engineering at Elastio, a cybersecurity startup focused on cloud data protection
-                  and recovery. Outside work, I build focused products, reusable Go libraries, and
-                  small systems that keep me close to the craft.
+                I&apos;m the VP of Engineering at Elastio, a cybersecurity startup focused on cloud
+                data protection and recovery. I build security-focused products, reusable Go
+                libraries, and lightweight systems that keep me close to the craft.
                 </p>
               </div>
 
@@ -1321,15 +1321,15 @@ export default function Home() {
               <div className="grid gap-6 border-y border-slate-200/80 py-6 sm:grid-cols-3 sm:gap-0 sm:divide-x sm:divide-slate-200/80">
                 <div className="pr-0 sm:px-5 sm:first:pl-0">
                   <p className="text-3xl font-semibold text-slate-950">~20</p>
-                  <p className="mt-2 text-sm leading-6 text-slate-600">Years building enterprise SaaS, cloud systems, and engineering teams.</p>
+                  <p className="mt-2 text-sm leading-6 text-slate-600">Years building enterprise software, cloud systems, and engineering teams.</p>
                 </div>
                 <div className="pr-0 sm:px-5">
                   <p className="text-3xl font-semibold text-slate-950">VP</p>
-                  <p className="mt-2 text-sm leading-6 text-slate-600">Engineering leadership at Elastio, building cybersecurity SaaS.</p>
+                  <p className="mt-2 text-sm leading-6 text-slate-600">Engineering leadership at Elastio, building cybersecurity software.</p>
                 </div>
                 <div className="pr-0 sm:px-5 sm:last:pr-0">
                   <p className="text-3xl font-semibold text-slate-950">20+</p>
-                  <p className="mt-2 text-sm leading-6 text-slate-600">Products, libraries, and tools built outside the day job.</p>
+                  <p className="mt-2 text-sm leading-6 text-slate-600">Products, libraries, and tools that extend how I build software.</p>
                 </div>
               </div>
 
@@ -1412,17 +1412,15 @@ export default function Home() {
                 <div className="mt-4 divide-y divide-slate-200 border-y border-slate-200">
                   {operatingPrinciples.map((principle, index) => (
                     <div
-                      key={principle}
+                      key={principle.label}
                       className="py-4"
                     >
                       <div className="flex items-baseline gap-3 text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-400 md:text-xs">
                         <span>0{index + 1}</span>
-                        <span className="text-slate-500">
-                          {index === 0 ? "Speed" : index === 1 ? "Composition" : "Applied AI"}
-                        </span>
+                        <span className="text-slate-500">{principle.label}</span>
                       </div>
-                      <p className="mt-2 max-w-xl text-[15px] leading-7 text-slate-700 md:text-base">
-                        {principle}
+                      <p className="mt-2 text-[15px] leading-7 text-slate-700 md:text-base">
+                        {principle.text}
                       </p>
                     </div>
                   ))}
@@ -1439,13 +1437,13 @@ export default function Home() {
                 Description
               </p>
               <h2 className="font-display text-4xl text-slate-950 md:text-5xl">
-                Enterprise SaaS operator, product builder, and writer.
+                Enterprise Software operator, product builder, and writer.
               </h2>
               <p className="text-lg leading-8 text-slate-600">
-                Most of my career has been spent building enterprise SaaS. I care most about
-                enterprise security, durable systems, strong teams, and software that can survive
-                real operational pressure. That perspective shapes both my work at Elastio and the
-                projects I build outside of work.
+                Most of my career has been in enterprise software. I care most about enterprise
+                security, durable systems, strong teams, and software that can handle real
+                workload. That perspective shapes both my work at Elastio and the systems I keep
+                building.
               </p>
             </div>
 
@@ -1457,12 +1455,14 @@ export default function Home() {
                 {motivationPoints.map((point, index) => (
                   <div
                     key={point}
-                    className="grid gap-3 py-5 md:grid-cols-[56px_1fr]"
+                    className="py-5"
                   >
-                    <span className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">
-                      0{index + 1}
-                    </span>
-                    <p className="text-base leading-8 text-slate-700">{point}</p>
+                    <div className="flex items-baseline gap-5">
+                      <span className="w-10 shrink-0 text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">
+                        0{index + 1}
+                      </span>
+                      <p className="text-base leading-8 text-slate-700">{point}</p>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -1478,7 +1478,7 @@ export default function Home() {
               </p>
               <h2 className="font-display text-4xl text-slate-950 md:text-5xl">Career journey</h2>
               <p className="text-lg leading-8 text-slate-600">
-                Nearly twenty years across enterprise SaaS, cloud infrastructure, AI-powered
+                Nearly twenty years across enterprise software, cloud infrastructure, AI-powered
                 systems, security, and startup product work.
               </p>
             </div>
@@ -1491,8 +1491,8 @@ export default function Home() {
         <ShowcaseSection
           id="products"
           eyebrow="Play Projects"
-          title="What I build outside work"
-          description="Public products I build after hours across project management, monitoring, feature flags, finance, publishing, and AI agent security."
+          title="Products I keep building"
+          description="Public products across project management, monitoring, feature flags, finance, publishing, and AI agent security."
           items={products}
           onSelect={setSelectedItem}
         />

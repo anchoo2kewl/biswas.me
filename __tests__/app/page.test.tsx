@@ -152,7 +152,7 @@ describe("HomePage", () => {
     expect(screen.getAllByText("Work").length).toBeGreaterThan(0);
     expect(screen.getAllByText("Writing").length).toBeGreaterThan(0);
     expect(screen.getAllByText("Contact").length).toBeGreaterThan(0);
-    expect(screen.getByText("What I build outside work")).toBeInTheDocument();
+    expect(screen.getByText("Products I keep building")).toBeInTheDocument();
     expect(screen.getByText("Libraries and tools I reuse")).toBeInTheDocument();
   });
 

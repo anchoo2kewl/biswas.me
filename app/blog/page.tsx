@@ -78,7 +78,7 @@ export default function BlogPage() {
             Writing & Insights
           </h1>
           <p className="mx-auto max-w-2xl text-lg leading-8 text-slate-600">
-            Essays on enterprise SaaS, cloud systems, AI, security, and the software ideas I keep returning to.
+            Essays on enterprise software, cloud systems, AI, security, and the software ideas I keep returning to.
           </p>
           <div className="flex justify-center pt-4">
             <Link

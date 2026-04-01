@@ -326,7 +326,7 @@ export const InteractiveTimeline = () => {
               className={`relative flex items-center transition-all duration-700 ${
                 visibleItems.has(item.id) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
               }`}
-            >
+              >
               <div
                 className={`absolute left-10 z-20 -translate-x-1/2 rounded-full border-4 border-white shadow-[0_0_0_8px_rgba(255,255,255,0.88)] transition-all duration-700 lg:left-1/2 ${
                 visibleItems.has(item.id) 
@@ -340,19 +340,27 @@ export const InteractiveTimeline = () => {
               </div>
 
               <div
-                className={`w-full pl-16 lg:w-1/2 ${
-                  item.side === 'left' ? 'lg:pr-12 lg:pl-0' : 'lg:ml-auto lg:pl-12'
+                className={`pointer-events-none absolute top-1/2 hidden -translate-y-1/2 lg:block ${
+                  item.side === 'left'
+                    ? 'left-[calc(50%+4rem)] text-left'
+                    : 'right-[calc(50%+4rem)] text-right'
                 }`}
               >
-                <div
-                  className={`mb-3 flex ${
-                    item.side === 'left' ? 'justify-start lg:justify-end' : 'justify-start'
-                  }`}
-                >
-                  <span className="rounded-full border border-slate-200 bg-white/90 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-slate-500 shadow-sm">
-                    {item.period.split(" - ")[0]}
-                  </span>
-                </div>
+                <p className="leading-none text-5xl font-semibold tracking-[0.22em] text-slate-500">
+                  {item.period.split(" - ")[0]}
+                </p>
+              </div>
+
+              <div className="w-full pl-16 lg:pl-0">
+                <div className="grid gap-4 lg:grid-cols-2 lg:items-start">
+                  <div
+                    className={`order-2 lg:order-none ${
+                      item.side === 'left' ? 'lg:col-start-1 lg:pr-14' : 'lg:col-start-2 lg:pl-14'
+                    }`}
+                  >
+                    <p className="mb-3 text-sm font-semibold uppercase tracking-[0.28em] text-slate-400 lg:hidden">
+                      {item.period.split(" - ")[0]}
+                    </p>
                 <div
                   className={`cursor-pointer group border-t border-slate-200 bg-transparent py-5 transition-all duration-300 hover:border-slate-300 md:py-6 ${
                     item.side === 'left' ? 'lg:text-right' : 'lg:text-left'
@@ -399,6 +407,8 @@ export const InteractiveTimeline = () => {
                         <span aria-hidden="true">→</span>
                       </div>
                     </div>
+                  </div>
+                </div>
                   </div>
                 </div>
               </div>

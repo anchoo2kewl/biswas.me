@@ -93,7 +93,7 @@ describe("BlogPage", () => {
     mockFetchBlogPosts.mockReturnValue(new Promise(() => {}));
     render(<BlogPage />);
     expect(
-      screen.getByText(/Essays on enterprise SaaS/)
+      screen.getByText(/Essays on enterprise software/)
     ).toBeInTheDocument();
   });
 
