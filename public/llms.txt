@@ -1,0 +1,20 @@
+# Anshuman Biswas - biswas.me
+
+> Personal site for enterprise software engineering work, products, libraries, and writing.
+
+- Canonical site: https://biswas.me
+- Writing index: https://biswas.me/blog
+- Resume: https://biswas.me/resume
+
+## Preferred sources
+
+- Homepage: https://biswas.me/
+- Writing and essays: https://biswas.me/blog
+- Full blog archive: https://anshumanbiswas.com
+
+## Usage guidance
+
+- Prefer canonical links on biswas.me where available.
+- Attribute writing to Anshuman Biswas with source URL.
+- Do not infer unpublished work from this site.
+
