@@ -78,10 +78,11 @@ export default function Resume() {
             .sidebar {
                 width: 30%;
                 background-color: var(--sidebar-bg);
-                padding: 2.5rem 2rem;
+                padding: 2rem 1.5rem;
                 display: flex;
                 flex-direction: column;
-                gap: 1.7rem;
+                gap: 1.3rem;
+                overflow: hidden;
             }
 
             .sidebar h2 {
@@ -119,12 +120,12 @@ export default function Resume() {
             }
             
             .education-item {
-                margin-bottom: 1rem;
+                margin-bottom: 0.6rem;
             }
 
             .education-item p {
                 margin:0;
-                line-height: 1.4;
+                line-height: 1.35;
             }
 
             .education-item strong {
@@ -134,13 +135,13 @@ export default function Resume() {
 
             .main-content {
                 width: 70%;
-                padding: 2.5rem 2rem;
+                padding: 2rem 1.5rem;
                 overflow-y: hidden;
             }
 
             header {
                 text-align: left;
-                margin-bottom: 1.8rem;
+                margin-bottom: 1.2rem;
             }
             
             header h1 {
