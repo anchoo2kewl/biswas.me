@@ -397,6 +397,29 @@ const libraries: ShowcaseItem[] = [
       stroke: "#fecdd3",
     },
   },
+  {
+    id: "openclaw-manager",
+    name: "OpenClaw Manager",
+    label: "Tooling",
+    domain: "claw.biswas.me",
+    href: "https://claw.biswas.me",
+    tagline: "Self-hosted coding agent control plane.",
+    summary: "A minimal operator console over chat, sessions, a workspace, and a handful of integrations — backed by a disposable agent container.",
+    detail:
+      "OpenClaw Manager is a small, auditable control plane for running a coding agent on your own box. It pairs a password-protected management console with an embedded upstream gateway, runs the agent inside a scoped container, and is reproducible from a single Ansible playbook.",
+    stack: ["Go", "Ansible", "Docker", "nginx"],
+    highlights: [
+      "Pure Go standard library — no framework sprawl, no runtime dependencies.",
+      "Disposable agent container with a scoped workspace volume and no host access.",
+      "Ansible playbook provisions nginx, Docker, bot container, and gateway on any Ubuntu host.",
+    ],
+    palette: {
+      base: "#0a0c10",
+      accent: "#6366f1",
+      glow: "#4338ca",
+      stroke: "#c7d2fe",
+    },
+  },
 ];
 
 const motivationPoints = [
