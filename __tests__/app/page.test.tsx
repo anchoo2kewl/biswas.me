@@ -240,7 +240,7 @@ describe("HomePage", () => {
     expect(screen.getByLabelText("Message")).toBeInTheDocument();
     expect(screen.getByText("Send message")).toBeInTheDocument();
     expect(screen.getAllByText("github.com/anchoo2kewl").length).toBeGreaterThan(0);
-    expect(screen.getAllByText("linkedin.com/in/anshumanbiswas").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("linkedin.com/in/anshuman-biswas-phd").length).toBeGreaterThan(0);
     expect(screen.getAllByText("anshuman@biswas.me").length).toBeGreaterThan(0);
   });
 

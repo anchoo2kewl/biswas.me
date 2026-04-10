@@ -962,6 +962,97 @@ function ProjectArtwork({
             ))}
           </>
         );
+      case "openclaw-manager":
+        return (
+          <>
+            {/* Base console frame */}
+            <rect x="36" y="36" width="568" height="288" rx="28" fill="#0a0c10" fillOpacity="0.92" />
+            {/* Title bar */}
+            <rect x="58" y="60" width="524" height="46" rx="16" fill="#12161f" />
+            <circle cx="80" cy="83" r="6" fill="#ef4444" fillOpacity="0.85" />
+            <circle cx="98" cy="83" r="6" fill="#f59e0b" fillOpacity="0.85" />
+            <circle cx="116" cy="83" r="6" fill="#34d399" fillOpacity="0.85" />
+            <rect x="232" y="72" width="180" height="22" rx="11" fill="#0a0c10" stroke="#1f2632" />
+            <text x="252" y="87" fill="#6b7589" fontSize="11" fontWeight="600" fontFamily="monospace">claw.biswas.me/console</text>
+            <circle cx="542" cy="83" r="5" fill="#34d399" />
+            <text x="552" y="87" fill="#8b94a8" fontSize="10" fontWeight="700" fontFamily="sans-serif">LIVE</text>
+
+            {/* Sessions sidebar */}
+            <rect x="58" y="122" width="172" height="178" rx="18" fill="#12161f" />
+            <text x="76" y="146" fill="#8b94a8" fontSize="10" fontWeight="700" fontFamily="sans-serif">SESSIONS</text>
+            <rect x="76" y="154" width="28" height="8" rx="4" fill="#2a3444" />
+            {[
+              { label: "deploy-bot", status: accent, active: true },
+              { label: "refactor-api", status: "#34d399", active: false },
+              { label: "test-runner", status: "#f59e0b", active: false },
+              { label: "lint-fixer", status: "#34d399", active: false },
+            ].map((s, idx) => (
+              <g key={s.label}>
+                <rect
+                  x="74"
+                  y={170 + idx * 30}
+                  width="140"
+                  height="24"
+                  rx="10"
+                  fill={s.active ? "#1f2632" : "#0f131a"}
+                  stroke={s.active ? accent : "transparent"}
+                  strokeWidth="1.5"
+                />
+                <circle cx="86" cy={182 + idx * 30} r="4" fill={s.status} />
+                <rect x="98" y={178 + idx * 30} width={70 - idx * 6} height="8" rx="4" fill={s.active ? stroke : "#6b7589"} fillOpacity="0.85" />
+                <rect x="176" y={178 + idx * 30} width="28" height="8" rx="4" fill={s.active ? accent : "#2a3444"} fillOpacity="0.75" />
+              </g>
+            ))}
+
+            {/* Chat / stream panel */}
+            <rect x="244" y="122" width="338" height="124" rx="18" fill="#12161f" />
+            <text x="262" y="146" fill="#8b94a8" fontSize="10" fontWeight="700" fontFamily="sans-serif">AGENT STREAM</text>
+            <rect x="326" y="138" width="32" height="12" rx="6" fill={accent} fillOpacity="0.25" />
+            <text x="332" y="147" fill={stroke} fontSize="8" fontWeight="700" fontFamily="sans-serif">GPT-5</text>
+
+            {/* Chat message - user */}
+            <rect x="262" y="160" width="222" height="22" rx="11" fill="#1f2632" />
+            <circle cx="274" cy="171" r="4" fill="#8b5cf6" />
+            <rect x="284" y="167" width="188" height="8" rx="4" fill="#c8d0dd" fillOpacity="0.85" />
+
+            {/* Chat message - agent (streaming) */}
+            <rect x="262" y="190" width="302" height="46" rx="11" fill="#0f131a" stroke="#1f2632" />
+            <circle cx="274" cy="202" r="4" fill={accent} />
+            <rect x="284" y="198" width="252" height="6" rx="3" fill={stroke} fillOpacity="0.85" />
+            <rect x="284" y="210" width="212" height="6" rx="3" fill={stroke} fillOpacity="0.7" />
+            <rect x="284" y="222" width="168" height="6" rx="3" fill={stroke} fillOpacity="0.55" />
+            {/* Blinking cursor hint */}
+            <rect x="456" y="220" width="8" height="10" rx="2" fill={accent} />
+
+            {/* Status strip */}
+            <rect x="244" y="258" width="338" height="42" rx="16" fill="#12161f" />
+            {[
+              { label: "GATEWAY", value: "200", color: "#34d399" },
+              { label: "CONTAINER", value: "UP", color: "#34d399" },
+              { label: "WORKSPACE", value: "42 MB", color: accent },
+              { label: "QUEUE", value: "3", color: "#f59e0b" },
+            ].map((pill, idx) => (
+              <g key={pill.label}>
+                <rect
+                  x={260 + idx * 82}
+                  y={270}
+                  width="72"
+                  height="20"
+                  rx="10"
+                  fill="#0a0c10"
+                  stroke="#1f2632"
+                />
+                <circle cx={270 + idx * 82} cy={280} r="3.5" fill={pill.color} />
+                <text x={278 + idx * 82} y={278} fill="#6b7589" fontSize="7" fontWeight="700" fontFamily="sans-serif">
+                  {pill.label}
+                </text>
+                <text x={278 + idx * 82} y={288} fill={stroke} fontSize="9" fontWeight="700" fontFamily="monospace">
+                  {pill.value}
+                </text>
+              </g>
+            ))}
+          </>
+        );
       default:
         return (
           <>
@@ -1456,7 +1547,7 @@ export default function Home() {
                   GitHub
                 </Link>
                 <Link
-                  href="https://linkedin.com/in/anshumanbiswas"
+                  href="https://www.linkedin.com/in/anshuman-biswas-phd-613b0145/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 transition hover:text-slate-950"
@@ -1762,14 +1853,14 @@ export default function Home() {
                     <ArrowUpRight className="h-4 w-4" />
                   </Link>
                   <Link
-                    href="https://linkedin.com/in/anshumanbiswas"
+                    href="https://www.linkedin.com/in/anshuman-biswas-phd-613b0145/"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center justify-between rounded-2xl border border-slate-200 px-4 py-4 text-slate-700 transition hover:bg-slate-50"
                   >
                     <span className="inline-flex items-center gap-3">
                       <Linkedin className="h-4 w-4" />
-                      linkedin.com/in/anshumanbiswas
+                      linkedin.com/in/anshuman-biswas-phd
                     </span>
                     <ArrowUpRight className="h-4 w-4" />
                   </Link>
