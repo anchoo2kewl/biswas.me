@@ -47,10 +47,10 @@ describe("ResumePage", () => {
 
   it("renders education details", () => {
     render(<Resume />);
-    expect(screen.getByText(/Ph.D. Electrical & Comp. Eng./)).toBeInTheDocument();
+    expect(screen.getByText(/Ph\.D\., Electrical & Computer Engineering/)).toBeInTheDocument();
     expect(screen.getByText(/Carleton University, 2019/)).toBeInTheDocument();
-    expect(screen.getByText(/M.Sc. Computer Science/)).toBeInTheDocument();
-    expect(screen.getByText(/B.Sc. Computer Science/)).toBeInTheDocument();
+    expect(screen.getByText(/M\.Sc\., Computer Science/)).toBeInTheDocument();
+    expect(screen.getByText(/B\.Sc\., Computer Science/)).toBeInTheDocument();
   });
 
   it("renders experience section with Elastio", () => {
