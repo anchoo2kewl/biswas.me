@@ -112,7 +112,7 @@ function buildExcerpt(content: string | undefined, maxWords = 40) {
   return `${words.slice(0, maxWords).join(" ")}...`;
 }
 
-function normalizePost(post: BlogPost, baseURL: string) {
+function normalizePost(post: BlogPost, baseURL: string): BlogPost {
   return {
     ...post,
     link: normalizeRemoteUrl(post.link, baseURL) || post.link,
@@ -138,7 +138,7 @@ function mapLoadMorePost(post: RawLoadMorePost, baseURL: string): BlogPost {
   );
 }
 
-async function enrichPost(post: BlogPost) {
+async function enrichPost(post: BlogPost): Promise<BlogPost> {
   if (post.excerpt && post.cover_image_url) {
     return post;
   }

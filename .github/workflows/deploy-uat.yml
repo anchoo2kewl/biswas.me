@@ -2,7 +2,7 @@ name: Deploy to UAT
 
 on:
   push:
-    branches: [ uat, develop ]
+    branches: [ uat ]
   workflow_dispatch:
     inputs:
       environment:

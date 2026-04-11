@@ -258,6 +258,53 @@ const libraries: ShowcaseItem[] = [
     },
   },
   {
+    id: "go-blog",
+    name: "go-blog",
+    label: "Library",
+    domain: "github.com/anchoo2kewl/go-blog",
+    href: "https://github.com/anchoo2kewl/go-blog",
+    tagline: "Embeddable blog engine for Go applications.",
+    summary: "A self-contained blog module that adds posts, markdown rendering, and feeds to any Go web app.",
+    detail:
+      "go-blog lets me add a full blog to any product without external CMS dependencies. Posts are authored in markdown and served through Go templates with built-in syntax highlighting and RSS feeds.",
+    stack: ["Go", "Markdown", "embed.FS"],
+    highlights: [
+      "Drop-in blog engine with post management and markdown rendering.",
+      "Embeds into existing Go servers — no separate CMS required.",
+      "Pairs with go-wiki and go-draw for rich content authoring.",
+    ],
+    palette: {
+      base: "#1a1a2e",
+      accent: "#e94560",
+      glow: "#16213e",
+      stroke: "#fca5a5",
+    },
+  },
+  {
+    id: "go-email",
+    name: "go-email",
+    label: "Service",
+    domain: "email.biswas.me",
+    href: "https://email.biswas.me",
+    repo: "https://github.com/anchoo2kewl/go-email",
+    tagline: "Self-hosted transactional email gateway.",
+    summary: "A multi-tenant HTTP email service that relays through your own SMTP server with per-org API keys and rate limits.",
+    detail:
+      "go-email replaces third-party transactional email providers with something I control. Organizations verify domains via DNS TXT records, create API keys with daily and monthly limits, and send email through POST /v1/emails. All activity is searchable and tagged.",
+    stack: ["Go", "SQLite", "SMTP", "DKIM"],
+    highlights: [
+      "Multi-tenant orgs with verified sending domains (SPF, DKIM, DMARC).",
+      "Per-key daily and monthly rate limits with full send log.",
+      "Searchable email history with tags and filtering.",
+    ],
+    palette: {
+      base: "#0c1222",
+      accent: "#3b82f6",
+      glow: "#1e3a5f",
+      stroke: "#93c5fd",
+    },
+  },
+  {
     id: "go-backup",
     name: "go-backup",
     label: "Library",
@@ -790,6 +837,48 @@ function ProjectArtwork({
             <circle cx="384" cy="132" r="36" fill="none" stroke="#60a5fa" strokeWidth="8" />
             <path d="M466 106 L528 158 L454 190 Z" fill={stroke} fillOpacity="0.8" />
             <path d="M194 230 C242 176, 304 262, 350 210 S456 224, 530 184" fill="none" stroke="#1d4ed8" strokeWidth="7" strokeLinecap="round" />
+          </>
+        );
+      case "go-blog":
+        return (
+          <>
+            <rect x="36" y="36" width="568" height="288" rx="28" fill="#1a1a2e" fillOpacity="0.64" />
+            {/* Blog post cards stacked */}
+            {[0, 1, 2].map((idx) => (
+              <g key={idx}>
+                <rect x="58" y={60 + idx * 88} width="524" height="72" rx="18" fill="#111827" fillOpacity="0.92" />
+                <rect x="82" y={76 + idx * 88} width="48" height="40" rx="10" fill={idx === 0 ? accent : "#1f2937"} fillOpacity={idx === 0 ? 0.3 : 0.85} />
+                <rect x="148" y={76 + idx * 88} width={180 - idx * 30} height="12" rx="6" fill={stroke} fillOpacity="0.9" />
+                <rect x="148" y={96 + idx * 88} width={260 - idx * 40} height="8" rx="4" fill="#64748b" fillOpacity="0.7" />
+                <rect x="148" y={112 + idx * 88} width="56" height="8" rx="4" fill={accent} fillOpacity="0.5" />
+                {idx === 0 && <circle cx="540" cy={96 + idx * 88} r="6" fill={accent} fillOpacity="0.85" />}
+              </g>
+            ))}
+          </>
+        );
+      case "go-email":
+        return (
+          <>
+            <rect x="36" y="36" width="568" height="288" rx="28" fill="#0c1222" fillOpacity="0.68" />
+            {/* Search bar */}
+            <rect x="58" y="56" width="404" height="40" rx="14" fill="#111827" fillOpacity="0.92" />
+            <circle cx="82" cy="76" r="9" fill="none" stroke="#64748b" strokeWidth="2" />
+            <rect x="100" y="72" width="120" height="8" rx="4" fill="#334155" />
+            {/* Filter pills */}
+            {[["Sent", "#34d399"], ["test", accent], ["weekly", "#f59e0b"]].map(([label, color], idx) => (
+              <rect key={label} x={482 + (idx > 0 ? 0 : 0)} y={56 + idx * 16} width="64" height="14" rx="7" fill={color} fillOpacity="0.25" />
+            ))}
+            {/* Email log rows */}
+            {[0, 1, 2, 3].map((idx) => (
+              <g key={idx}>
+                <rect x="58" y={112 + idx * 46} width="524" height="34" rx="12" fill="#111827" fillOpacity={idx === 0 ? 0.95 : 0.8} />
+                <rect x="78" y={122 + idx * 46} width="68" height="8" rx="4" fill="#64748b" fillOpacity="0.8" />
+                <rect x="166" y={122 + idx * 46} width="100" height="8" rx="4" fill={stroke} fillOpacity="0.7" />
+                <rect x="286" y={122 + idx * 46} width="140" height="8" rx="4" fill="#94a3b8" fillOpacity="0.6" />
+                <rect x="456" y={120 + idx * 46} width="36" height="14" rx="7" fill={idx === 2 ? "#ef4444" : "#34d399"} fillOpacity="0.85" />
+                {idx < 2 && <rect x="506" y={120 + idx * 46} width="32" height="14" rx="7" fill={accent} fillOpacity="0.3" />}
+              </g>
+            ))}
           </>
         );
       case "go-backup":
