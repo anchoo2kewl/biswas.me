@@ -126,14 +126,17 @@ const TimelinePopup = ({ item, isOpen, onClose }: TimelinePopupProps) => {
             </div>
 
             {item.images && item.images.length > 0 && (
-              <div className="mb-6">
-                <img
-                  src={item.images[0]}
-                  alt={`${item.company}`}
-                  className="w-full h-48 object-cover rounded-lg cursor-pointer hover:opacity-80 transition-opacity"
-                  onClick={() => setExpandedImage(item.images![0])}
-                />
-                <p className="text-xs text-gray-500 mt-2 text-center">Click image to expand</p>
+              <div className="mb-6 space-y-3">
+                {item.images.map((imageSrc, index) => (
+                  <img
+                    key={imageSrc}
+                    src={imageSrc}
+                    alt={`${item.company} concept ${index + 1}`}
+                    className="w-full h-48 object-cover rounded-lg cursor-pointer hover:opacity-80 transition-opacity"
+                    onClick={() => setExpandedImage(imageSrc)}
+                  />
+                ))}
+                <p className="text-xs text-gray-500 text-center">Click image to expand</p>
               </div>
             )}
 
@@ -193,6 +196,7 @@ const timelineData: TimelineItem[] = [
       'Building resilient data protection systems',
       'Leading cross-functional engineering teams'
     ],
+    images: ['/work-elastio.svg'],
     link: 'https://elastio.com',
     side: 'right'
   },
@@ -207,6 +211,7 @@ const timelineData: TimelineItem[] = [
       'Implemented scalable data management systems',
       'Optimized performance for life sciences applications'
     ],
+    images: ['/work-veeva.svg'],
     link: 'https://veeva.com',
     side: 'left'
   },
@@ -270,6 +275,21 @@ const timelineData: TimelineItem[] = [
     images: ['/01.png'],
     link: 'https://carleton.ca',
     side: 'left'
+  },
+  {
+    id: '2007-2011',
+    title: 'Early Career Foundations',
+    company: '2PiRad, Global Travel Solution, and Tata Consultancy Services',
+    period: '2007 - 2011',
+    description: 'Started in optical-layer communication, built a travel booking engine, then moved into SAP BI and cloud exploration.',
+    highlights: [
+      'Worked on image-based communication at 2PiRad from 2007 to 2009.',
+      'Built an airline booking engine for Global Travel Solution in 2009.',
+      'Worked on SAP BI at TCS from 2009 to 2011.',
+      'First AWS exposure in 2010 turned cloud into a long-term research focus.'
+    ],
+    images: ['/concept-2pirad.svg', '/concept-travel.svg', '/concept-sapbi.svg'],
+    side: 'right'
   }
 ];
 
@@ -310,52 +330,103 @@ export const InteractiveTimeline = () => {
 
   return (
     <>
-      <div ref={timelineRef} className="relative">
-        {/* Timeline Line */}
-        <div className="absolute left-1/2 transform -translate-x-1/2 w-0.5 bg-gray-300 h-full"></div>
+      <div
+        ref={timelineRef}
+        className="relative"
+      >
+        <div className="absolute bottom-0 left-10 top-0 w-px bg-gray-300 h-full lg:left-1/2 lg:-translate-x-1/2" />
 
-        <div className="space-y-12">
+        <div className="space-y-8 md:space-y-10">
           {timelineData.map((item) => (
             <div
               key={item.id}
               data-timeline-id={item.id}
-              className={`relative flex ${item.side === 'left' ? 'justify-start' : 'justify-end'} items-center transition-all duration-700 ${
+              className={`relative flex items-center transition-all duration-700 ${
                 visibleItems.has(item.id) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
               }`}
-            >
-              {/* Timeline Dot */}
-              <div className={`absolute left-1/2 transform -translate-x-1/2 w-8 h-8 rounded-full border-4 border-white shadow-lg z-10 transition-all duration-700 ${
+              >
+              <div
+                className={`absolute left-10 z-20 -translate-x-1/2 rounded-full border-4 border-white shadow-[0_0_0_8px_rgba(255,255,255,0.88)] transition-all duration-700 lg:left-1/2 ${
                 visibleItems.has(item.id) 
-                  ? 'bg-green-500 animate-pulse border-green-200' 
-                  : 'bg-transparent border-gray-400'
+                  ? 'bg-emerald-500 border-emerald-200'
+                  : 'bg-white border-slate-300'
               }`}>
+                <div className="flex h-5 w-5 items-center justify-center rounded-full" />
                 {visibleItems.has(item.id) && (
-                  <div className="absolute -inset-1 rounded-full bg-green-400 animate-ping opacity-40"></div>
+                  <div className="absolute -inset-1 rounded-full bg-emerald-400 animate-ping opacity-30" />
                 )}
               </div>
 
-              {/* Timeline Item */}
               <div
-                className={`w-5/12 ${item.side === 'left' ? 'pr-8 text-right' : 'pl-8'} cursor-pointer group`}
-                onClick={() => setSelectedItem(item)}
+                className={`pointer-events-none absolute top-1/2 hidden -translate-y-1/2 lg:block ${
+                  item.side === 'left'
+                    ? 'left-[calc(50%+4rem)] text-left'
+                    : 'right-[calc(50%+4rem)] text-right'
+                }`}
               >
-                <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition-all duration-300 group-hover:border-blue-300">
-                  <div className={`${item.side === 'left' ? 'text-right' : 'text-left'}`}>
-                    <h3 className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
-                      {item.title}
-                    </h3>
-                    <p className="text-lg text-gray-600 font-medium">
-                      {item.company}
+                <p className="leading-none text-5xl font-semibold tracking-[0.22em] text-slate-500">
+                  {item.period.split(" - ")[0]}
+                </p>
+              </div>
+
+              <div className="w-full pl-16 lg:pl-0">
+                <div className="grid gap-4 lg:grid-cols-2 lg:items-start">
+                  <div
+                    className={`order-2 lg:order-none ${
+                      item.side === 'left' ? 'lg:col-start-1 lg:pr-14' : 'lg:col-start-2 lg:pl-14'
+                    }`}
+                  >
+                    <p className="mb-3 text-sm font-semibold uppercase tracking-[0.28em] text-slate-400 lg:hidden">
+                      {item.period.split(" - ")[0]}
                     </p>
-                    <p className="text-sm text-gray-500 mb-3">
-                      {item.period}
-                    </p>
-                    <p className="text-gray-700 text-sm leading-relaxed line-clamp-3">
+                <div
+                  className={`cursor-pointer group border-t border-slate-200 bg-transparent py-5 transition-all duration-300 hover:border-slate-300 md:py-6 ${
+                    item.side === 'left' ? 'lg:text-right' : 'lg:text-left'
+                  }`}
+                  onClick={() => setSelectedItem(item)}
+                >
+                  <div className="space-y-4">
+                    <div className={`space-y-2 ${item.side === 'left' ? 'lg:items-end' : 'lg:items-start'}`}>
+                      <div
+                        className={`flex flex-wrap items-center gap-3 ${
+                          item.side === 'left' ? 'lg:justify-end' : 'lg:justify-start'
+                        }`}
+                      >
+                        <h3 className="text-xl font-semibold tracking-tight text-slate-950 transition-colors group-hover:text-slate-700">
+                          {item.title}
+                        </h3>
+                        <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                          {item.period}
+                        </span>
+                      </div>
+                      <p className="text-sm font-medium uppercase tracking-[0.18em] text-slate-500">
+                        {item.company}
+                      </p>
+                    </div>
+
+                    <p className="text-sm leading-7 text-slate-600 md:text-[15px]">
                       {item.description}
                     </p>
-                    <p className="text-blue-600 text-sm mt-2 group-hover:text-blue-800 transition-colors">
-                      Click to learn more →
-                    </p>
+
+                    <div
+                      className={`flex items-center justify-between gap-4 pt-2 ${
+                        item.side === 'left' ? 'lg:flex-row-reverse' : ''
+                      }`}
+                    >
+                      <span className="text-xs font-medium uppercase tracking-[0.18em] text-slate-400">
+                        {item.highlights.length} highlights
+                      </span>
+                      <div
+                        className={`flex items-center gap-2 text-sm font-medium text-blue-600 transition-colors group-hover:text-blue-800 ${
+                          item.side === 'left' ? 'lg:justify-end' : 'lg:justify-start'
+                        }`}
+                      >
+                        <span>Click to learn more</span>
+                        <span aria-hidden="true">→</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
                   </div>
                 </div>
               </div>

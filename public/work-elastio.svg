@@ -1,0 +1,58 @@
+<svg width="1600" height="900" viewBox="0 0 1600 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1600" height="900" fill="#081321"/>
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <rect x="88" y="92" width="1424" height="716" rx="28" fill="#0F1E33" stroke="#264563"/>
+  <rect x="128" y="132" width="1344" height="72" rx="18" fill="#132843"/>
+  <circle cx="173" cy="168" r="10" fill="#34D399"/>
+  <circle cx="205" cy="168" r="10" fill="#60A5FA"/>
+  <circle cx="237" cy="168" r="10" fill="#F59E0B"/>
+  <rect x="1094" y="150" width="330" height="36" rx="18" fill="#12314A"/>
+  <text x="1118" y="174" fill="#C7E6FF" font-family="Arial, sans-serif" font-size="20">Elastic Kubernetes Recovery</text>
+
+  <rect x="128" y="236" width="316" height="532" rx="24" fill="#0D1A2B" stroke="#1E3650"/>
+  <text x="164" y="290" fill="#8FB6D8" font-family="Arial, sans-serif" font-size="18" letter-spacing="3">PROTECTION</text>
+  <rect x="164" y="320" width="244" height="92" rx="18" fill="#10253D"/>
+  <text x="192" y="362" fill="white" font-family="Arial, sans-serif" font-size="30" font-weight="700">412</text>
+  <text x="192" y="392" fill="#86A9C8" font-family="Arial, sans-serif" font-size="18">Protected clusters</text>
+  <rect x="164" y="436" width="244" height="92" rx="18" fill="#10253D"/>
+  <text x="192" y="478" fill="white" font-family="Arial, sans-serif" font-size="30" font-weight="700">99.98%</text>
+  <text x="192" y="508" fill="#86A9C8" font-family="Arial, sans-serif" font-size="18">Recovery readiness</text>
+  <rect x="164" y="552" width="244" height="176" rx="18" fill="#10253D"/>
+  <text x="192" y="592" fill="#8FB6D8" font-family="Arial, sans-serif" font-size="18">POLICIES</text>
+  <rect x="192" y="620" width="188" height="20" rx="10" fill="#173556"/>
+  <rect x="192" y="654" width="164" height="20" rx="10" fill="#173556"/>
+  <rect x="192" y="688" width="140" height="20" rx="10" fill="#173556"/>
+
+  <text x="492" y="288" fill="#8FB6D8" font-family="Arial, sans-serif" font-size="18" letter-spacing="3">RESILIENCE OVERVIEW</text>
+  <rect x="492" y="320" width="452" height="186" rx="24" fill="#12233A" stroke="#24425D"/>
+  <text x="528" y="372" fill="white" font-family="Arial, sans-serif" font-size="40" font-weight="700">Cloud-native backup posture</text>
+  <text x="528" y="420" fill="#93B5D3" font-family="Arial, sans-serif" font-size="24">Recovery automation, immutable storage, and continuous protection</text>
+  <rect x="528" y="454" width="168" height="34" rx="17" fill="#123B35"/>
+  <text x="556" y="477" fill="#6EE7B7" font-family="Arial, sans-serif" font-size="18" font-weight="700">All systems healthy</text>
+
+  <rect x="972" y="320" width="464" height="186" rx="24" fill="#12233A" stroke="#24425D"/>
+  <text x="1008" y="368" fill="#8FB6D8" font-family="Arial, sans-serif" font-size="18" letter-spacing="3">RECENT EVENTS</text>
+  <rect x="1008" y="392" width="392" height="30" rx="15" fill="#173556"/>
+  <rect x="1008" y="438" width="344" height="30" rx="15" fill="#173556"/>
+  <rect x="1008" y="484" width="296" height="30" rx="15" fill="#173556"/>
+
+  <rect x="492" y="540" width="944" height="228" rx="24" fill="#12233A" stroke="#24425D"/>
+  <text x="528" y="588" fill="#8FB6D8" font-family="Arial, sans-serif" font-size="18" letter-spacing="3">RECOVERY WORKFLOWS</text>
+  <rect x="528" y="620" width="268" height="112" rx="18" fill="#0F2A24"/>
+  <text x="556" y="666" fill="#6EE7B7" font-family="Arial, sans-serif" font-size="26" font-weight="700">Immutable backups</text>
+  <text x="556" y="700" fill="#A7F3D0" font-family="Arial, sans-serif" font-size="18">Protected by default</text>
+  <rect x="830" y="620" width="268" height="112" rx="18" fill="#132843"/>
+  <text x="858" y="666" fill="#BAE6FD" font-family="Arial, sans-serif" font-size="26" font-weight="700">Cluster restores</text>
+  <text x="858" y="700" fill="#BFDBFE" font-family="Arial, sans-serif" font-size="18">Runbook-driven recovery</text>
+  <rect x="1132" y="620" width="268" height="112" rx="18" fill="#2A2110"/>
+  <text x="1160" y="666" fill="#FDE68A" font-family="Arial, sans-serif" font-size="26" font-weight="700">Threat signals</text>
+  <text x="1160" y="700" fill="#FCD34D" font-family="Arial, sans-serif" font-size="18">Anomaly alerts and response</text>
+
+  <defs>
+    <linearGradient id="bg" x1="116" y1="76" x2="1502" y2="824" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0B223A"/>
+      <stop offset="0.6" stop-color="#10233A"/>
+      <stop offset="1" stop-color="#134E63"/>
+    </linearGradient>
+  </defs>
+</svg>

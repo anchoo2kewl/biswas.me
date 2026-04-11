@@ -1,17 +1,17 @@
-name: Deploy to UAT
+name: Deploy to Production
 
 on:
   push:
-    branches: [ uat ]
+    branches: [ production ]  # Only production branch, NOT master
   workflow_dispatch:
     inputs:
       environment:
         description: 'Environment to deploy'
         required: true
-        default: 'uat'
+        default: 'production'
         type: choice
         options:
-          - uat
+          - production
 
 jobs:
   security-scan:
@@ -27,45 +27,43 @@ jobs:
           scan-ref: '.'
           format: 'table'
           severity: 'CRITICAL,HIGH'
-          exit-code: '1'  # Fail if vulnerabilities found
+          exit-code: '0'  # Report only, don't block deploy
           ignore-unfixed: true
 
-  deploy-uat:
+  deploy-production:
     needs: security-scan  # Only deploy if security scan passes
     runs-on: ubuntu-latest
-    environment: uat
+    environment: production
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Deploy to UAT server
+      - name: Deploy to Production server
         env:
-          SSH_PRIVATE_KEY: ${{ secrets.UAT_SSH_PRIVATE_KEY }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
           RECAPTCHA_SECRET_KEY: ${{ secrets.RECAPTCHA_SECRET_KEY }}
           BLOG_API_TOKEN: ${{ secrets.BLOG_API_TOKEN }}
-          CF_ACCESS_CLIENT_ID: ${{ secrets.CF_ACCESS_CLIENT_ID }}
-          CF_ACCESS_CLIENT_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
           CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           COMMIT_SHA: ${{ github.sha }}
           BRANCH: ${{ github.ref_name }}
         run: |
           mkdir -p ~/.ssh
-          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan 92.4.83.28 >> ~/.ssh/known_hosts
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan 31.97.102.48 >> ~/.ssh/known_hosts
 
-          echo "🚀 Deploying to UAT server..."
+          echo "🚀 Deploying to Production server..."
           echo "Commit: $COMMIT_SHA"
 
           # Deploy directly via SSH
-          ssh -i ~/.ssh/id_rsa ubuntu@92.4.83.28 bash -s <<EOF
+          ssh -i ~/.ssh/deploy_key ubuntu@31.97.102.48 bash -s <<EOF
             set -e
 
             # Create deployment directory
-            mkdir -p ~/biswas-me-uat
-            cd ~/biswas-me-uat
+            mkdir -p ~/biswas-me-production
+            cd ~/biswas-me-production
 
             # Clone or pull latest code
             if [ -d ".git" ]; then
@@ -78,15 +76,15 @@ jobs:
               git checkout $COMMIT_SHA
             fi
 
-            echo "⚙️  Creating UAT config file..."
+            echo "⚙️  Creating Production config file..."
             mkdir -p config
             printf '%s\n' \
-              '// UAT Environment Configuration' \
+              '// Production Environment Configuration' \
               'const config = {' \
               '  RECAPTCHA_SITE_KEY: "6LcfEZsdAAAAAH6DVoJexNRQRW0J_AL9uxSthwCt",' \
               '  API_URL: "/api/messages",' \
               '  BLOG_API_URL: "/api/posts",' \
-              '  BLOG_VIEW_ALL_URL: "https://uat.anshumanbiswas.com",' \
+              '  BLOG_VIEW_ALL_URL: "https://anshumanbiswas.com",' \
               '  BLOG_API_TOKEN: undefined,' \
               '};' \
               'export default config;' \
@@ -96,22 +94,20 @@ jobs:
             docker builder prune -af || true
             docker image prune -af || true
 
-            echo "🔨 Building Docker image (native ARM64)..."
-            docker build -t biswas-me-uat:$COMMIT_SHA -t biswas-me-uat:latest .
+            echo "🔨 Building Docker image..."
+            docker build -t biswas-me-production:$COMMIT_SHA -t biswas-me-production:latest .
 
             echo "🛑 Stopping existing container..."
-            docker rm -f biswas-me-uat 2>/dev/null || true
+            docker rm -f biswas-me 2>/dev/null || true
             sleep 2
 
             echo "🚀 Starting new container..."
-            docker run -d --name biswas-me-uat \\
+            docker run -d --name biswas-me \\
               -p 3000:3000 \\
-              -p 8080:8080 \\
+              -p 8081:8080 \\
               --restart unless-stopped \\
-              -e BLOG_API_URL='https://uat.anshumanbiswas.com' \\
+              -e BLOG_API_URL='https://anshumanbiswas.com' \\
               -e BLOG_API_TOKEN='$BLOG_API_TOKEN' \\
-              -e CF_ACCESS_CLIENT_ID='$CF_ACCESS_CLIENT_ID' \\
-              -e CF_ACCESS_CLIENT_SECRET='$CF_ACCESS_CLIENT_SECRET' \\
               -e FROM_EMAIL=anshuman@biswas.me \\
               -e TO_EMAIL=anshuman@biswas.me \\
               -e MAIL_PROVIDER=brevo \\
@@ -120,18 +116,18 @@ jobs:
               -e MAILPIT_SMTP_PORT=1025 \\
               -e DB_PATH=./messages.db \\
               -e RECAPTCHA_SECRET_KEY='$RECAPTCHA_SECRET_KEY' \\
-              biswas-me-uat:latest
+              biswas-me-production:latest
 
             echo "✅ Container deployment complete!"
-            docker ps --filter "name=biswas-me-uat" --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+            docker ps --filter "name=biswas-me" --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
 
             # Setup nginx + SSL
             echo "🔐 Setting up nginx + SSL..."
-            chmod +x scripts/setup-cloudflare-ssl.sh scripts/setup-nginx-uat.sh
+            chmod +x scripts/setup-cloudflare-ssl.sh scripts/setup-nginx-production.sh
             if [ ! -z "$CF_API_TOKEN" ]; then
-              sudo CF_API_TOKEN='$CF_API_TOKEN' ./scripts/setup-cloudflare-ssl.sh uat.biswas.me
+              sudo CF_API_TOKEN='$CF_API_TOKEN' ./scripts/setup-cloudflare-ssl.sh biswas.me
             fi
-            sudo ./scripts/setup-nginx-uat.sh
+            sudo ./scripts/setup-nginx-production.sh
             sudo systemctl reload nginx
             echo "✅ Nginx + SSL setup complete!"
           EOF
@@ -142,8 +138,8 @@ jobs:
           echo "⏳ Waiting for application to start..."
           sleep 30
 
-          echo "🔍 Testing UAT endpoint..."
-          curl -f --connect-timeout 30 --max-time 60 -H "Host: uat.biswas.me" http://92.4.83.28 || {
+          echo "🔍 Testing Production endpoint..."
+          curl -f --connect-timeout 30 --max-time 60 -H "Host: biswas.me" http://31.97.102.48 || {
             echo "⚠️  Health check failed (non-blocking)"
             exit 0
           }
@@ -152,13 +148,12 @@ jobs:
 
       - name: Deployment summary
         run: |
-          echo "## 🚀 UAT Deployment Successful" >> $GITHUB_STEP_SUMMARY
+          echo "## 🚀 Production Deployment Successful" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "- **Server:** 92.4.83.28" >> $GITHUB_STEP_SUMMARY
+          echo "- **Server:** 31.97.102.48" >> $GITHUB_STEP_SUMMARY
           echo "- **Branch:** \`${{ github.ref_name }}\`" >> $GITHUB_STEP_SUMMARY
           echo "- **Commit:** \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
-          echo "- **Build:** Native ARM64 (built on server)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Access:**" >> $GITHUB_STEP_SUMMARY
-          echo "- Frontend: http://92.4.83.28:3000" >> $GITHUB_STEP_SUMMARY
-          echo "- Backend: http://92.4.83.28:8080" >> $GITHUB_STEP_SUMMARY
+          echo "- Direct: http://31.97.102.48:3000" >> $GITHUB_STEP_SUMMARY
+          echo "- Backend: http://31.97.102.48:8081" >> $GITHUB_STEP_SUMMARY

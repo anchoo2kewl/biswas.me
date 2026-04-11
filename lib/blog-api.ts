@@ -6,6 +6,8 @@ export interface BlogPost {
   categories: string[];
   read_time: string;
   link: string;
+  excerpt?: string;
+  cover_image_url?: string;
 }
 
 export interface ApiResponse<T> {
@@ -14,13 +16,39 @@ export interface ApiResponse<T> {
   error_message?: string;
 }
 
-export async function fetchBlogPosts(): Promise<BlogPost[]> {
+export async function fetchBlogPosts(limit?: number): Promise<BlogPost[]> {
   try {
-    const response = await fetch(config.BLOG_API_URL, {
+    const headers: HeadersInit = {
+      'Content-Type': 'application/json',
+    };
+
+    // Add Authorization header if API token is available
+    const apiToken = process.env.BLOG_API_TOKEN || config.BLOG_API_TOKEN;
+    if (apiToken) {
+      headers['Authorization'] = `Bearer ${apiToken}`;
+    }
+
+    // Add Cloudflare Access headers if available
+    const cfClientId = process.env.CF_ACCESS_CLIENT_ID;
+    const cfClientSecret = process.env.CF_ACCESS_CLIENT_SECRET;
+    if (cfClientId && cfClientSecret) {
+      headers['CF-Access-Client-Id'] = cfClientId;
+      headers['CF-Access-Client-Secret'] = cfClientSecret;
+    }
+
+    const apiUrl = new URL(config.BLOG_API_URL, "http://localhost");
+    if (limit && limit > 0) {
+      apiUrl.searchParams.set("limit", String(limit));
+    }
+
+    const requestUrl =
+      apiUrl.origin === "http://localhost"
+        ? `${apiUrl.pathname}${apiUrl.search}`
+        : apiUrl.toString();
+
+    const response = await fetch(requestUrl, {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers,
       // Add cache options for better performance
       next: { revalidate: 300 }, // Revalidate every 5 minutes
     });

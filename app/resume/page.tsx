@@ -66,10 +66,11 @@ export default function Resume() {
             .sidebar {
                 width: 30%;
                 background-color: var(--sidebar-bg);
-                padding: 2.5rem 2rem;
+                padding: 2rem 1.5rem;
                 display: flex;
                 flex-direction: column;
-                gap: 1.7rem;
+                gap: 1.3rem;
+                overflow: hidden;
             }
 
             .sidebar h2 {
@@ -107,12 +108,12 @@ export default function Resume() {
             }
             
             .education-item {
-                margin-bottom: 1rem;
+                margin-bottom: 0.6rem;
             }
 
             .education-item p {
                 margin:0;
-                line-height: 1.4;
+                line-height: 1.35;
             }
 
             .education-item strong {
@@ -122,13 +123,13 @@ export default function Resume() {
 
             .main-content {
                 width: 70%;
-                padding: 2.5rem 2rem;
+                padding: 2rem 1.5rem;
                 overflow-y: hidden;
             }
 
             header {
                 text-align: left;
-                margin-bottom: 1.8rem;
+                margin-bottom: 1.2rem;
             }
             
             header h1 {
@@ -327,64 +328,57 @@ export default function Resume() {
             <section className="about">
               <h2>About</h2>
               <p>
-                Engineering leader w/ 18+ yrs building secure, high-performance cloud platforms & distributed systems. Led teams developing ransomware detection, malware analysis & threat identification. Expert in cloud security architecture, incident response automation & scaling infrastructure.
+                Engineering leader w/ 18+ yrs building secure, high-performance cloud platforms & distributed systems. Led teams developing ransomware detection, malware analysis, & threat identification systems. Expert in cloud security architecture, incident response automation, & scaling infrastructure protecting enterprise systems.
               </p>
             </section>
-
+            
             <section className="skills">
               <h2>Skills</h2>
               <ul className="skills-list">
-
+                
                 <li>
                   <strong>Leadership & Strategy</strong>
                   Technology Leadership, Cloud Security Strategy, Team Scaling & Mentorship, Product Delivery, Roadmapping
                 </li>
-
+                
                 <li>
                   <strong>Architecture & Systems</strong>
                   Distributed Systems, Cloud-Native Security (AWS, Azure), High-Availability Design, Microservices, Threat Detection
                 </li>
-
+                
                 <li>
                   <strong>Technical Expertise</strong>
-                  Backend Development (Go, Python, Node.js, Java, Rust), Database Design & Optimization (PostgreSQL, MySQL, MongoDB), Infrastructure as Code (Terraform, Ansible), API Design, Performance Tuning, Security Automation
+                  DevOps & CI/CD, Infrastructure as Code (Terraform, Ansible), Performance Optimization, Security Automation
                 </li>
-
+                
               </ul>
             </section>
 
             <section className="education">
               <h2>Education</h2>
-
+              
               <div className="education-item">
-                <p><strong>Ph.D. Electrical & Comp. Eng.</strong></p>
+                <p><strong>Ph.D., Electrical & Computer Engineering</strong></p>
                 <p>Carleton University, 2019</p>
               </div>
-
+              
               <div className="education-item">
-                <p><strong>M.Sc. Computer Science</strong></p>
+                <p><strong>M.Sc., Computer Science</strong></p>
                 <p>University of Calcutta, 2009</p>
               </div>
-
+              
               <div className="education-item">
-                <p><strong>B.Sc. Computer Science</strong></p>
+                <p><strong>B.Sc., Computer Science</strong></p>
                 <p>University of Calcutta, 2007</p>
               </div>
-
+              
             </section>
           </aside>
 
           {/* Main Content */}
           <main className="main-content">
             <header>
-              <h1 style={{display: 'flex', alignItems: 'center', gap: '0.5rem'}}>
-                Anshuman Biswas
-                <a href="https://github.com/anchoo2kewl" target="_blank" rel="noopener noreferrer" style={{fontSize: '1.5rem', textDecoration: 'none'}}>
-                  <svg width="32" height="32" viewBox="0 0 16 16" fill="currentColor">
-                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
-                  </svg>
-                </a>
-              </h1>
+              <h1>Anshuman Biswas</h1>
               <div className="job-title">VP of Engineering</div>
               <div className="contact-info">
                 <div className="contact-item">
@@ -403,14 +397,16 @@ export default function Resume() {
             </header>
 
             <section className="experience">
+              <h2>Experience</h2>
 
+              
               <div className="experience-item">
                 <div className="job-header">
                   <h3>VP of Engineering <span className="company">@ <a href="https://elastio.com" target="_blank" rel="noopener noreferrer">Elastio</a></span></h3>
                   <div className="date-location">Jan '25 – Present</div>
                 </div>
                 <ul>
-                  <li>Lead teams building ransomware detection & malware scanning w/ AI-powered anomaly detection, behavioral analysis & threat identification</li><li>Design security infrastructure protecting from ransomware, zero-day exploits & APTs; implement secure SDLC w/ threat modeling & pen testing</li><li>Architect cloud-scale backup security scanning 100M+ files daily; integrate w/ AWS/Azure security services for defense-in-depth protection</li><li>Build automated incident response workflows reducing MTTR from hours to minutes; enable customers to recover from attacks in under 15 minutes</li><li>Direct cross-functional engineering teams across 3 product lines; accelerate feature delivery velocity 2x while maintaining 99.9% uptime</li>
+                  <li>Lead engineering teams building cloud-native ransomware detection and data protection platforms identifying threats in seconds across enterprise backups</li><li>Architect malware scanning engines with AI-powered anomaly detection for automated incident response and recovery orchestration</li><li>Scale security infrastructure across AWS and Azure, protecting enterprise customers from ransomware attacks with 99.99% uptime SLAs</li>
                 </ul>
                 
               </div>
@@ -421,7 +417,7 @@ export default function Resume() {
                   <div className="date-location">Mar '24 – Jan '25</div>
                 </div>
                 <ul>
-                  <li>Built secure contact center for Veeva CRM w/ encryption, access controls & SOC2/HIPAA compliance; led security audits & vulnerability remediation</li><li>Scaled team by hiring & mentoring engineers/managers; established secure coding standards & security practices</li>
+                  <li>Engineered scalable contact center capabilities into Veeva CRM, optimizing performance for global enterprise deployments</li><li>Scaled organization by hiring and mentoring engineers and managers while owning full product delivery lifecycle</li>
                 </ul>
                 
               </div>
@@ -432,9 +428,9 @@ export default function Resume() {
                   <div className="date-location">Jul '17 – Mar '24</div>
                 </div>
                 <ul>
-                  <li>Managed distributed teams building orchestration & monitoring w/ security controls; deployed Granite LLM for threat identification</li><li>Drove DevOps automation w/ security gates reducing onboarding 60%; built OAuth2/SAML integrations; led incident response</li><li>Established security champions program across 15+ teams; reduced vulnerabilities 40% via automated scanning & training</li>
+                  <li>Managed globally distributed teams building core orchestration and performance monitoring systems for cloud-scale infrastructure</li><li>Deployed Granite LLM models for security threat identification and automated code analysis in enterprise environments</li><li>Drove DevOps automation reducing onboarding time 60%; architected high-throughput enterprise integrations</li>
                 </ul>
-                <p className="earlier-roles">Sr. Software Engineer → Engineering Mgr ('18) → Sr. Engineering Mgr ('21)</p>
+                <p className="earlier-roles">*Sr. Software Engineer → Engineering Mgr ('18) → Sr. Engineering Mgr ('21)*</p>
               </div>
               
               <div className="experience-item">
@@ -443,7 +439,7 @@ export default function Resume() {
                   <div className="date-location">'07 – '17</div>
                 </div>
                 <ul>
-                  <li><a href="https://trendmicro.com" target="_blank" rel="noopener noreferrer" className="company-link">Trend Micro</a> (Software Engineer, '16-'17): Broke monolith into microservices; real-time malware detection, heuristic analysis & online DB migration tool</li><li><a href="https://nearest.com" target="_blank" rel="noopener noreferrer" className="company-link">Nearest.com</a> (CTO, '12-'14): Architected hyper-local search engine & social community on AWS & OpenStack w/ DDoS protection & secure APIs</li><li><a href="https://tcs.com" target="_blank" rel="noopener noreferrer" className="company-link">Tata Consultancy Services</a> ('09-'12): Led SAP BI implementations & cloud migrations w/ security hardening for Fortune 500 clients</li><li>Additional: Cloud platforms research (Carleton, '15-'16), airline systems ('09), network stack ('07-'08)</li>
+                  <li><a href="https://trendmicro.com" target="_blank" rel="noopener noreferrer" className="company-link">Trend Micro</a> (Senior Software Engineer, '16-'17): Built distributed cloud security systems with real-time malware detection and online database migration tool enabling zero-downtime security updates</li><li><a href="https://nearest.com" target="_blank" rel="noopener noreferrer" className="company-link">Nearest.com</a> (CTO, '12-'14): Architected fault-tolerant, auto-scaling search infrastructure on AWS & OpenStack serving millions of location queries</li><li><a href="https://tcs.com" target="_blank" rel="noopener noreferrer" className="company-link">Tata Consultancy Services</a> ('09-'12): Led enterprise SAP BI implementations and cloud migrations with security hardening for Fortune 500 clients</li><li>Additional: Research cloud platforms & security (Carleton, '15-'16), airline reservation systems ('09), network stack development ('07-'08)</li>
                 </ul>
                 
               </div>

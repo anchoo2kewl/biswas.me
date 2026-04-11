@@ -46,16 +46,20 @@ type EmailConfig struct {
 }
 
 type BlogConfig struct {
-	APIURL   string
-	APIToken string
+	APIURL           string
+	APIToken         string
+	CFAccessClientID string
+	CFAccessSecret   string
 }
 
 type BlogPost struct {
-	Date       string   `json:"date"`
-	Title      string   `json:"title"`
-	Categories []string `json:"categories"`
-	ReadTime   string   `json:"read_time"`
-	Link       string   `json:"link"`
+	Date          string   `json:"date"`
+	Title         string   `json:"title"`
+	Categories    []string `json:"categories"`
+	ReadTime      string   `json:"read_time"`
+	Link          string   `json:"link"`
+	Excerpt       string   `json:"excerpt,omitempty"`
+	CoverImageURL string   `json:"cover_image_url,omitempty"`
 }
 
 var (
@@ -89,8 +93,10 @@ func main() {
 
 	// Initialize blog configuration
 	blogConfig = BlogConfig{
-		APIURL:   getEnvWithDefault("BLOG_API_URL", "http://localhost:22222"),
-		APIToken: os.Getenv("BLOG_API_TOKEN"),
+		APIURL:           getEnvWithDefault("BLOG_API_URL", "http://localhost:22222"),
+		APIToken:         os.Getenv("BLOG_API_TOKEN"),
+		CFAccessClientID: os.Getenv("CF_ACCESS_CLIENT_ID"),
+		CFAccessSecret:   os.Getenv("CF_ACCESS_CLIENT_SECRET"),
 	}
 
 	logger.Info("Email configuration loaded", 
@@ -618,7 +624,7 @@ Content-Type: text/html; charset=UTF-8
             <p>In the meantime, feel free to:</p>
             <ul>
                 <li>Check out my recent projects and experience on my <a href="https://biswas.me" style="color: #667eea;">portfolio</a></li>
-                <li>Connect with me on <a href="https://linkedin.com/in/anshumanbiswas" style="color: #667eea;">LinkedIn</a></li>
+                <li>Connect with me on <a href="https://www.linkedin.com/in/anshuman-biswas-phd-613b0145/" style="color: #667eea;">LinkedIn</a></li>
                 <li>View my code repositories on <a href="https://github.com/anchoo2kewl" style="color: #667eea;">GitHub</a></li>
             </ul>
         </div>
@@ -652,7 +658,7 @@ Content-Type: text/html; charset=UTF-8
             </div>
             <div class="signature-links">
                 <a href="https://biswas.me">Portfolio</a>
-                <a href="https://linkedin.com/in/anshumanbiswas">LinkedIn</a>
+                <a href="https://www.linkedin.com/in/anshuman-biswas-phd-613b0145/">LinkedIn</a>
                 <a href="https://github.com/anchoo2kewl">GitHub</a>
             </div>
         </div>
@@ -833,6 +839,13 @@ func fetchBlogPosts() ([]BlogPost, error) {
 	// Add authorization header
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", blogConfig.APIToken))
 	req.Header.Set("Accept", "application/json")
+
+	// Add Cloudflare Access headers if available
+	if blogConfig.CFAccessClientID != "" && blogConfig.CFAccessSecret != "" {
+		req.Header.Set("CF-Access-Client-Id", blogConfig.CFAccessClientID)
+		req.Header.Set("CF-Access-Client-Secret", blogConfig.CFAccessSecret)
+		logger.Info("Adding CF Access headers to blog API request")
+	}
 
 	// Make the request
 	resp, err := client.Do(req)
