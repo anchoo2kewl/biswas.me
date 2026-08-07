@@ -91,6 +91,30 @@ const products: ShowcaseItem[] = [
     },
   },
   {
+    id: "tickrapi",
+    name: "TickrAPI",
+    label: "Product",
+    domain: "tickrapi.com",
+    href: "https://tickrapi.com",
+    tagline: "A clean market data API for people who just want reliable ticker data.",
+    summary:
+      "A market data service built with a friend, aimed at making ticker and price data straightforward to consume without wrestling with vendor quirks.",
+    detail:
+      "Every project I build that touches markets runs into the same wall: market data is either expensive, awkwardly shaped, adjusted in ways that quietly break your analysis, or wrapped in an API that fights you. TickrAPI is our attempt at the version we keep wishing existed — predictable endpoints, sane defaults, and data you can reason about. It is an active collaboration rather than a finished product.",
+    stack: ["Go", "Market data", "REST API"],
+    highlights: [
+      "Ticker and historical price data behind a consistent, predictable API.",
+      "Built from the recurring pain of integrating vendor market-data feeds.",
+      "A collaboration project, currently in active development.",
+    ],
+    palette: {
+      base: "#0c1322",
+      accent: "#f59e0b",
+      glow: "#78350f",
+      stroke: "#fcd34d",
+    },
+  },
+  {
     id: "pingrly",
     name: "Pingrly",
     label: "Product",
@@ -418,6 +442,59 @@ const libraries: ShowcaseItem[] = [
       accent: "#6366f1",
       glow: "#4338ca",
       stroke: "#c7d2fe",
+    },
+  },
+];
+
+const financial: ShowcaseItem[] = [
+  {
+    id: "trading-pod",
+    name: "Trading Pod",
+    label: "Trading system",
+    domain: "trade.folioworth.com",
+    href: "https://trade.folioworth.com",
+    tagline: "A regime-following trading system for leveraged index ETFs, built to be verified before it is trusted.",
+    summary:
+      "An automated system that trades TQQQ against a Nasdaq trend-regime model through Interactive Brokers, with the risk controls and evidence standards written into the code.",
+    detail:
+      "Leveraged ETFs compound well in sustained uptrends and destroy capital in choppy or falling markets, so the system does not predict prices — it classifies the regime and only accepts leverage when conditions justify it. It holds TQQQ when QQQ is above a rising 200-day average with realised volatility under a gate, and sits in cash otherwise. Position size scales inversely with volatility, exposure is capped well below full deployment, and a portfolio drawdown breaker flattens everything and halts until a human resumes. What I care about most is the verification loop: parameters are validated walk-forward — tuned on a rolling window, scored only on data the optimiser never saw — and the running system continuously compares its live results against a shadow backtest, so divergence surfaces while it is still cheap.",
+    stack: ["Go", "SQLite", "IBKR API", "Docker", "Ansible"],
+    highlights: [
+      "Walk-forward validated: every out-of-sample window positive, tested across 2008, 2020, and 2022 regimes.",
+      "Live-vs-backtest drift analysis runs nightly, so the simulation is checked against reality rather than assumed.",
+      "Full control plane: strategy and risk parameters are versioned, auditable, and changeable at runtime without a deploy.",
+      "Risk pipeline vetoes every order — no margin, capped exposure, drawdown breaker, and an audited kill switch.",
+    ],
+    palette: {
+      base: "#0b0e14",
+      accent: "#2dd4a0",
+      glow: "#134e4a",
+      stroke: "#5eead4",
+    },
+  },
+  {
+    id: "questrade-reserve",
+    name: "Questrade Reserve",
+    label: "Trading system",
+    domain: "questrade.folioworth.com",
+    href: "https://questrade.folioworth.com",
+    tagline: "Disciplined, unattended dollar-cost averaging across a family of registered accounts.",
+    summary:
+      "A scheduler that places a planned sequence of small ETF purchases across RRSP, LIRA, RESP, and cash accounts, keeping a long-term accumulation plan on track without daily attention.",
+    detail:
+      "The hard part of dollar-cost averaging is not the strategy, it is doing it consistently for years. This system holds the plan — per-account cash floors, per-symbol order sizes, daily and per-session caps — and works through it automatically, catching up when sessions are missed and stopping when cash floors would be breached. Every order still goes through Questrade's own per-order Push Approval, so the software proposes and the human disposes; the authorisation boundary stays with the broker rather than with my code. A ledger records what was placed, filled, and owed, and a one-way Telegram channel reports each session.",
+    stack: ["Go", "Questrade API", "SQLite", "Telegram"],
+    highlights: [
+      "Plans and tracks accumulation across six accounts with per-account cash floors.",
+      "Every trade requires the broker's own Push Approval — nothing executes unattended.",
+      "Catch-up logic keeps the long-term plan on schedule after missed sessions.",
+      "Durable ledger plus one-way notifications: it can report, never act on a message.",
+    ],
+    palette: {
+      base: "#0f172a",
+      accent: "#60a5fa",
+      glow: "#1e3a8a",
+      stroke: "#bfdbfe",
     },
   },
 ];
@@ -1467,6 +1544,7 @@ export default function Home() {
                 ["Description", "#description"],
                 ["Work", "#work"],
                 ["Products", "#products"],
+                ["Financial", "#financial"],
                 ["Libraries", "#libraries"],
                 ["Writing", "#writing"],
                 ["Contact", "#contact"],
@@ -1697,6 +1775,15 @@ export default function Home() {
           title="Products I keep building"
           description="Public products across project management, monitoring, feature flags, finance, publishing, and AI agent security."
           items={products}
+          onSelect={setSelectedItem}
+        />
+
+        <ShowcaseSection
+          id="financial"
+          eyebrow="Financial Systems"
+          title="Money, automated carefully"
+          description="Trading and investing systems I run on my own capital. Both are built on the same conviction: automation in markets is only worth having if the risk controls and the evidence are stronger than the strategy."
+          items={financial}
           onSelect={setSelectedItem}
         />
 
