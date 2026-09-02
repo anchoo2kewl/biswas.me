@@ -231,6 +231,31 @@ const products: ShowcaseItem[] = [
       stroke: "#67e8f9",
     },
   },
+  {
+    id: "75hard",
+    name: "75 Hard",
+    label: "Product",
+    domain: "75hard.biswas.me",
+    href: "https://75hard.biswas.me",
+    repo: "https://github.com/biswas-dev/75hard",
+    tagline: "A tracker for the 75 Hard challenge, built around the one tap you do every day.",
+    summary:
+      "Daily check-off, progress photos compressed in the browser, calorie tracking, and a per-activity heatmap of the whole 75 days.",
+    detail:
+      "The six classic rules are the starting template, not a fixed list — every task is editable, and a task can be a tick, a count toward a target, minutes, or a photo. Days are resolved in your own timezone, so an 11pm check-off lands on the day you think it is. An AI coach reads a meal photo into calories and macros, and writes plans from your actual logged record.",
+    stack: ["Go", "React", "SQLite", "go-ai"],
+    highlights: [
+      "A contribution-style grid per activity, so the habit that is slipping is obvious.",
+      "Phone photos compressed 25x before upload, re-encoded server-side to strip EXIF.",
+      "Calorie and macro tracking with AI estimates you review before they are logged.",
+    ],
+    palette: {
+      base: "#1a0b05",
+      accent: "#ff6b35",
+      glow: "#7c2d12",
+      stroke: "#fed7aa",
+    },
+  },
 ];
 
 const libraries: ShowcaseItem[] = [
@@ -372,6 +397,30 @@ const libraries: ShowcaseItem[] = [
       accent: "#f472b6",
       glow: "#831843",
       stroke: "#fbcfe8",
+    },
+  },
+  {
+    id: "go-ai",
+    name: "go-ai",
+    label: "Library",
+    domain: "github.com/anchoo2kewl/go-ai",
+    href: "https://github.com/anchoo2kewl/go-ai",
+    tagline: "One LLM interface for Go, with a provider chain that fails over.",
+    summary:
+      "A small abstraction over chat and vision models: one interface, an ordered primary-and-backups chain, and no third-party dependencies.",
+    detail:
+      "go-ai exists because an app that talks to one provider directly ends up with that vendor's URL shape baked into every call site, and adding a backup means duplicating the orchestration everywhere. It falls through on a rate limit, an outage or a dead key, but not on a malformed request that the backup would reject identically. Shared across my products so they all configure inference the same way.",
+    stack: ["Go", "LLM", "Vision"],
+    highlights: [
+      "Ordered chain: primary, then each backup, reporting who actually served the call.",
+      "Native Anthropic client plus one OpenAI-compatible client covering nine providers.",
+      "Defensive JSON extraction that repairs truncated output without inventing content.",
+    ],
+    palette: {
+      base: "#0b1120",
+      accent: "#a78bfa",
+      glow: "#4c1d95",
+      stroke: "#ddd6fe",
     },
   },
   {
@@ -998,6 +1047,99 @@ function ProjectArtwork({
                 <rect x="392" y={116 + idx * 52} width="86" height="8" rx="4" fill={stroke} fillOpacity="0.88" />
               </g>
             ))}
+          </>
+        );
+      case "go-ai":
+        return (
+          <>
+            <rect x="36" y="36" width="568" height="288" rx="28" fill="#0b1120" fillOpacity="0.7" />
+            {/* One request entering the chain. */}
+            <rect x="62" y="158" width="104" height="44" rx="14" fill="#111827" fillOpacity="0.94" stroke="#312e81" />
+            <rect x="82" y="172" width="64" height="7" rx="3.5" fill={stroke} fillOpacity="0.85" />
+            <rect x="82" y="186" width="40" height="6" rx="3" fill="#64748b" fillOpacity="0.7" />
+
+            {/* Primary, then two backups — the primary is the one that answers. */}
+            {[0, 1, 2].map((idx) => {
+              const y = 74 + idx * 92;
+              const live = idx === 0;
+              return (
+                <g key={idx}>
+                  <path
+                    d={`M166 180 C 226 180, 236 ${y + 26}, 296 ${y + 26}`}
+                    fill="none"
+                    stroke={live ? accent : "#334155"}
+                    strokeWidth={live ? 6 : 3}
+                    strokeLinecap="round"
+                    strokeDasharray={live ? undefined : "8 10"}
+                  />
+                  <rect
+                    x="296"
+                    y={y}
+                    width="220"
+                    height="52"
+                    rx="16"
+                    fill={live ? "#1e1b4b" : "#0f172a"}
+                    fillOpacity="0.95"
+                    stroke={live ? accent : "#1e293b"}
+                    strokeWidth={live ? 4 : 2}
+                  />
+                  <circle cx="324" cy={y + 26} r="9" fill={live ? accent : "#334155"} />
+                  <rect x="344" y={y + 15} width={live ? 118 : 92} height="9" rx="4.5" fill={stroke} fillOpacity={live ? 0.95 : 0.42} />
+                  <rect x="344" y={y + 32} width={live ? 74 : 56} height="7" rx="3.5" fill="#64748b" fillOpacity={live ? 0.8 : 0.4} />
+                </g>
+              );
+            })}
+
+            {/* The answer coming back from whichever rung served it. */}
+            <path d="M516 100 C 560 100, 566 176, 540 180" fill="none" stroke={accent} strokeWidth="5" strokeLinecap="round" strokeDasharray="2 12" />
+            <circle cx="540" cy="180" r="12" fill={accent} fillOpacity="0.28" stroke={accent} strokeWidth="4" />
+          </>
+        );
+      case "75hard":
+        return (
+          <>
+            <rect x="36" y="36" width="568" height="288" rx="28" fill="#1a0b05" fillOpacity="0.72" />
+            {/* Day header with its completion ring. */}
+            <rect x="60" y="60" width="240" height="20" rx="10" fill="#7c2d12" fillOpacity="0.5" />
+            <rect x="60" y="90" width="150" height="30" rx="10" fill={stroke} fillOpacity="0.9" />
+            <circle cx="536" cy="92" r="30" fill="none" stroke="#3f1d0b" strokeWidth="8" />
+            <circle
+              cx="536"
+              cy="92"
+              r="30"
+              fill="none"
+              stroke={accent}
+              strokeWidth="8"
+              strokeLinecap="round"
+              strokeDasharray="188.5"
+              strokeDashoffset="47"
+              transform="rotate(-90 536 92)"
+            />
+
+            {/* The activity grid: a cell per day, five rows of fifteen. */}
+            {[0, 1, 2, 3, 4].map((row) =>
+              [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14].map((col) => {
+                const n = row * 15 + col;
+                // A believable run: mostly done early, thinning out, then unstarted.
+                const done = n < 34 && n % 9 !== 4 && n % 13 !== 7;
+                const partial = !done && n < 34 && n % 9 === 4;
+                const future = n >= 36;
+                return (
+                  <rect
+                    key={`${row}-${col}`}
+                    x={62 + col * 35}
+                    y={148 + row * 35}
+                    width="27"
+                    height="27"
+                    rx="6"
+                    fill={done ? accent : partial ? accent : future ? "#ffffff" : "#ef4444"}
+                    fillOpacity={done ? 0.95 : partial ? 0.4 : future ? 0.05 : 0.16}
+                    stroke={partial ? accent : future ? "none" : "none"}
+                    strokeWidth={partial ? 2 : 0}
+                  />
+                );
+              }),
+            )}
           </>
         );
       case "me":
