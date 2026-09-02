@@ -231,10 +231,13 @@ const products: ShowcaseItem[] = [
       stroke: "#67e8f9",
     },
   },
+];
+
+const lifestyle: ShowcaseItem[] = [
   {
     id: "75hard",
     name: "75 Hard",
-    label: "Product",
+    label: "Lifestyle",
     domain: "75hard.biswas.me",
     href: "https://75hard.biswas.me",
     repo: "https://github.com/biswas-dev/75hard",
@@ -254,6 +257,55 @@ const products: ShowcaseItem[] = [
       accent: "#ff6b35",
       glow: "#7c2d12",
       stroke: "#fed7aa",
+    },
+  },
+  {
+    id: "pool",
+    name: "Pool",
+    label: "Lifestyle",
+    domain: "pool.biswas.me",
+    href: "https://pool.biswas.me",
+    tagline: "Water chemistry and the real cost of owning a pool, in one place.",
+    summary:
+      "Logs the full test panel a pool store prints, scores each reading against the right range for your water, and tracks every dollar the pool actually costs.",
+    detail:
+      "A pool store hands you a printout and a shopping list, and you never find out whether the advice worked or what the season cost. This records the whole panel — free and combined chlorine, pH, alkalinity, hardness, stabilizer, salt, phosphate, metals — scores each against the correct range for your surface and sanitizer, and computes the saturation index the way the industry actually does. From that it produces exact doses for your pool's volume, ordered so they are safe to apply: sequester metals before shocking, fix alkalinity before chasing pH. The cost side is the half nobody tracks — chemicals, a filter, a salt cell, the service call when nothing worked — so a season adds up to a number instead of a feeling.",
+    stack: ["Go", "SQLite", "Docker"],
+    highlights: [
+      "Full water panel scored against the correct range for your pool, not a generic one.",
+      "Treatment plans ordered for safety, with doses computed from your actual volume.",
+      "Season cost tracking with receipts, so ownership has a real number attached.",
+      "One Go binary and an embedded database in a 74 MB container.",
+    ],
+    palette: {
+      base: "#04141c",
+      accent: "#38bdf8",
+      glow: "#075985",
+      stroke: "#bae6fd",
+    },
+  },
+  {
+    id: "learn",
+    name: "Learn",
+    label: "Lifestyle",
+    domain: "learn.biswas.me",
+    href: "https://learn.biswas.me",
+    tagline: "A reading room for technical books: one book, one chapter, one sitting.",
+    summary:
+      "A quiet place to actually finish the technical books that pile up, built around a single chapter at a time rather than a library you never open.",
+    detail:
+      "Technical books fail on time, not interest — they are bought, started, and abandoned somewhere in chapter three. This is built around the smallest unit that still teaches you something: one chapter, read in one sitting, with the reading surface stripped of everything that competes with it. It runs a local model alongside the text, so questions about what you are reading are answered against the chapter in front of you rather than sending you to a search engine and out of the book entirely.",
+    stack: ["Go", "Qwik", "SQLite", "Ollama"],
+    highlights: [
+      "Built around finishing one chapter, not managing a library.",
+      "A distraction-free reading surface that keeps the chapter as the whole interface.",
+      "A local model runs beside the text, so questions never take you out of the book.",
+    ],
+    palette: {
+      base: "#0f0a1a",
+      accent: "#a78bfa",
+      glow: "#4c1d95",
+      stroke: "#ddd6fe",
     },
   },
 ];
@@ -421,6 +473,56 @@ const libraries: ShowcaseItem[] = [
       accent: "#a78bfa",
       glow: "#4c1d95",
       stroke: "#ddd6fe",
+    },
+  },
+  {
+    id: "go-photo",
+    name: "go-photo",
+    label: "Library",
+    domain: "github.com/anchoo2kewl/go-photo",
+    href: "https://github.com/anchoo2kewl/go-photo",
+    tagline: "Image ingest for Go apps: sniff, decode, downscale, re-encode, store.",
+    summary:
+      "The upload path every app with a camera button needs, written once — including the part that strips the location data out of a phone photo.",
+    detail:
+      "Every app with an upload button hits the same afternoon: a phone posts 12 MB of JPEG carrying the owner's GPS coordinates in its EXIF, and the app stores it verbatim. go-photo re-encodes rather than passing bytes through, which strips the EXIF and guarantees the stored file really is the image that was decoded rather than a polyglot with a payload after the marker. The declared Content-Type is client-controlled and therefore not evidence, so the type is sniffed instead. Stored names are path-safe by construction, because a name comes back out of a database and one that tries to climb out of the root should be refused rather than quietly rewritten.",
+    stack: ["Go", "Image processing", "Security"],
+    highlights: [
+      "Re-encodes to strip EXIF, so a progress photo stops carrying somebody's address.",
+      "Sniffs the real format — a .jpg that is actually a script is refused, not stored.",
+      "Content-addressed or dated naming, with path traversal impossible by construction.",
+      "Shared by 75hard and pool, so both accept and reject the same files for the same reasons.",
+    ],
+    palette: {
+      base: "#0a1512",
+      accent: "#34d399",
+      glow: "#065f46",
+      stroke: "#a7f3d0",
+    },
+  },
+  {
+    id: "go-api",
+    name: "go-api",
+    label: "Library",
+    domain: "github.com/anchoo2kewl/go-api",
+    href: "https://github.com/anchoo2kewl/go-api",
+    tagline: "Personal API tokens and OpenAPI discovery, shared across products.",
+    summary:
+      "One token scheme, one scope model, and one place to serve the document that describes an API — so a token and a spec together are enough for a tool to use it unaided.",
+    detail:
+      "A token is only half of what somebody needs; the other half is a machine-readable description of what the API offers. go-api issues tokens under one format with a per-application prefix, stores only their SHA-256, and enforces read and write on the HTTP method rather than per route — so a route added next year is covered by the same rule and there is nothing to forget. It owns the cryptography and the rules and deliberately owns no storage or router, because the apps behind it run Postgres and SQLite, Echo and chi, UUID and integer keys.",
+    stack: ["Go", "Auth", "OpenAPI"],
+    highlights: [
+      "Hash-only storage: the plaintext is shown once and is unrecoverable afterwards.",
+      "Scopes enforced on the method, so a read-only token genuinely cannot write.",
+      "Serves the OpenAPI document under one convention across every product.",
+      "Issuing a token returns the spec URL and a working example with it.",
+    ],
+    palette: {
+      base: "#141019",
+      accent: "#f472b6",
+      glow: "#831843",
+      stroke: "#fbcfe8",
     },
   },
   {
@@ -1687,6 +1789,7 @@ export default function Home() {
                 ["Work", "#work"],
                 ["Products", "#products"],
                 ["Financial", "#financial"],
+                ["Lifestyle", "#lifestyle"],
                 ["Libraries", "#libraries"],
                 ["Writing", "#writing"],
                 ["Contact", "#contact"],
@@ -1926,6 +2029,15 @@ export default function Home() {
           title="Money, automated carefully"
           description="Trading and investing systems I run on my own capital. Both are built on the same conviction: automation in markets is only worth having if the risk controls and the evidence are stronger than the strategy."
           items={financial}
+          onSelect={setSelectedItem}
+        />
+
+        <ShowcaseSection
+          id="lifestyle"
+          eyebrow="Lifestyle"
+          title="Software for the rest of my life"
+          description="Things I built because I wanted them myself: a challenge I was doing, a pool I own, and a stack of technical books I kept not finishing. Same engineering standards, no commercial ambition."
+          items={lifestyle}
           onSelect={setSelectedItem}
         />
 
