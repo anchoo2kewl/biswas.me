@@ -1,0 +1,53 @@
+{
+  "name": "Anshuman Biswas",
+  "title": "VP of Engineering",
+  "focus": "AI / Cloud / Cybersecurity",
+  "location": "Toronto, Canada",
+  "email": "anshuman@biswas.me",
+  "phone": "+1 647-982-9354",
+  "website": "https://biswas.me",
+  "github": "https://github.com/anchoo2kewl",
+  "linkedin": "https://www.linkedin.com/in/anshuman-biswas-phd/",
+  "about": "Hands-on engineering executive and former CTO/co-founder building enterprise B2B software since 2007. Leads multiple teams and manages engineering managers while staying hands-on in architecture and development.",
+  "ai": "Four years of applied AI experience, including IBM Granite model development and training.",
+  "skills": [
+    {"name": "Leadership & Strategy", "text": "Multi-team leadership, managing managers, engineering strategy, hiring, mentorship, roadmaps, product delivery"},
+    {"name": "AI & Engineering", "text": "Granite model development, AI-native applications, Go, React, TypeScript, distributed systems"},
+    {"name": "Cloud & Security", "text": "AWS, Azure, database security, ransomware detection, security automation, Terraform, Ansible, CI/CD"}
+  ],
+  "education": [
+    {"degree": "PhD, Electrical & Computer Engineering", "school": "Carleton University", "year": "2019", "note": "Research: Machine learning for cloud middleware performance optimization."},
+    {"degree": "MSc, Computer Science", "school": "University of Calcutta", "year": "2009"},
+    {"degree": "BSc, Computer Science", "school": "University of Calcutta", "year": "2007"}
+  ],
+  "experience": [
+    {"company": "Elastio", "title": "VP of Engineering", "period": "Jan 2025 - Present", "scope": "~40 engineers", "bullets": [
+      "Lead ~40 engineers across multiple teams, managing multiple engineering managers to deliver cloud-native ransomware detection and data protection across enterprise backup and recovery workflows.",
+      "Developed patent-pending database-security technology for detecting database encryption and corruption.",
+      "Architect malware-scanning engines and AI-powered anomaly detection for threat identification and automated recovery orchestration.",
+      "Scale AWS and Azure security infrastructure for enterprise platforms with 99.99% uptime SLAs."
+    ]},
+    {"company": "Veeva Systems", "title": "Senior Engineering Manager", "period": "Mar 2024 - Jan 2025", "scope": "~15 engineers", "bullets": [
+      "Led a ~15-engineer organization delivering contact-center capabilities in Veeva CRM for global enterprise deployments.",
+      "Hired and mentored engineers and managers; owned the full product delivery lifecycle."
+    ]},
+    {"company": "IBM Turbonomic", "title": "Senior Engineering Manager", "period": "Jul 2017 - Mar 2024", "scope": "~70 engineers", "bullets": [
+      "Led ~70 engineers across global teams; managed multiple engineering managers delivering cloud orchestration, monitoring, and enterprise integrations.",
+      "Applied Granite LLMs to enterprise threat identification and automated code analysis.",
+      "Reduced onboarding time 60% through DevOps automation."
+    ], "note": "Progression: Senior Software Engineer; Engineering Manager (2018); Senior Engineering Manager (2021)."},
+    {"company": "Trend Micro", "title": "Senior Software Engineer", "period": "2016 - 2017", "bullets": [
+      "Built cloud-security systems and online database migration tools enabling zero-downtime updates."
+    ]},
+    {"company": "Nearest.com", "title": "CTO & Co-Founder", "period": "2012 - 2014", "bullets": [
+      "Architected fault-tolerant, autoscaling location-search infrastructure on AWS and OpenStack serving millions of queries."
+    ]}
+  ],
+  "earlier": "Earlier: Cloud research, Carleton (2015-2016); Tata Consultancy Services (2009-2012); engineering roles (2007-2009).",
+  "projects": [
+    {"name": "FlagTGL", "url": "https://flagtgl.com", "text": "Built a lower-cost LaunchDarkly alternative for feature management, serving multiple paying customers."},
+    {"name": "AI Agent Lens", "url": "https://aiagentlens.com", "text": "Built runtime security and governance for AI agents, with command/tool-call controls and auditable decisions."},
+    {"name": "TaskAI / go-ai", "url": "https://taskai.cc", "text": "Built AI-native project management and reusable Go tooling for multi-provider LLM integration and failover."},
+    {"name": "LifeAI", "url": "https://lifeai.cc", "text": "Personal-fitness project at lifeai.cc."}
+  ]
+}
