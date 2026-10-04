@@ -31,7 +31,7 @@ export function CareerJourney() {
       setActive(closest);
     };
     const schedule = () => { if (!frame) frame = requestAnimationFrame(measure); };
-    const observer = typeof IntersectionObserver !== "undefined" ? new IntersectionObserver((entries) => {
+    const observer: IntersectionObserver | null = typeof IntersectionObserver !== "undefined" ? new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) { entry.target.classList.add("t-arrived"); observer?.unobserve(entry.target); }
       });
