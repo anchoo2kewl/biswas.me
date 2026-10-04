@@ -1,0 +1,64 @@
+name: Resume Release Check
+
+# Temporary, branch-scoped preparation. Remove this file before the production merge.
+on:
+  push:
+    branches: [resume-portfolio-refresh-20261003]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: resume-release-check
+  cancel-in-progress: false
+
+jobs:
+  prepare-and-test:
+    if: github.repository == 'anchoo2kewl/biswas.me'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: resume-portfolio-refresh-20261003
+          fetch-depth: 1
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 20
+          cache: yarn
+      - name: Apply same-line Next.js security fixes
+        run: |
+          yarn add --exact next@15.5.24 --network-timeout 120000
+          yarn add --dev --exact eslint-config-next@15.5.24 --network-timeout 120000
+      - name: Commit only dependency manifest and lockfile
+        run: |
+          if ! git diff --quiet -- package.json yarn.lock; then
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git add package.json yarn.lock
+            git commit -m 'Patch Next.js to 15.5.24 and align ESLint configuration'
+            git push origin HEAD:resume-portfolio-refresh-20261003
+          fi
+      - name: Create non-secret test configuration
+        run: |
+          mkdir -p config
+          cat > config/env.config.ts <<'CONFIG'
+          const config = {
+            RECAPTCHA_SITE_KEY: 'stub',
+            API_URL: '/api/messages',
+            BLOG_API_URL: '/api/posts',
+            BLOG_VIEW_ALL_URL: 'https://anshumanbiswas.com',
+            BLOG_API_TOKEN: undefined,
+          };
+          export default config;
+          CONFIG
+      - name: Run Vitest suite
+        run: yarn test
+      - name: Check TypeScript
+        run: npx tsc --noEmit
+      - name: Check lint
+        run: yarn lint
+      - name: Build production output
+        run: yarn build
