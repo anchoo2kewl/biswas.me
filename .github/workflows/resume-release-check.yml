@@ -1,6 +1,6 @@
 name: Resume Release Check
 
-# Temporary, branch-scoped preparation. Remove this file before the production merge.
+# Temporary, branch-scoped validation. Remove before the production merge.
 on:
   push:
     branches: [resume-portfolio-refresh-20261003]
@@ -17,30 +17,16 @@ jobs:
     if: github.repository == 'anchoo2kewl/biswas.me'
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    permissions:
-      contents: write
     steps:
       - uses: actions/checkout@v7
         with:
-          ref: resume-portfolio-refresh-20261003
-          fetch-depth: 1
+          persist-credentials: false
       - uses: actions/setup-node@v7
         with:
           node-version: 20
           cache: yarn
-      - name: Apply same-line Next.js security fixes
-        run: |
-          yarn add --exact next@15.5.24 --network-timeout 120000
-          yarn add --dev --exact eslint-config-next@15.5.24 --network-timeout 120000
-      - name: Commit only dependency manifest and lockfile
-        run: |
-          if ! git diff --quiet -- package.json yarn.lock; then
-            git config user.name 'github-actions[bot]'
-            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-            git add package.json yarn.lock
-            git commit -m 'Patch Next.js to 15.5.24 and align ESLint configuration'
-            git push origin HEAD:resume-portfolio-refresh-20261003
-          fi
+      - name: Install locked dependencies
+        run: yarn install --frozen-lockfile --network-timeout 120000
       - name: Create non-secret test configuration
         run: |
           mkdir -p config
@@ -62,3 +48,59 @@ jobs:
         run: yarn lint
       - name: Build production output
         run: yarn build
+      - name: Install isolated browser-check tools
+        run: |
+          python3 -m venv "$RUNNER_TEMP/resume-browser"
+          "$RUNNER_TEMP/resume-browser/bin/pip" install playwright pymupdf
+          "$RUNNER_TEMP/resume-browser/bin/playwright" install --with-deps chromium
+      - name: Check real routes, mobile layouts, and one-page PDF in Chromium
+        run: |
+          yarn start > "$RUNNER_TEMP/resume-server.log" 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          for i in $(seq 1 30); do
+            if curl -sf http://localhost:3000/ > /dev/null; then break; fi
+            sleep 1
+          done
+          "$RUNNER_TEMP/resume-browser/bin/python" - <<'PY'
+          import fitz
+          from playwright.sync_api import sync_playwright
+          with sync_playwright() as p:
+              browser = p.chromium.launch()
+              page = browser.new_page()
+              errors = []
+              page.on('pageerror', lambda error: errors.append(str(error)))
+              page.route('https://www.google.com/recaptcha/**', lambda route: route.abort())
+              page.route('**/api/posts', lambda route: route.fulfill(content_type='application/json', body='[]'))
+              response = page.goto('http://localhost:3000/', wait_until='networkidle')
+              assert response.status == 200
+              assert 'I lead engineering.' in page.locator('h1').inner_text()
+              assert page.locator('.p-project').count() == 25
+              assert page.get_by_role('link', name='Visit LifeAI', exact=True).get_attribute('href') == 'https://lifeai.cc'
+              for width in [375, 390, 768, 1280, 1440]:
+                  page.set_viewport_size({'width': width, 'height': 900})
+                  assert not page.evaluate('document.documentElement.scrollWidth > innerWidth'), f'Homepage overflow: {width}'
+              page.set_viewport_size({'width': 390, 'height': 900})
+              page.locator('.p-mobile-nav summary').click()
+              assert page.locator('.p-mobile-nav[open]').count() == 1
+              page.locator('.p-job details summary').first.click()
+              assert page.locator('.p-job details[open]').count() == 1
+              for path in ['/resume', '/resume.html']:
+                  response = page.goto('http://localhost:3000' + path, wait_until='networkidle')
+                  assert response.status == 200, path
+                  assert page.locator('h1').inner_text() == 'Anshuman Biswas'
+                  assert page.get_by_role('link', name='LifeAI', exact=True).get_attribute('href') == 'https://lifeai.cc'
+                  for width in [375, 390, 768, 1280]:
+                      page.set_viewport_size({'width': width, 'height': 900})
+                      assert not page.evaluate('document.documentElement.scrollWidth > innerWidth'), f'{path} overflow: {width}'
+                  document = fitz.open(stream=page.pdf(prefer_css_page_size=True, print_background=True), filetype='pdf')
+                  assert len(document) == 1, f'{path} printed {len(document)} pages'
+              pdf = page.request.get('http://localhost:3000/AnshumanBiswas.pdf')
+              assert pdf.status == 200
+              document = fitz.open(stream=pdf.body(), filetype='pdf')
+              assert len(document) == 1
+              assert 'LifeAI' in document[0].get_text()
+              assert not errors, errors
+              browser.close()
+              print('PASS: hydrated homepage, 25 projects, mobile navigation, resume routes, responsive layouts, one-page print/PDF, no browser runtime errors.')
+          PY
