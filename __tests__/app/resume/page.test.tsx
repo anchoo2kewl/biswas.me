@@ -5,13 +5,24 @@ import { join } from "node:path";
 import Resume, { metadata } from "@/app/resume/page";
 import profile from "@/lib/profile.json";
 
+function renderResume() {
+  const result = render(<Resume />);
+  // jsdom 28 attempts to calculate selector specificity for @page, which has
+  // no selector, and throws during getByRole. Keep all screen styles intact;
+  // validate the print rule below and page layout/pagination in Chromium.
+  result.container.querySelectorAll("style").forEach((style) => {
+    style.textContent = (style.textContent || "").replace(/@page\s*\{[^}]*\}/g, "");
+  });
+  return result;
+}
+
 describe("Shared one-page resume", () => {
   it("has resume-specific metadata and canonical URL", () => {
     expect(metadata.title).toContain("Anshuman Biswas");
     expect(metadata.alternates?.canonical).toBe("/resume");
   });
   it("renders the two-column sheet with contact, skills, and education", () => {
-    const { container } = render(<Resume />);
+    const { container } = renderResume();
     expect(container.querySelector(".r-sheet")).toBeInTheDocument();
     expect(container.querySelector(".r-aside")).toBeInTheDocument();
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(profile.name);
@@ -21,7 +32,7 @@ describe("Shared one-page resume", () => {
     expect(screen.getByText("PhD, Electrical & Computer Engineering")).toBeInTheDocument();
   });
   it("includes leadership scale, the patent contribution, and paying customers", () => {
-    render(<Resume />);
+    renderResume();
     for (const phrase of ["~40 engineers", "~15-engineer organization", "~70 engineers", "patent-pending database-security technology", "multiple paying customers"]) {
       expect(screen.getByText(phrase)).toBeInTheDocument();
     }
@@ -29,7 +40,7 @@ describe("Shared one-page resume", () => {
     expect(screen.getByRole("link", { name: "LifeAI" })).toHaveAttribute("href", "https://lifeai.cc");
   });
   it("keeps downloadable artifacts and print styles available", () => {
-    render(<Resume />);
+    renderResume();
     expect(screen.getByRole("link", { name: /Download PDF/ })).toHaveAttribute("href", "/AnshumanBiswas.pdf");
     const html = readFileSync(join(process.cwd(), "public/resume.html"), "utf8");
     expect(html).toContain("@page{size:Letter;margin:0}");
