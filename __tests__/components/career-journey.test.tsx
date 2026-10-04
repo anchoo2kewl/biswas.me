@@ -5,11 +5,17 @@ import { CareerJourney } from "@/components/career-journey";
 import { BuilderPortrait } from "@/components/builder-portrait";
 import profile from "@/lib/profile.json";
 
+const nativeShow = Object.getOwnPropertyDescriptor(HTMLDialogElement.prototype, "showModal");
+const nativeClose = Object.getOwnPropertyDescriptor(HTMLDialogElement.prototype, "close");
 beforeEach(() => {
-  vi.spyOn(HTMLDialogElement.prototype, "showModal").mockImplementation(function (this: HTMLDialogElement) { this.setAttribute("open", ""); });
-  vi.spyOn(HTMLDialogElement.prototype, "close").mockImplementation(function (this: HTMLDialogElement) { this.removeAttribute("open"); });
+  Object.defineProperty(HTMLDialogElement.prototype, "showModal", { configurable: true, writable: true, value: function (this: HTMLDialogElement) { this.setAttribute("open", ""); } });
+  Object.defineProperty(HTMLDialogElement.prototype, "close", { configurable: true, writable: true, value: function (this: HTMLDialogElement) { this.removeAttribute("open"); } });
 });
-afterEach(() => vi.restoreAllMocks());
+afterEach(() => {
+  vi.restoreAllMocks();
+  if (nativeShow) Object.defineProperty(HTMLDialogElement.prototype, "showModal", nativeShow); else Reflect.deleteProperty(HTMLDialogElement.prototype, "showModal");
+  if (nativeClose) Object.defineProperty(HTMLDialogElement.prototype, "close", nativeClose); else Reflect.deleteProperty(HTMLDialogElement.prototype, "close");
+});
 
 describe("Interactive career chapters", () => {
   it("exposes keyboard-operable chapters and all milestone anchors", () => {
@@ -33,9 +39,9 @@ describe("Interactive career chapters", () => {
   it("moves through chapters without leaving the dialog", async () => {
     render(<CareerJourney />);
     await userEvent.click(screen.getByRole("button", { name: "Explore Veeva Systems" }));
-    await userEvent.click(screen.getByRole("button", { name: "Earlier chapter →" }));
+    await userEvent.click(screen.getByRole("button", { name: /Earlier chapter/ }));
     expect(within(screen.getByRole("dialog")).getByRole("heading", { name: "IBM Turbonomic" })).toBeInTheDocument();
-    await userEvent.click(screen.getByRole("button", { name: "Newer chapter" }));
+    await userEvent.click(screen.getByRole("button", { name: /Newer chapter/ }));
     expect(within(screen.getByRole("dialog")).getByRole("heading", { name: "Veeva Systems" })).toBeInTheDocument();
   });
   it("keeps recruiting and team-building evidence in both resume roles", () => {
