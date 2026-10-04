@@ -1,0 +1,35 @@
+{
+  "products": [
+    {"name":"FlagTGL","url":"https://flagtgl.com","category":"Feature management","description":"A lower-cost LaunchDarkly alternative, serving multiple paying customers. Feature flags with real-time streaming and self-hosting control.","stack":["Go","React","PostgreSQL","SSE"],"featured":true},
+    {"name":"AI Agent Lens","url":"https://aiagentlens.com","category":"AI security","description":"Runtime security and governance for AI agents. Command and tool-call controls, policy enforcement, and auditable decisions bring cloud-security thinking to agentic systems.","stack":["Go","SQLite","Security","Governance"],"featured":true},
+    {"name":"TaskAI","url":"https://taskai.cc","repo":"https://github.com/anchoo2kewl/taskai","category":"AI-native software","description":"A focused project-management system with tasks, projects, search, and authentication. Built for small teams that value clear workflows and straightforward self-hosting.","stack":["Go","React","TypeScript","SQLite"],"featured":true},
+    {"name":"Pingrly","url":"https://pingrly.com","category":"Infrastructure","description":"HTTP, TCP, and heartbeat monitoring with incident tracking, public status pages, and Slack, email, and webhook notifications.","stack":["Go","React","SQLite"]},
+    {"name":"TickrAPI","url":"https://tickrapi.com","category":"Market data","description":"A market-data API built with a friend to make ticker and historical-price data easier to consume. An active collaboration, currently in development.","stack":["Go","REST API","Market data"]},
+    {"name":"Folioworth","url":"https://folioworth.com","repo":"https://github.com/anchoo2kewl/folioworth","category":"Personal finance","description":"A household-aware finance platform for net worth, investment accounting, budgeting, and reporting, with a multi-tenant PostgreSQL architecture.","stack":["Go","React","PostgreSQL"]},
+    {"name":"anshumanbiswas.com","url":"/blog","repo":"https://github.com/anchoo2kewl/blog","category":"Publishing","description":"My custom publishing system for technical writing, slides, analytics, and editorial control. A place to think about systems and software in public.","stack":["Go","PostgreSQL","Markdown"]}
+  ],
+  "financial": [
+    {"name":"Trading Pod","url":"https://trade.folioworth.com","category":"Personal trading system","description":"An automated trading system with walk-forward validation, exposure limits, live-versus-backtest checks, and an audited kill switch. An engineering project, not investment advice or a promise of returns.","stack":["Go","SQLite","IBKR API"]},
+    {"name":"Questrade Reserve","url":"https://questrade.folioworth.com","category":"Personal investing system","description":"An automation project for disciplined dollar-cost averaging across registered accounts, with operational visibility and risk controls.","stack":["Go","Questrade API","SQLite"]}
+  ],
+  "lifestyle": [
+    {"name":"LifeAI","url":"https://lifeai.cc","category":"Personal fitness","description":"My personal-fitness project. A space for exploring how software can support the fitness side of everyday life.","stack":["Personal fitness"]},
+    {"name":"75 Hard","url":"https://75hard.biswas.me","repo":"https://github.com/biswas-dev/75hard","category":"Habits & fitness","description":"A customizable challenge tracker with daily check-offs, progress photos, activity heatmaps, and calorie logging.","stack":["Go","React","SQLite","go-ai"]},
+    {"name":"Pool","url":"https://pool.biswas.me","category":"Home & maintenance","description":"A personal system for logging pool-water tests, tracking maintenance, and understanding the full cost of a pool season.","stack":["Go","SQLite","Docker"]},
+    {"name":"Learn","url":"https://learn.biswas.me","category":"Learning","description":"A quiet reading room for technical books, organized around finishing one chapter at a time, with a local model alongside the text.","stack":["Go","Qwik","SQLite","Ollama"]}
+  ],
+  "libraries": [
+    {"name":"go-ai","url":"https://github.com/anchoo2kewl/go-ai","category":"AI infrastructure","description":"A common interface for chat and vision models, with ordered provider failover shared across my applications.","stack":["Go","LLM","Vision"]},
+    {"name":"go-wiki","url":"https://github.com/anchoo2kewl/go-wiki","category":"Library","description":"Embeddable Markdown editing with split preview, rich content, and no frontend build requirement.","stack":["Go","Markdown","embed.FS"]},
+    {"name":"go-draw","url":"https://draw.biswas.me","category":"Library","description":"An embeddable canvas editor with viewer mode, undo/redo, pan, zoom, and fullscreen support.","stack":["Go","Canvas","JavaScript"]},
+    {"name":"go-blog","url":"https://github.com/anchoo2kewl/go-blog","category":"Library","description":"An embeddable blog engine with Markdown posts and feeds, without a separate CMS.","stack":["Go","Markdown","embed.FS"]},
+    {"name":"go-email","url":"https://email.biswas.me","repo":"https://github.com/anchoo2kewl/go-email","category":"Service","description":"A self-hosted transactional email gateway with verified domains, API keys, rate limits, and searchable send history.","stack":["Go","SQLite","SMTP"]},
+    {"name":"go-backup","url":"https://github.com/anchoo2kewl/go-backup","category":"Library","description":"Scheduled and manual database backups, storage-provider integration, and history for Go services.","stack":["Go","PostgreSQL","Scheduling"]},
+    {"name":"go-login","url":"https://github.com/anchoo2kewl/go-login","category":"Library","description":"Reusable Google and GitHub OAuth, invite-aware onboarding, account linking, and JWT handoff.","stack":["Go","OAuth","JWT"]},
+    {"name":"go-photo","url":"https://github.com/anchoo2kewl/go-photo","category":"Library","description":"A shared image-ingest pipeline for decoding, resizing, re-encoding, stripping EXIF, and safe storage.","stack":["Go","Images","Security"]},
+    {"name":"go-api","url":"https://github.com/anchoo2kewl/go-api","category":"Library","description":"Personal API tokens, read/write scopes, hash-only token storage, and OpenAPI discovery across products.","stack":["Go","Auth","OpenAPI"]},
+    {"name":"me","url":"https://github.com/anchoo2kewl/me","category":"Developer tooling","description":"A project-runner framework with a common interface for local, Docker, and remote environments.","stack":["Shell","CLI","Operations"]},
+    {"name":"BuildMe","url":"https://build.biswas.me","repo":"https://github.com/anchoo2kewl/buildme","category":"Developer tooling","description":"A self-hosted view of build status and notifications across CI/CD providers.","stack":["Go","Qwik","SQLite"]},
+    {"name":"OpenClaw Manager","url":"https://claw.biswas.me","category":"Agent tooling","description":"A self-hosted coding-agent control plane with a scoped container workspace and reproducible provisioning.","stack":["Go","Ansible","Docker"]}
+  ]
+}
