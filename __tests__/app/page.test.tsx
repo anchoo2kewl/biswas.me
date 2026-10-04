@@ -34,12 +34,15 @@ describe("Engineering leadership homepage", () => {
     expect(screen.getByRole("link", { name: "Open HTML resume" })).toHaveAttribute("href", "/resume");
     expect(screen.getByRole("link", { name: /Download PDF/ })).toHaveAttribute("href", "/AnshumanBiswas.pdf");
   });
-  it("shows approximate organization sizes, management scope, and patent work", async () => {
-    await renderHome();
-    for (const number of ["~40", "~15", "~70"]) expect(screen.getAllByText(new RegExp(number)).length).toBeGreaterThan(0);
-    expect(screen.getByText(/not direct-report counts/)).toBeInTheDocument();
+  it("restores the builder portrait and interactive career without team-size advertising", async () => {
+    const { container } = await renderHome();
+    expect(screen.getByRole("complementary", { name: "Now shipping" })).toBeInTheDocument();
+    expect(container.querySelector(".p-leadership")).not.toBeInTheDocument();
+    expect(container.textContent).not.toMatch(/~(?:40|15|70)/);
     expect(screen.getByText("Patent-pending database security")).toBeInTheDocument();
-    expect(screen.getAllByText(/multiple engineering managers/i).length).toBeGreaterThan(0);
+    expect(screen.getByText(/Built the engineering team from scratch/)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Explore Veeva Systems" })).toBeInTheDocument();
+    expect(container.querySelectorAll(".t-card")).toHaveLength(7);
   });
   it("keeps the product, financial, lifestyle, and library portfolio", async () => {
     await renderHome();

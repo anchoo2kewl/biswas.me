@@ -3,13 +3,15 @@
 import { useEffect, useRef, useState } from "react";
 import type { FormEvent } from "react";
 import dynamic from "next/dynamic";
-import Image from "next/image";
 import Link from "next/link";
 import Script from "next/script";
 import { fetchBlogPosts, type BlogPost } from "@/lib/blog-api";
 import config from "@/config";
 import profile from "@/lib/profile.json";
 import portfolio from "@/lib/portfolio.json";
+import { BuilderPortrait } from "@/components/builder-portrait";
+import { CareerJourney } from "@/components/career-journey";
+import { ProjectGallery as ProjectSection } from "@/components/project-gallery";
 import "./portfolio.css";
 
 declare global { interface Window { onSubmit: (token: string) => void; } }
@@ -19,46 +21,11 @@ const PDFViewer = dynamic(
   { ssr: false }
 );
 
-type Project = {
-  name: string; url: string; category: string; description: string;
-  stack: string[]; repo?: string; featured?: boolean;
-};
-
 const navigation = [
   ["About", "description"], ["Work", "work"], ["Products", "products"],
   ["Financial", "financial"], ["Lifestyle", "lifestyle"],
   ["Libraries", "libraries"], ["Writing", "writing"], ["Contact", "contact"],
 ];
-
-function ProjectSection({ id, title, description, items }: {
-  id: string; title: string; description: string; items: Project[];
-}) {
-  return (
-    <section id={id} className="p-section p-wrap" aria-labelledby={`${id}-title`}>
-      <div className="p-section-heading">
-        <p className="p-eyebrow">{id}</p>
-        <h2 id={`${id}-title`}>{title}</h2>
-        <p>{description}</p>
-      </div>
-      <div className="p-project-grid">
-        {items.map((item) => (
-          <article key={item.name} className={`p-project${item.featured ? " p-featured" : ""}`}>
-            <p className="p-eyebrow">{item.category}</p>
-            <h3><a href={item.url} {...(item.url.startsWith("https:") ? { target: "_blank", rel: "noopener noreferrer" } : {})}>{item.name}<span aria-hidden="true"> ↗</span></a></h3>
-            <p>{item.description}</p>
-            <ul className="p-tags" aria-label={`${item.name} technologies`}>
-              {item.stack.map((tag) => <li key={tag}>{tag}</li>)}
-            </ul>
-            <div className="p-project-links">
-              <a href={item.url} {...(item.url.startsWith("https:") ? { target: "_blank", rel: "noopener noreferrer" } : {})}>Visit {item.name}<span aria-hidden="true"> ↗</span></a>
-              {item.repo && <a href={item.repo} target="_blank" rel="noopener noreferrer">Source</a>}
-            </div>
-          </article>
-        ))}
-      </div>
-    </section>
-  );
-}
 
 export default function Home() {
   const [showPDF, setShowPDF] = useState(false);
@@ -127,8 +94,8 @@ export default function Home() {
         <nav className="p-nav" aria-label="Main navigation">
           <div className="p-wrap p-nav-inner">
             <Link href="/" className="p-brand"><span className="p-monogram" aria-hidden="true">AB</span><span>Anshuman Biswas<small>Engineering leadership. Still building.</small></span></Link>
-            <div className="p-desktop-nav">{navigation.map(([label, id]) => <a key={id} href={`#${id}`}>{label}</a>)}</div>
-            <details className="p-mobile-nav"><summary>Menu</summary><div>{navigation.map(([label, id]) => <a key={id} href={`#${id}`}>{label}</a>)}</div></details>
+            <div className="p-desktop-nav">{navigation.map(([label, id]) => <a key={id} href={`#${id}`} onClick={(event) => event.currentTarget.closest("details")?.removeAttribute("open")}>{label}</a>)}</div>
+            <details className="p-mobile-nav"><summary>Menu</summary><div>{navigation.map(([label, id]) => <a key={id} href={`#${id}`} onClick={(event) => event.currentTarget.closest("details")?.removeAttribute("open")}>{label}</a>)}</div></details>
           </div>
         </nav>
 
@@ -146,25 +113,18 @@ export default function Home() {
               </div>
               <div className="p-social"><a href={profile.github} target="_blank" rel="noopener noreferrer">GitHub ↗</a><a href={profile.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn ↗</a><a href={`mailto:${profile.email}`}>{profile.email}</a></div>
             </div>
-            <aside className="p-leadership" aria-label="Leadership scope">
-              <div className="p-profile-line"><Image src="/profile-cutout.png" alt="Anshuman Biswas" width={64} height={64} /><div><strong>Engineer. Leader. Builder.</strong><span>Toronto, Canada</span></div></div>
-              <p className="p-eyebrow">Engineering organizations led</p>
-              <dl>{profile.experience.slice(0, 3).map((job) => <div key={job.company}><dt>{job.company}</dt><dd>{job.scope?.replace(" engineers", "")}<span>engineers</span></dd></div>)}</dl>
-              <p className="p-small">Approximate organization sizes across different roles, not direct-report counts.</p>
-              <div className="p-leadership-note">Multiple teams.<br />Multiple engineering managers.<br /><strong>Hands-on by design.</strong></div>
-            </aside>
+            <BuilderPortrait />
           </div>
         </section>
 
         <section id="description" className="p-section p-wrap p-about" aria-labelledby="about-title">
-          <div className="p-section-heading"><p className="p-eyebrow">About</p><h2 id="about-title">Technical depth.<br />Organizational scale.</h2></div>
+          <div className="p-section-heading"><p className="p-eyebrow">About</p><h2 id="about-title">Technical depth.<br />A builder’s mindset.</h2></div>
           <div><p className="p-lead">{profile.about}</p><p>{profile.ai} My PhD research focused on machine learning for cloud middleware performance optimization.</p><p>I care about security, clear ownership, and useful software. That means coaching managers and setting direction, while still designing systems and building products myself.</p><div className="p-principles"><span>Enterprise B2B</span><span>AI-native development</span><span>Security & resilience</span><span>Startup execution</span></div></div>
         </section>
 
         <section id="work" className="p-section p-wrap" aria-labelledby="work-title">
           <div className="p-section-heading"><p className="p-eyebrow">Work</p><h2 id="work-title">Career journey</h2><p>Building enterprise software since 2007. Leading through managers without losing touch with the engineering.</p></div>
-          <div className="p-career">{profile.experience.map((job, index) => <article key={job.company} className="p-job"><div className="p-job-meta"><span>{job.period}</span><h3>{job.company}</h3><p>{job.title}</p>{job.scope && <strong className="p-scope">{job.scope}</strong>}</div><div><p>{job.bullets[0]}</p>{index === 0 && <p className="p-patent"><strong>Patent-pending database security</strong><br />{job.bullets[1]}</p>}{(job.bullets.length > 1 || job.note) && <details><summary>Engineering highlights</summary><ul>{job.bullets.slice(index === 0 ? 2 : 1).map((bullet) => <li key={bullet}>{bullet}</li>)}</ul>{job.note && <p className="p-small">{job.note}</p>}</details>}</div></article>)}</div>
-          <p className="p-small p-earlier">{profile.earlier}</p>
+          <CareerJourney />
         </section>
 
         <ProjectSection id="products" title="Products I keep building" description="Hands-on work across enterprise security, AI-native applications, feature management, and developer infrastructure. FlagTGL serves multiple paying customers." items={portfolio.products} />
