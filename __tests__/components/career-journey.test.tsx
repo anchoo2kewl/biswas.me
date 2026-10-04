@@ -1,5 +1,5 @@
 import { beforeEach, afterEach, describe, it, expect, vi } from "vitest";
-import { render, screen, within } from "@testing-library/react";
+import { cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { CareerJourney } from "@/components/career-journey";
 import { BuilderPortrait } from "@/components/builder-portrait";
@@ -12,6 +12,7 @@ beforeEach(() => {
   Object.defineProperty(HTMLDialogElement.prototype, "close", { configurable: true, writable: true, value: function (this: HTMLDialogElement) { this.removeAttribute("open"); } });
 });
 afterEach(() => {
+  cleanup();
   vi.restoreAllMocks();
   if (nativeShow) Object.defineProperty(HTMLDialogElement.prototype, "showModal", nativeShow); else Reflect.deleteProperty(HTMLDialogElement.prototype, "showModal");
   if (nativeClose) Object.defineProperty(HTMLDialogElement.prototype, "close", nativeClose); else Reflect.deleteProperty(HTMLDialogElement.prototype, "close");
