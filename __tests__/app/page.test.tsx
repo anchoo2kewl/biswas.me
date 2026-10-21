@@ -50,7 +50,7 @@ describe("Engineering leadership homepage", () => {
       expect(screen.getByRole("heading", { name: new RegExp(`^${name}`) })).toBeInTheDocument();
     }
     expect(screen.getByRole("link", { name: "Visit LifeAI" })).toHaveAttribute("href", "https://lifeai.cc");
-    expect(screen.getAllByText(/multiple paying customers/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/paying customers/).length).toBeGreaterThan(0);
   });
   it("opens the existing PDF viewer", async () => {
     await renderHome();

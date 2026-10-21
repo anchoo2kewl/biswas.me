@@ -105,7 +105,7 @@ export default function Home() {
               <p className="p-eyebrow">VP of Engineering · PhD · Toronto</p>
               <h1>I lead engineering.<br /><em>I never stop building.</em></h1>
               <p className="p-lead">Hands-on leadership at the intersection of <strong>AI, cloud, and cybersecurity</strong>. I build enterprise B2B products, grow engineering leaders, and stay close to the architecture and code.</p>
-              <p className="p-hero-note">Currently VP of Engineering at Elastio. Previously IBM Turbonomic, Veeva, and CTO/co-founder at Nearest.</p>
+              <p className="p-hero-note">Currently VP of Engineering at Elastio, leading teams building ransomware detection, database security, and data protection.</p>
               <div className="p-actions">
                 <button className="p-button p-primary" onClick={() => setShowPDF(true)}>View PDF resume</button>
                 <Link className="p-button" href="/resume">Open HTML resume</Link>
@@ -119,7 +119,7 @@ export default function Home() {
 
         <section id="description" className="p-section p-wrap p-about" aria-labelledby="about-title">
           <div className="p-section-heading"><p className="p-eyebrow">About</p><h2 id="about-title">Technical depth.<br />A builder’s mindset.</h2></div>
-          <div><p className="p-lead">{profile.about}</p><p>{profile.ai} My PhD research focused on machine learning for cloud middleware performance optimization.</p><p>I care about security, clear ownership, and useful software. That means coaching managers and setting direction, while still designing systems and building products myself.</p><div className="p-principles"><span>Enterprise B2B</span><span>AI-native development</span><span>Security & resilience</span><span>Startup execution</span></div></div>
+          <div><p className="p-lead">I lead engineering teams building enterprise software, develop engineers and managers, and stay hands-on in architecture and development.</p><p>{profile.ai} My PhD research focused on machine learning for cloud middleware performance optimization.</p><p>I care about security, clear ownership, and useful software. That means coaching managers and setting direction, while still designing systems and building products myself.</p><div className="p-principles"><span>Enterprise B2B</span><span>AI-native development</span><span>Security & resilience</span><span>Startup execution</span></div></div>
         </section>
 
         <section id="work" className="p-section p-wrap" aria-labelledby="work-title">
@@ -127,9 +127,9 @@ export default function Home() {
           <CareerJourney />
         </section>
 
-        <ProjectSection id="products" title="Products I keep building" description="Hands-on work across enterprise security, AI-native applications, feature management, and developer infrastructure. FlagTGL serves multiple paying customers." items={portfolio.products} />
+        <ProjectSection id="products" title="Products I keep building" description="Hands-on work across enterprise security, AI-native applications, feature management, and developer infrastructure. TaskAI is used by over 100 developers; FlagTGL serves many paying customers." items={portfolio.products} />
         <ProjectSection id="financial" title="Financial systems, built carefully" description="Personal engineering projects for investing and financial operations, with an emphasis on verification, visibility, and risk controls." items={portfolio.financial} />
-        <ProjectSection id="lifestyle" title="Software for the rest of my life" description="Personal projects for fitness, habits, learning, and home maintenance. LifeAI is the latest addition to the personal-fitness side of my portfolio." items={portfolio.lifestyle} />
+        <ProjectSection id="lifestyle" title="Software for the rest of my life" description="Adaptive audio courses, fitness, habits, and software for everyday life." items={portfolio.lifestyle} />
         <ProjectSection id="libraries" title="Libraries and tools I reuse" description="Small, reusable building blocks behind the products: model integration, authentication, publishing, backups, and operational tooling." items={portfolio.libraries} />
 
         <section id="writing" className="p-section p-wrap" aria-labelledby="writing-title">

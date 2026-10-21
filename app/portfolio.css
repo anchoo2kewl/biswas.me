@@ -288,12 +288,17 @@
   html:has(.portfolio) { scroll-behavior: smooth; }
   .p-builder-intro { animation: builder-enter .8s both; }
   .p-hero-grid>div:first-child { animation: builder-enter .65s both; }
-  .t-arrived .t-card { animation: chapter-enter .6s both; }
+  .t-list[data-reveal="ready"] .t-card { transition: opacity .55s ease, transform .65s cubic-bezier(.2,.8,.2,1), box-shadow .25s, border-color .25s; }
+  .t-list[data-reveal="ready"] .t-row:not([data-arrived]) .t-card { opacity: 0; transform: translateY(40px) scale(.96); }
+  .t-list[data-reveal="ready"] .t-row.t-left:not([data-arrived]) .t-card { transform: translate(-22px,40px) scale(.96); }
+  .t-list[data-reveal="ready"] .t-row.t-right:not([data-arrived]) .t-card { transform: translate(22px,40px) scale(.96); }
+  .t-row[data-arrived] .t-card { opacity: 1; transform: none; }
+  .t-list[data-reveal="ready"] .t-row:focus-within .t-card,
+  .t-list[data-reveal="ready"] .t-row:target .t-card { opacity: 1; transform: none; transition: none; }
   .p-principle-copy p { animation: builder-enter .3s both; }
   .p-dialog[open] { animation: dialog-enter .2s ease-out; }
   .p-project:hover { transform: translateY(-4px); }
   @keyframes builder-enter { from { opacity: .4; transform: translateY(12px); } to { opacity: 1; transform: none; } }
-  @keyframes chapter-enter { from { transform: translateY(22px); } to { transform: none; } }
   @keyframes dialog-enter { from { opacity: .6; transform: translateY(12px) scale(.99); } to { opacity: 1; transform: none; } }
 }
 @media(prefers-reduced-motion:reduce) {

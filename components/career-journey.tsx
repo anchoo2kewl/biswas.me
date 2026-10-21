@@ -33,14 +33,25 @@ export function CareerJourney() {
     const schedule = () => { if (!frame) frame = requestAnimationFrame(measure); };
     const observer: IntersectionObserver | null = typeof IntersectionObserver !== "undefined" ? new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting) { entry.target.classList.add("t-arrived"); observer?.unobserve(entry.target); }
+        if (entry.isIntersecting) { entry.target.setAttribute("data-arrived", "true"); observer?.unobserve(entry.target); }
       });
-    }, { threshold: 0.12 }) : null;
-    rows.forEach((row) => observer?.observe(row));
+    }, { threshold: 0, rootMargin: "0px 0px -8% 0px" }) : null;
+    if (observer) {
+      rows.forEach((row) => {
+        const rect = row.getBoundingClientRect();
+        if (rect.top < window.innerHeight * 0.92) row.setAttribute("data-arrived", "true");
+        observer.observe(row);
+      });
+      list.dataset.reveal = "ready";
+    }
+    const revealFocusedRow = (event: FocusEvent) => {
+      if (event.target instanceof HTMLElement) event.target.closest(".t-row")?.setAttribute("data-arrived", "true");
+    };
+    list.addEventListener("focusin", revealFocusedRow);
     schedule();
     window.addEventListener("scroll", schedule, { passive: true });
     window.addEventListener("resize", schedule);
-    return () => { cancelAnimationFrame(frame); observer?.disconnect(); window.removeEventListener("scroll", schedule); window.removeEventListener("resize", schedule); };
+    return () => { delete list.dataset.reveal; list.removeEventListener("focusin", revealFocusedRow); cancelAnimationFrame(frame); observer?.disconnect(); window.removeEventListener("scroll", schedule); window.removeEventListener("resize", schedule); };
   }, []);
 
   return (
