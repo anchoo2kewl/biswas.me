@@ -4,6 +4,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
 
   return [
+    { url: "https://biswas.me/photos", lastModified: now, images: ["https://biswas.me/anshuman-biswas-autumn-portrait.jpg", "https://biswas.me/me_new.jpg", "https://biswas.me/profile-cutout.png", "https://biswas.me/me.jpg"], changeFrequency: "monthly", priority: 0.7 },
     {
       url: "https://biswas.me/",
       lastModified: now,

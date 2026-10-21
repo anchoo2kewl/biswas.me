@@ -16,7 +16,7 @@ export function BuilderPortrait() {
     <aside className="p-builder" aria-label="Now shipping">
       <div className="p-builder-top"><span><i aria-hidden="true" />Now shipping</span><span>Toronto / Remote</span></div>
       <div className="p-builder-intro">
-        <div className="p-portrait"><div className="p-portrait-halo" aria-hidden="true" /><Image src="/profile-cutout.png" alt="Anshuman Biswas" width={224} height={260} priority sizes="(max-width: 700px) 145px, 200px" /><span className="p-portrait-caption" aria-hidden="true">Always building.</span></div>
+        <div className="p-portrait"><div className="p-portrait-halo" aria-hidden="true" /><Image src="/anshuman-biswas-portrait.jpg" alt="Anshuman Biswas" width={600} height={600} priority sizes="(max-width: 700px) 145px, 200px" /><span className="p-portrait-caption" aria-hidden="true">Always building.</span></div>
         <div><p className="p-eyebrow">Engineer. Leader. Builder.</p><h2>Enterprise work first.<br /><em>Builder energy always.</em></h2><p>Cybersecurity and cloud resilience at Elastio. Product experiments and reusable tools, everywhere else.</p></div>
       </div>
       <div className="p-shipping-links" aria-label="Current work">

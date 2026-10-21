@@ -27,9 +27,9 @@ export const metadata: Metadata = {
     siteName: "biswas.me",
     images: [
       {
-        url: "/profile-cutout.png",
-        width: 500,
-        height: 500,
+        url: "/anshuman-biswas-autumn-portrait.jpg",
+        width: 1536,
+        height: 1024,
         alt: "Anshuman Biswas",
       },
     ],
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     title: "Writing & Insights | Anshuman Biswas",
     description:
       "Essays on enterprise software, cloud systems, AI, security, and practical engineering execution.",
-    images: ["/profile-cutout.png"],
+    images: ["/anshuman-biswas-autumn-portrait.jpg"],
   },
 };
 

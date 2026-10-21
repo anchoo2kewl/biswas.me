@@ -20,9 +20,9 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: "website", url: "https://biswas.me", title, description, siteName: "biswas.me",
-    images: [{ url: "/profile-cutout.png", width: 500, height: 500, alt: "Anshuman Biswas" }],
+    images: [{ url: "/anshuman-biswas-autumn-portrait.jpg", width: 1536, height: 1024, alt: "Anshuman Biswas" }],
   },
-  twitter: { card: "summary_large_image", title, description, images: ["/profile-cutout.png"] },
+  twitter: { card: "summary_large_image", title, description, images: ["/anshuman-biswas-autumn-portrait.jpg"] },
   icons: { icon: [{ url: "/favicon.svg", type: "image/svg+xml" }, { url: "/logo.svg", sizes: "64x64", type: "image/svg+xml" }] },
 }
 
@@ -30,6 +30,12 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${manrope.variable} ${fraunces.variable} font-sans`}>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          "@context": "https://schema.org", "@type": "Person",
+          "@id": "https://biswas.me/#person", name: "Anshuman Biswas", url: "https://biswas.me",
+          image: ["https://biswas.me/anshuman-biswas-autumn-portrait.jpg", "https://biswas.me/me_new.jpg", "https://biswas.me/profile-cutout.png"],
+          sameAs: ["https://anshumanbiswas.com/users/anchoo2kewl", "https://github.com/anchoo2kewl"],
+        }) }} />
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           {children}
         </ThemeProvider>

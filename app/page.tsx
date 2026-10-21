@@ -149,7 +149,7 @@ export default function Home() {
             </form>
           </div>
         </section>
-        <footer className="p-wrap p-footer"><p>Anshuman Biswas · AI, cloud & cybersecurity</p><a href="#top">Back to top ↑</a></footer>
+        <footer className="p-wrap p-footer"><p>Anshuman Biswas · AI, cloud & cybersecurity</p><a href="/photos">Photos of Anshuman Biswas</a><a href="#top">Back to top ↑</a></footer>
       </main>
       <PDFViewer isOpen={showPDF} onClose={() => setShowPDF(false)} pdfUrl="/AnshumanBiswas.pdf" />
     </>
