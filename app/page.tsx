@@ -9,7 +9,7 @@ import { fetchBlogPosts, type BlogPost } from "@/lib/blog-api";
 import config from "@/config";
 import profile from "@/lib/profile.json";
 import portfolio from "@/lib/portfolio.json";
-import { BuilderPortrait } from "@/components/builder-portrait";
+import { ProfilePhoto } from "@/components/profile-photo";
 import { CareerJourney } from "@/components/career-journey";
 import { ProjectGallery as ProjectSection } from "@/components/project-gallery";
 import "./portfolio.css";
@@ -93,7 +93,7 @@ export default function Home() {
         <a className="p-skip" href="#main-content">Skip to content</a>
         <nav className="p-nav" aria-label="Main navigation">
           <div className="p-wrap p-nav-inner">
-            <Link href="/" className="p-brand"><span className="p-monogram" aria-hidden="true">AB</span><span>Anshuman Biswas<small>Engineering leadership. Still building.</small></span></Link>
+            <Link href="/" className="p-brand"><span className="p-monogram" aria-hidden="true">AB</span><span>Anshuman Biswas</span></Link>
             <div className="p-desktop-nav">{navigation.map(([label, id]) => <a key={id} href={`#${id}`} onClick={(event) => event.currentTarget.closest("details")?.removeAttribute("open")}>{label}</a>)}</div>
             <details className="p-mobile-nav"><summary>Menu</summary><div>{navigation.map(([label, id]) => <a key={id} href={`#${id}`} onClick={(event) => event.currentTarget.closest("details")?.removeAttribute("open")}>{label}</a>)}</div></details>
           </div>
@@ -102,10 +102,10 @@ export default function Home() {
         <section className="p-hero" id="main-content">
           <div className="p-wrap p-hero-grid">
             <div>
-              <p className="p-eyebrow">VP of Engineering · PhD · Toronto</p>
-              <h1>I lead engineering.<br /><em>I never stop building.</em></h1>
-              <p className="p-lead">Hands-on leadership at the intersection of <strong>AI, cloud, and cybersecurity</strong>. I build enterprise B2B products, grow engineering leaders, and stay close to the architecture and code.</p>
-              <p className="p-hero-note">Currently VP of Engineering at Elastio, leading teams building ransomware detection, database security, and data protection.</p>
+              <p className="p-eyebrow">Engineering leader · Toronto, Canada</p>
+              <h1>Anshuman Biswas</h1>
+              <p className="p-lead">I’m VP of Engineering at <a href="https://elastio.com" target="_blank" rel="noopener noreferrer">Elastio</a>. Our teams build ransomware detection, database security, and data protection software.</p>
+              <p className="p-hero-note">My work includes hiring, helping engineers and managers grow, deciding what we build, and working through the architecture and code.</p>
               <div className="p-actions">
                 <button className="p-button p-primary" onClick={() => setShowPDF(true)}>View PDF resume</button>
                 <Link className="p-button" href="/resume">Open HTML resume</Link>
@@ -113,32 +113,32 @@ export default function Home() {
               </div>
               <div className="p-social"><a href={profile.github} target="_blank" rel="noopener noreferrer">GitHub ↗</a><a href={profile.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn ↗</a><a href={`mailto:${profile.email}`}>{profile.email}</a></div>
             </div>
-            <BuilderPortrait />
+            <ProfilePhoto />
           </div>
         </section>
 
         <section id="description" className="p-section p-wrap p-about" aria-labelledby="about-title">
-          <div className="p-section-heading"><p className="p-eyebrow">About</p><h2 id="about-title">Technical depth.<br />A builder’s mindset.</h2></div>
-          <div><p className="p-lead">I lead engineering teams building enterprise software, develop engineers and managers, and stay hands-on in architecture and development.</p><p>{profile.ai} My PhD research focused on machine learning for cloud middleware performance optimization.</p><p>I care about security, clear ownership, and useful software. That means coaching managers and setting direction, while still designing systems and building products myself.</p><div className="p-principles"><span>Enterprise B2B</span><span>AI-native development</span><span>Security & resilience</span><span>Startup execution</span></div></div>
+          <div className="p-section-heading"><p className="p-eyebrow">About</p><h2 id="about-title">A little background</h2></div>
+          <div><p className="p-lead">I’ve been building software professionally since 2007. I co-founded a location-search startup, worked on cloud orchestration at IBM Turbonomic, and built an engineering team from scratch at Veeva.</p><p>My PhD at Carleton focused on machine learning for cloud middleware performance. At IBM, I also worked on Granite model development and training.</p><p>Outside work, I build products I want to use. TaskAI is used by over 100 developers, including developers at Elastio. FlagTGL has paying customers. I’m also working on security for AI agents, reusable tools for coding agents, and audio courses on any topic.</p><p>I like composing music and building LEGO, too.</p></div>
         </section>
 
         <section id="work" className="p-section p-wrap" aria-labelledby="work-title">
-          <div className="p-section-heading"><p className="p-eyebrow">Work</p><h2 id="work-title">Career journey</h2><p>Building enterprise software since 2007. Leading through managers without losing touch with the engineering.</p></div>
+          <div className="p-section-heading"><p className="p-eyebrow">Work</p><h2 id="work-title">Career journey</h2><p>The teams, products, and technical problems I’ve worked on.</p></div>
           <CareerJourney />
         </section>
 
-        <ProjectSection id="products" title="Products I keep building" description="Hands-on work across enterprise security, AI-native applications, feature management, and developer infrastructure. TaskAI is used by over 100 developers; FlagTGL serves many paying customers." items={portfolio.products} />
-        <ProjectSection id="financial" title="Financial systems, built carefully" description="Personal engineering projects for investing and financial operations, with an emphasis on verification, visibility, and risk controls." items={portfolio.financial} />
-        <ProjectSection id="lifestyle" title="Software for the rest of my life" description="Adaptive audio courses, fitness, habits, and software for everyday life." items={portfolio.lifestyle} />
-        <ProjectSection id="libraries" title="Libraries and tools I reuse" description="Small, reusable building blocks behind the products: model integration, authentication, publishing, backups, and operational tooling." items={portfolio.libraries} />
+        <ProjectSection id="products" title="Products" description="Tools for managing development work, releasing features, and securing AI agents." items={portfolio.products} />
+        <ProjectSection id="financial" title="Finance projects" description="Software I build for tracking investments and managing personal finances." items={portfolio.financial} />
+        <ProjectSection id="lifestyle" title="Learning and everyday life" description="Adaptive audio courses, fitness, habits, and software for everyday life." items={portfolio.lifestyle} />
+        <ProjectSection id="libraries" title="Libraries and tools" description="Code behind these projects: AI integrations, authentication, publishing, and backups." items={portfolio.libraries} />
 
         <section id="writing" className="p-section p-wrap" aria-labelledby="writing-title">
-          <div className="p-section-heading"><p className="p-eyebrow">Writing</p><h2 id="writing-title">Notes from the work</h2><p>Systems, AI workflows, cloud engineering, and lessons from building software.</p><Link className="p-text-link" href="/blog">View all posts ↗</Link></div>
+          <div className="p-section-heading"><p className="p-eyebrow">Writing</p><h2 id="writing-title">Recent writing</h2><p>Systems, AI workflows, cloud engineering, and lessons from building software.</p><Link className="p-text-link" href="/blog">View all posts ↗</Link></div>
           {loading ? <p role="status">Loading recent writing...</p> : posts.length ? <div className="p-project-grid">{posts.map((post) => <article className="p-project" key={post.link}><p className="p-eyebrow">{post.date} · {post.read_time}</p><h3><a href={post.link} target="_blank" rel="noopener noreferrer">{post.title} ↗</a></h3>{post.excerpt && <p>{post.excerpt}</p>}</article>)}</div> : <p>No blog posts available at the moment.</p>}
         </section>
 
         <section id="contact" className="p-contact" aria-labelledby="contact-title">
-          <div className="p-wrap p-contact-grid"><div><p className="p-eyebrow">Contact</p><h2 id="contact-title">Let’s build<br />something useful.</h2><p>For conversations about engineering leadership, enterprise AI, security, cloud platforms, or a project here, send a note.</p><a className="p-email" href={`mailto:${profile.email}`}>{profile.email}</a><div className="p-contact-links"><a href={profile.github} target="_blank" rel="noopener noreferrer">github.com/anchoo2kewl</a><a href={profile.linkedin} target="_blank" rel="noopener noreferrer">linkedin.com/in/anshuman-biswas-phd</a></div></div>
+          <div className="p-wrap p-contact-grid"><div><p className="p-eyebrow">Contact</p><h2 id="contact-title">Get in touch</h2><p>Have a question about my work or one of these projects? Send me a note.</p><a className="p-email" href={`mailto:${profile.email}`}>{profile.email}</a><div className="p-contact-links"><a href={profile.github} target="_blank" rel="noopener noreferrer">github.com/anchoo2kewl</a><a href={profile.linkedin} target="_blank" rel="noopener noreferrer">linkedin.com/in/anshuman-biswas-phd</a></div></div>
             <form ref={formRef} onSubmit={handleSubmit} className="p-form">
               <label htmlFor="name">Name</label><input id="name" name="name" autoComplete="name" required maxLength={200} />
               <label htmlFor="email">Email</label><input id="email" name="email" type="email" autoComplete="email" required maxLength={254} />

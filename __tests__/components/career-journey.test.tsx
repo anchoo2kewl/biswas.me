@@ -2,7 +2,7 @@ import { beforeEach, afterEach, describe, it, expect, vi } from "vitest";
 import { cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { CareerJourney } from "@/components/career-journey";
-import { BuilderPortrait } from "@/components/builder-portrait";
+import { ProfilePhoto } from "@/components/profile-photo";
 import profile from "@/lib/profile.json";
 
 const nativeShow = Object.getOwnPropertyDescriptor(HTMLDialogElement.prototype, "showModal");
@@ -49,15 +49,5 @@ describe("Interactive career chapters", () => {
     expect(profile.skills[0].text).toContain("hiring");
     expect(profile.experience[1].bullets.join(" ")).toMatch(/from scratch, hiring/);
     expect(profile.experience[0].bullets.join(" ")).toContain("hire and develop teams");
-  });
-});
-
-describe("Original builder portrait treatment", () => {
-  it("offers interactive design principles without team-size counts", async () => {
-    const { container } = render(<BuilderPortrait />);
-    await userEvent.click(screen.getByRole("button", { name: "Security" }));
-    expect(screen.getByRole("button", { name: "Security" })).toHaveAttribute("aria-pressed", "true");
-    expect(screen.getByText(/Resilience and security belong in the architecture/)).toBeInTheDocument();
-    expect(container.textContent).not.toMatch(/~(?:15|40|70)/);
   });
 });

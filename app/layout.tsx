@@ -6,8 +6,8 @@ import { ThemeProvider } from "@/components/theme-provider"
 
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-sans" })
 const fraunces = Fraunces({ subsets: ["latin"], variable: "--font-display" })
-const title = "Anshuman Biswas | Hands-on Engineering Leadership in AI, Cloud & Security"
-const description = "VP of Engineering, PhD, and former CTO/co-founder in Toronto. Leading engineering managers and multi-team organizations while building enterprise AI, cloud, and cybersecurity products."
+const title = "Anshuman Biswas | VP of Engineering at Elastio"
+const description = "Anshuman Biswas, VP of Engineering at Elastio in Toronto. Work in ransomware detection, database security, and data protection, plus personal projects and writing."
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://biswas.me"),

@@ -56,7 +56,7 @@ export function CareerJourney() {
 
   return (
     <div className="p-journey">
-      <div className="t-toolbar"><p><span aria-hidden="true">↳</span> Every chapter shaped the next.</p><nav aria-label="Career milestones">{career.map((item) => <a key={item.id} href={`#chapter-${item.id}`} aria-current={active === item.id ? "step" : undefined} title={item.company}>{item.year}</a>)}</nav></div>
+      <div className="t-toolbar"><p>Jump to a year</p><nav aria-label="Career milestones">{career.map((item) => <a key={item.id} href={`#chapter-${item.id}`} aria-current={active === item.id ? "step" : undefined} title={item.company}>{item.year}</a>)}</nav></div>
       <ol className="t-list" ref={listRef}>
         {career.map((item, index) => <li key={item.id} id={`chapter-${item.id}`} data-chapter={item.id} className={`t-row${index % 2 ? " t-left" : " t-right"}${active === item.id ? " t-active" : ""}`}>
           <span className="t-dot" aria-hidden="true"><span /></span>
@@ -67,11 +67,11 @@ export function CareerJourney() {
             <h3>{item.company}</h3><p className="t-role">{item.title}</p>
             <p className="t-description">{item.description}</p>
             <ul className="t-tags" aria-label={`${item.company} focus`}>{item.tags.map((tag) => <li key={tag}>{tag}</li>)}</ul>
-            <button className="t-open" type="button" onClick={() => setSelected(index)} aria-label={`Explore ${item.company}`} aria-haspopup="dialog"><span>Explore this chapter</span><span className="t-arrow" aria-hidden="true">↗</span></button>
+            <button className="t-open" type="button" onClick={() => setSelected(index)} aria-label={`Explore ${item.company}`} aria-haspopup="dialog"><span>Role details</span><span className="t-arrow" aria-hidden="true">↗</span></button>
           </article>
         </li>)}
       </ol>
-      <div className="t-end"><span aria-hidden="true">✳</span><p>The thread through it all?<br /><strong>Stay curious. Keep building.</strong></p><a href="#products">See what I’m building now <span aria-hidden="true">↓</span></a></div>
+      <div className="t-end"><a href="#products">View my projects <span aria-hidden="true">↓</span></a></div>
       <PortfolioDialog open={chapter !== null} onClose={() => setSelected(null)} title={chapter?.company || ""} eyebrow={chapter ? `${chapter.year} / ${chapter.chapter}` : undefined}>
         {chapter && <>
           <p className="t-detail-role">{chapter.title}<span>{chapter.period}</span></p>

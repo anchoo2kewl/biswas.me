@@ -13,7 +13,7 @@ export function ProjectGallery({ id, title, description, items }: {
   const [selected, setSelected] = useState<Project | null>(null);
   return (
     <section id={id} className={`p-section p-wrap p-gallery p-gallery-${id}`} aria-labelledby={`${id}-title`}>
-      <div className="p-section-heading"><p className="p-eyebrow">{id === "products" ? "The builder’s workshop" : id}</p><h2 id={`${id}-title`}>{title}</h2><p>{description}</p></div>
+      <div className="p-section-heading"><p className="p-eyebrow">{id}</p><h2 id={`${id}-title`}>{title}</h2><p>{description}</p></div>
       <div className="p-project-grid">{items.map((item) => <article key={item.name} className={`p-project${item.featured ? " p-featured" : ""}`}>
         <button className="p-project-art" type="button" onClick={() => setSelected(item)} aria-label={`Preview ${item.name}`} aria-haspopup="dialog"><ProjectArtwork item={getArtwork(item.name, item.url, item.category)} /><span className="p-art-action" aria-hidden="true">Explore project ↗</span></button>
         <div className="p-project-content"><p className="p-eyebrow">{item.category}</p><h3><a href={item.url} {...external(item.url)}>{item.name}<span aria-hidden="true"> ↗</span></a></h3><p>{item.description}</p><ul className="p-tags" aria-label={`${item.name} technologies`}>{item.stack.map((tag) => <li key={tag}>{tag}</li>)}</ul><div className="p-project-links"><a href={item.url} {...external(item.url)}>Visit {item.name}<span aria-hidden="true"> ↗</span></a>{item.repo ? <a href={item.repo} target="_blank" rel="noopener noreferrer">Source</a> : <button type="button" onClick={() => setSelected(item)} aria-haspopup="dialog">Details</button>}</div></div>

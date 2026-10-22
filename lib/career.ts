@@ -8,7 +8,7 @@ export type CareerChapter = {
 export const career: CareerChapter[] = [
   {
     id: "elastio", year: "2025", period: "Jan 2025 – Present", company: "Elastio", title: "VP of Engineering", chapter: "Security & resilience", current: true,
-    description: "Building cloud-native ransomware detection, database security, and data protection. Leading through engineering managers while staying close to the systems we ship.",
+    description: "Lead teams building ransomware detection, database security, and data protection. Hire and develop engineers and managers, and work on architecture and implementation.",
     highlights: [
       "Developed patent-pending database-security technology for detecting database encryption and corruption.",
       "Bring the team-building and hiring experience developed at Veeva to recruiting and developing engineers and engineering managers at Elastio.",
@@ -28,7 +28,7 @@ export const career: CareerChapter[] = [
     tags: ["Built from scratch", "Hiring & coaching", "Enterprise delivery"], image: "/work-veeva.svg", link: "https://veeva.com"
   },
   {
-    id: "ibm", year: "2017", period: "Jul 2017 – Mar 2024", company: "IBM Turbonomic", title: "Senior Engineering Manager", chapter: "AI meets cloud infrastructure",
+    id: "ibm", year: "2017", period: "Jul 2017 – Mar 2024", company: "IBM Turbonomic", title: "Senior Engineering Manager", chapter: "Cloud orchestration",
     description: "Grew from software engineer to engineering manager to senior engineering manager, building cloud orchestration, performance monitoring, and enterprise integrations.",
     highlights: [
       "Led globally distributed teams through multiple engineering managers, connecting technical direction with product delivery.",
@@ -39,26 +39,26 @@ export const career: CareerChapter[] = [
     tags: ["AI & cloud", "Distributed systems", "Growing engineering leaders"], image: "/04.png", link: "https://www.ibm.com/products/turbonomic"
   },
   {
-    id: "trend-micro", year: "2016", period: "2016 – 2017", company: "Trend Micro", title: "Senior Software Engineer", chapter: "Cloud security, hands-on",
-    description: "Built cloud-security systems and online database migration tools, bringing security and reliability into the engineering of everyday operations.",
+    id: "trend-micro", year: "2016", period: "2016 – 2017", company: "Trend Micro", title: "Senior Software Engineer", chapter: "Cloud security",
+    description: "Built cloud-security systems and tools for online database migrations.",
     highlights: ["Built distributed cloud-security systems for enterprise workloads.", "Developed online database migration tools enabling zero-downtime updates."],
     tags: ["Cloud security", "Database migration"], image: "/03.png", link: "https://trendmicro.com"
   },
   {
-    id: "nearest", year: "2012", period: "2012 – 2014", company: "Nearest.com", title: "CTO & Co-Founder", chapter: "The startup chapter",
-    description: "Co-founded and built location-search infrastructure. A startup chapter in turning a product idea into systems that work under real demand.",
+    id: "nearest", year: "2012", period: "2012 – 2014", company: "Nearest.com", title: "CTO & Co-Founder", chapter: "Location search",
+    description: "Co-founded a location-search startup and built its infrastructure on AWS and OpenStack.",
     highlights: ["Architected fault-tolerant, autoscaling infrastructure on AWS and OpenStack.", "Built location-search systems serving millions of queries."],
     tags: ["Co-founder", "Product architecture", "AWS & OpenStack"], image: "/02.png"
   },
   {
-    id: "carleton", year: "2011", period: "2011 – 2019", company: "Carleton University", title: "PhD, Electrical & Computer Engineering", chapter: "Research alongside the craft",
-    description: "Studied how machine learning can improve cloud middleware performance. Research that still shapes how I think about distributed systems and practical AI.",
+    id: "carleton", year: "2011", period: "2011 – 2019", company: "Carleton University", title: "PhD, Electrical & Computer Engineering", chapter: "Cloud performance research",
+    description: "Researched machine learning for cloud middleware performance optimization. Completed my PhD in 2019.",
     highlights: ["Completed a PhD in Electrical & Computer Engineering in 2019.", "Researched machine learning for cloud middleware performance optimization.", "Pursued research alongside startup and engineering work; the dates overlap intentionally."],
     tags: ["Machine learning", "Cloud research"], image: "/01.png", link: "https://carleton.ca"
   },
   {
     id: "foundations", year: "2007", period: "2007 – 2012", company: "Early engineering roles", title: "TCS · Global Travel Solution · 2PiRad", chapter: "Where it started",
-    description: "From communication systems and airline booking to enterprise SAP BI. The foundations of a career spent building software and asking how systems work.",
+    description: "Worked on communication systems at 2PiRad, airline reservation software at Global Travel Solution, and SAP BI at TCS.",
     highlights: ["Engineering work in communication systems beginning in 2007.", "Built airline reservation software at Global Travel Solution in 2009.", "Worked on enterprise SAP BI at Tata Consultancy Services from 2009 to 2012."],
     tags: ["Systems foundations", "Enterprise software"], image: "/concept-travel.svg"
   }

@@ -30,13 +30,13 @@ async function fillContact() {
 describe("Engineering leadership homepage", () => {
   it("renders the hands-on positioning and resume links", async () => {
     await renderHome();
-    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("I lead engineering.");
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Anshuman Biswas");
     expect(screen.getByRole("link", { name: "Open HTML resume" })).toHaveAttribute("href", "/resume");
     expect(screen.getByRole("link", { name: /Download PDF/ })).toHaveAttribute("href", "/AnshumanBiswas.pdf");
   });
   it("restores the builder portrait and interactive career without team-size advertising", async () => {
     const { container } = await renderHome();
-    expect(screen.getByRole("complementary", { name: "Now shipping" })).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: "Anshuman Biswas on an autumn woodland path" })).toBeInTheDocument();
     expect(container.querySelector(".p-leadership")).not.toBeInTheDocument();
     expect(container.textContent).not.toMatch(/~(?:40|15|70)/);
     expect(screen.getByText("Patent-pending database security")).toBeInTheDocument();
@@ -47,7 +47,7 @@ describe("Engineering leadership homepage", () => {
   it("keeps the product, financial, lifestyle, and library portfolio", async () => {
     await renderHome();
     for (const name of ["FlagTGL", "AI Agent Lens", "TaskAI", "Pingrly", "TickrAPI", "Folioworth", "LifeAI", "75 Hard", "Pool", "Learn", "Trading Pod", "Questrade Reserve", "go-ai", "go-wiki", "go-draw", "BuildMe"]) {
-      expect(screen.getByRole("heading", { name: new RegExp(`^${name}`) })).toBeInTheDocument();
+      expect(screen.getByRole("heading", { level: 3, name: new RegExp(`^${name}`) })).toBeInTheDocument();
     }
     expect(screen.getByRole("link", { name: "Visit LifeAI" })).toHaveAttribute("href", "https://lifeai.cc");
     expect(screen.getAllByText(/paying customers/).length).toBeGreaterThan(0);
