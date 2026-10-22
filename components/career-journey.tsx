@@ -81,7 +81,7 @@ export function CareerJourney() {
           <p className="p-dialog-lead">{chapter.description}</p>
           <h3 className="p-detail-label">Inside the work</h3><ul className="p-detail-highlights">{chapter.highlights.map((text) => <li key={text}>{text}</li>)}</ul>
           {chapter.note && <p className="t-progression">{chapter.note}</p>}
-          {chapter.link && <a className="p-text-link" href={chapter.link} target="_blank" rel="noopener noreferrer">Visit {chapter.company} ↗</a>}
+          {chapter.link && <a className="p-text-link" href={chapter.link} target="_blank" rel="noopener noreferrer">{chapter.linkLabel || `Visit ${chapter.company}`} ↗</a>}
           <div className="t-dialog-nav" aria-label="Explore adjacent career chapters"><button type="button" className="p-button" disabled={selected === 0} onClick={() => setSelected((value) => Math.max(0, (value ?? 0) - 1))}>← Newer chapter</button><button type="button" className="p-button" disabled={selected === career.length - 1} onClick={() => setSelected((value) => Math.min(career.length - 1, (value ?? 0) + 1))}>Earlier chapter →</button></div>
         </>}
       </PortfolioDialog>

@@ -2,7 +2,7 @@
 export type CareerChapter = {
   id: string; year: string; period: string; company: string; title: string;
   chapter: string; description: string; highlights: string[]; tags: string[];
-  image: string; link?: string; note?: string; current?: boolean;
+  image: string; link?: string; linkLabel?: string; note?: string; current?: boolean;
 };
 
 export const career: CareerChapter[] = [
@@ -54,7 +54,7 @@ export const career: CareerChapter[] = [
     id: "carleton", year: "2011", period: "2011 – 2019", company: "Carleton University", title: "PhD, Electrical & Computer Engineering", chapter: "Cloud performance research",
     description: "Researched machine learning for cloud middleware performance optimization. Completed my PhD in 2019.",
     highlights: ["Completed a PhD in Electrical & Computer Engineering in 2019.", "Researched machine learning for cloud middleware performance optimization.", "Pursued research alongside startup and engineering work; the dates overlap intentionally."],
-    tags: ["Machine learning", "Cloud research"], image: "/01.png", link: "https://carleton.ca"
+    tags: ["Machine learning", "Cloud research"], image: "/01.png", link: "https://carleton.scholaris.ca/items/be9fc98a-4d7a-431b-9095-7eccccf8eea3", linkLabel: "Read my PhD dissertation"
   },
   {
     id: "foundations", year: "2007", period: "2007 – 2012", company: "Early engineering roles", title: "TCS · Global Travel Solution · 2PiRad", chapter: "Where it started",
